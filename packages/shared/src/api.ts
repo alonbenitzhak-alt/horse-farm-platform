@@ -43,6 +43,7 @@ export function getSupabaseClient(): SupabaseClient {
 // ============================================================================
 
 export function getDemoHorses(): Horse[] {
+  const now = new Date().toISOString();
   return [
     {
       id: 'demo-horse-1',
@@ -53,7 +54,8 @@ export function getDemoHorses(): Horse[] {
       age: 5,
       gender: 'female',
       is_active: true,
-      created_at: new Date().toISOString(),
+      created_at: now,
+      updated_at: now,
     },
     {
       id: 'demo-horse-2',
@@ -64,7 +66,8 @@ export function getDemoHorses(): Horse[] {
       age: 7,
       gender: 'male',
       is_active: true,
-      created_at: new Date().toISOString(),
+      created_at: now,
+      updated_at: now,
     },
     {
       id: 'demo-horse-3',
@@ -75,13 +78,15 @@ export function getDemoHorses(): Horse[] {
       age: 4,
       gender: 'female',
       is_active: true,
-      created_at: new Date().toISOString(),
+      created_at: now,
+      updated_at: now,
     },
   ];
 }
 
 export function getDemoTasks(): Task[] {
-  const today = new Date().toISOString().split('T')[0];
+  const now = new Date().toISOString();
+  const today = now.split('T')[0];
   const tomorrow = new Date(Date.now() + 86400000).toISOString().split('T')[0];
   const nextWeek = new Date(Date.now() + 7 * 86400000).toISOString().split('T')[0];
 
@@ -94,7 +99,8 @@ export function getDemoTasks(): Task[] {
       scheduled_date: today,
       scheduled_time: '07:00',
       status: 'pending',
-      created_at: new Date().toISOString(),
+      created_at: now,
+      updated_at: now,
     },
     {
       id: 'demo-task-2',
@@ -104,7 +110,8 @@ export function getDemoTasks(): Task[] {
       scheduled_date: today,
       scheduled_time: '08:00',
       status: 'pending',
-      created_at: new Date().toISOString(),
+      created_at: now,
+      updated_at: now,
     },
     {
       id: 'demo-task-3',
@@ -114,7 +121,8 @@ export function getDemoTasks(): Task[] {
       scheduled_date: today,
       scheduled_time: '10:00',
       status: 'completed',
-      created_at: new Date().toISOString(),
+      created_at: now,
+      updated_at: now,
     },
     {
       id: 'demo-task-4',
@@ -124,7 +132,8 @@ export function getDemoTasks(): Task[] {
       scheduled_date: tomorrow,
       scheduled_time: '09:00',
       status: 'pending',
-      created_at: new Date().toISOString(),
+      created_at: now,
+      updated_at: now,
     },
     {
       id: 'demo-task-5',
@@ -134,7 +143,8 @@ export function getDemoTasks(): Task[] {
       scheduled_date: nextWeek,
       scheduled_time: '14:00',
       status: 'pending',
-      created_at: new Date().toISOString(),
+      created_at: now,
+      updated_at: now,
     },
   ];
 }
@@ -392,10 +402,10 @@ export async function getTasks(
       demoTasks = demoTasks.filter(t => t.status === filters.status);
     }
     if (filters?.dateStart) {
-      demoTasks = demoTasks.filter(t => t.scheduled_date >= filters.dateStart);
+      demoTasks = demoTasks.filter(t => t.scheduled_date >= filters.dateStart!);
     }
     if (filters?.dateEnd) {
-      demoTasks = demoTasks.filter(t => t.scheduled_date <= filters.dateEnd);
+      demoTasks = demoTasks.filter(t => t.scheduled_date <= filters.dateEnd!);
     }
 
     return demoTasks as TaskWithDetails[];
