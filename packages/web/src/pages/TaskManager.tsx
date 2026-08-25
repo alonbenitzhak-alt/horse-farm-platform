@@ -16,7 +16,7 @@ export default function TaskManager({ farmId, currentUserId }: TaskManagerProps)
   const [horses, setHorses] = useState<Horse[]>([]);
   const [people, setPeople] = useState<Person[]>([]);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const [errorMsg, setErrorMsg] = useState<string | null>(null);
   const [showForm, setShowForm] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [filterStatus, setFilterStatus] = useState<'all' | 'pending' | 'in_progress' | 'completed'>('all');
@@ -50,7 +50,7 @@ export default function TaskManager({ farmId, currentUserId }: TaskManagerProps)
   async function loadData() {
     try {
       setLoading(true);
-      setError(null);
+      setErrorMsg(null);
       const [taskData, horseData, peopleData] = await Promise.all([
         getTasks(farmId),
         getHorses(farmId),
@@ -61,7 +61,7 @@ export default function TaskManager({ farmId, currentUserId }: TaskManagerProps)
       setPeople(peopleData || []);
     } catch (err) {
       const errorMsg = err instanceof Error ? err.message : t('taskManager.failedToLoad');
-      setError(errorMsg);
+      setErrorMsg(errorMsg);
       console.error('Error loading data:', err);
     } finally {
       setLoading(false);
@@ -115,7 +115,7 @@ export default function TaskManager({ farmId, currentUserId }: TaskManagerProps)
 
     try {
       setSubmitting(true);
-      setError(null);
+      setErrorMsg(null);
 
       if (editingTask) {
         await updateTask(editingTask.id, {
@@ -148,7 +148,7 @@ export default function TaskManager({ farmId, currentUserId }: TaskManagerProps)
     } catch (err) {
       console.error('Error saving task:', err);
       const errorMsg = err instanceof Error ? err.message : t('taskManager.failedToSave');
-      setError(errorMsg);
+      setErrorMsg(errorMsg);
       error(errorMsg);
     } finally {
       setSubmitting(false);
@@ -168,7 +168,7 @@ export default function TaskManager({ farmId, currentUserId }: TaskManagerProps)
     } catch (err) {
       console.error('Error deleting task:', err);
       const errorMsg = err instanceof Error ? err.message : t('taskManager.failedToDelete');
-      setError(errorMsg);
+      setErrorMsg(errorMsg);
       error(errorMsg);
     } finally {
       setDeletingId(null);
@@ -202,9 +202,9 @@ export default function TaskManager({ farmId, currentUserId }: TaskManagerProps)
         </button>
       </div>
 
-      {error && (
+      {errorMsg && (
         <div className="error-message">
-          {error}
+          {errorMsg}
           <button onClick={loadData} className="retry-button">
             {t('taskManager.retry')}
           </button>

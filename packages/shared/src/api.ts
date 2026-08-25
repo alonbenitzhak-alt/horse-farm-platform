@@ -5,6 +5,8 @@
 
 import { createClient, SupabaseClient } from '@supabase/supabase-js';
 import type {
+  AuthUser,
+  UserProfile,
   Farm,
   Person,
   Horse,
@@ -17,6 +19,9 @@ import type {
   ActivityWithUser,
   TodayDashboard,
   HorseHealthRecord,
+  Expense,
+  ExpenseAnalytics,
+  FarmAnalytics,
 } from './types';
 
 let supabaseClient: SupabaseClient | null = null;
@@ -371,33 +376,6 @@ export async function deleteTask(taskId: string): Promise<void> {
 }
 
 // ============================================================================
-// Task Template Operations
-// ============================================================================
-
-export async function getTaskTemplates(farmId: string): Promise<TaskTemplate[]> {
-  const { data, error } = await getSupabaseClient()
-    .from('task_templates')
-    .select('*')
-    .eq('farm_id', farmId)
-    .eq('is_active', true)
-    .order('title');
-
-  if (error) throw error;
-  return data || [];
-}
-
-export async function createTaskTemplate(template: Partial<TaskTemplate>): Promise<TaskTemplate> {
-  const { data, error } = await getSupabaseClient()
-    .from('task_templates')
-    .insert([template])
-    .select()
-    .single();
-
-  if (error) throw error;
-  return data;
-}
-
-// ============================================================================
 // Event Operations
 // ============================================================================
 
@@ -595,7 +573,342 @@ export function subscribeToHorses(
     .subscribe();
 }
 
+// ============================================================================
+// Authentication & User Management
+// ============================================================================
+
+export async function registerUser(
+  email: string,
+  password: string,
+  name: string,
+  farmName: string
+): Promise<{ user: AuthUser; farm: Farm }> {
+  const client = getSupabaseClient();
+
+  const { data: authData, error: authError } = await client.auth.signUp({
+    email,
+    password,
+  });
+
+  if (authError) throw authError;
+  if (!authData.user) throw new Error('Failed to create user');
+
+  const { data: farm, error: farmError } = await client
+    .from('farms')
+    .insert([{ name: farmName }])
+    .select()
+    .single();
+
+  if (farmError) throw farmError;
+
+  const { error: profileError } = await client
+    .from('user_profiles')
+    .insert([
+      {
+        user_id: authData.user.id,
+        farm_id: farm.id,
+        name,
+        email,
+        role: 'owner',
+        is_active: true,
+      },
+    ]);
+
+  if (profileError) throw profileError;
+
+  return {
+    user: {
+      id: authData.user.id,
+      email: authData.user.email!,
+      created_at: authData.user.created_at,
+    },
+    farm,
+  };
+}
+
+export async function loginUser(email: string, password: string): Promise<AuthUser> {
+  const { data, error } = await getSupabaseClient().auth.signInWithPassword({
+    email,
+    password,
+  });
+
+  if (error) throw error;
+  if (!data.user) throw new Error('Failed to login');
+
+  return {
+    id: data.user.id,
+    email: data.user.email!,
+    created_at: data.user.created_at,
+  };
+}
+
+export async function logoutUser(): Promise<void> {
+  const { error } = await getSupabaseClient().auth.signOut();
+  if (error) throw error;
+}
+
+export async function getCurrentUser(): Promise<AuthUser | null> {
+  const { data } = await getSupabaseClient().auth.getUser();
+  if (!data.user) return null;
+
+  return {
+    id: data.user.id,
+    email: data.user.email!,
+    created_at: data.user.created_at,
+  };
+}
+
+export async function getUserProfile(userId: string): Promise<UserProfile | null> {
+  const { data, error } = await getSupabaseClient()
+    .from('user_profiles')
+    .select('*')
+    .eq('user_id', userId)
+    .single();
+
+  if (error) throw error;
+  return data;
+}
+
+export async function updateUserProfile(userId: string, updates: Partial<UserProfile>): Promise<UserProfile> {
+  const { data, error } = await getSupabaseClient()
+    .from('user_profiles')
+    .update({ ...updates, updated_at: new Date().toISOString() })
+    .eq('user_id', userId)
+    .select()
+    .single();
+
+  if (error) throw error;
+  return data;
+}
+
+export async function getFarmUsers(farmId: string): Promise<UserProfile[]> {
+  const { data, error } = await getSupabaseClient()
+    .from('user_profiles')
+    .select('*')
+    .eq('farm_id', farmId)
+    .eq('is_active', true)
+    .order('name');
+
+  if (error) throw error;
+  return data || [];
+}
+
 // Type alias for convenience
 export type HorseWithDetails = Horse & {
   owner?: Person;
 };
+
+// Task Template Functions
+export async function getTaskTemplates(farmId: string): Promise<TaskTemplate[]> {
+  const { data, error } = await getSupabaseClient()
+    .from('task_templates')
+    .select('*')
+    .eq('farm_id', farmId)
+    .eq('is_active', true)
+    .order('title');
+
+  if (error) throw error;
+  return data || [];
+}
+
+export async function getTaskTemplate(templateId: string): Promise<TaskTemplate> {
+  const { data, error } = await getSupabaseClient()
+    .from('task_templates')
+    .select('*')
+    .eq('id', templateId)
+    .single();
+
+  if (error) throw error;
+  return data;
+}
+
+export async function createTaskTemplate(template: Omit<TaskTemplate, 'id' | 'created_at' | 'updated_at'>): Promise<TaskTemplate> {
+  const { data, error } = await getSupabaseClient()
+    .from('task_templates')
+    .insert([template])
+    .select()
+    .single();
+
+  if (error) throw error;
+  return data;
+}
+
+export async function updateTaskTemplate(
+  templateId: string,
+  updates: Partial<Omit<TaskTemplate, 'id' | 'created_at' | 'updated_at'>>
+): Promise<TaskTemplate> {
+  const { data, error } = await getSupabaseClient()
+    .from('task_templates')
+    .update({ ...updates, updated_at: new Date().toISOString() })
+    .eq('id', templateId)
+    .select()
+    .single();
+
+  if (error) throw error;
+  return data;
+}
+
+export async function deleteTaskTemplate(templateId: string): Promise<void> {
+  const { error } = await getSupabaseClient()
+    .from('task_templates')
+    .delete()
+    .eq('id', templateId);
+
+  if (error) throw error;
+}
+
+export async function generateRecurringTasksFromTemplate(
+  templateId: string,
+  startDate: string,
+  endDate: string
+): Promise<Task[]> {
+  const template = await getTaskTemplate(templateId);
+
+  const { generateRecurringTasks } = await import('./recurring');
+
+  const tasksToCreate = generateRecurringTasks(
+    templateId,
+    template.frequency,
+    new Date(startDate),
+    new Date(endDate),
+    template.title,
+    template.farm_id,
+    template.assigned_to,
+    template.description
+  );
+
+  if (tasksToCreate.length === 0) {
+    return [];
+  }
+
+  const { data, error } = await getSupabaseClient()
+    .from('tasks')
+    .insert(tasksToCreate)
+    .select();
+
+  if (error) throw error;
+  return data || [];
+}
+
+// Expense Management
+export async function getExpenses(farmId: string, filters?: { startDate?: string; endDate?: string; category?: string }): Promise<Expense[]> {
+  let query = getSupabaseClient()
+    .from('expenses')
+    .select('*')
+    .eq('farm_id', farmId);
+
+  if (filters?.startDate) {
+    query = query.gte('expense_date', filters.startDate);
+  }
+
+  if (filters?.endDate) {
+    query = query.lte('expense_date', filters.endDate);
+  }
+
+  if (filters?.category) {
+    query = query.eq('category', filters.category);
+  }
+
+  const { data, error } = await query.order('expense_date', { ascending: false });
+
+  if (error) throw error;
+  return data || [];
+}
+
+export async function createExpense(expense: Omit<Expense, 'id' | 'created_at' | 'updated_at'>): Promise<Expense> {
+  const { data, error } = await getSupabaseClient()
+    .from('expenses')
+    .insert([expense])
+    .select()
+    .single();
+
+  if (error) throw error;
+  return data;
+}
+
+export async function updateExpense(expenseId: string, updates: Partial<Omit<Expense, 'id' | 'created_at' | 'updated_at'>>): Promise<Expense> {
+  const { data, error } = await getSupabaseClient()
+    .from('expenses')
+    .update({ ...updates, updated_at: new Date().toISOString() })
+    .eq('id', expenseId)
+    .select()
+    .single();
+
+  if (error) throw error;
+  return data;
+}
+
+export async function deleteExpense(expenseId: string): Promise<void> {
+  const { error } = await getSupabaseClient()
+    .from('expenses')
+    .delete()
+    .eq('id', expenseId);
+
+  if (error) throw error;
+}
+
+// Analytics Functions
+export async function getExpenseAnalytics(farmId: string, startDate?: string, endDate?: string): Promise<ExpenseAnalytics> {
+  const expenses = await getExpenses(farmId, { startDate, endDate });
+
+  const totalExpenses = expenses.reduce((sum, e) => sum + e.amount, 0);
+
+  const byCategory: Record<string, number> = {};
+  expenses.forEach(exp => {
+    byCategory[exp.category] = (byCategory[exp.category] || 0) + exp.amount;
+  });
+
+  const byMonth: Record<string, number> = {};
+  expenses.forEach(exp => {
+    const month = exp.expense_date.substring(0, 7);
+    byMonth[month] = (byMonth[month] || 0) + exp.amount;
+  });
+
+  const daysDiff = startDate && endDate
+    ? Math.ceil((new Date(endDate).getTime() - new Date(startDate).getTime()) / (1000 * 60 * 60 * 24))
+    : 30;
+
+  return {
+    totalExpenses,
+    byCategory,
+    byMonth,
+    averagePerDay: daysDiff > 0 ? totalExpenses / daysDiff : 0,
+    largestExpense: expenses.length > 0 ? { amount: Math.max(...expenses.map(e => e.amount)), description: expenses.find(e => e.amount === Math.max(...expenses.map(x => x.amount)))?.description } : { amount: 0 },
+    dateRange: { start: startDate || new Date().toISOString().split('T')[0], end: endDate || new Date().toISOString().split('T')[0] },
+  };
+}
+
+export async function getFarmAnalytics(farmId: string): Promise<FarmAnalytics> {
+  const [horses, people, tasks, healthRecords] = await Promise.all([
+    getHorses(farmId),
+    getFarmUsers(farmId),
+    getTasks(farmId),
+    getHorseHealthRecords(farmId),
+  ]);
+
+  const now = new Date();
+  const monthStart = new Date(now.getFullYear(), now.getMonth(), 1);
+  const monthEnd = new Date(now.getFullYear(), now.getMonth() + 1, 0);
+
+  const completedThisMonth = tasks.filter(t => {
+    if (!t.completed_at) return false;
+    const completed = new Date(t.completed_at);
+    return completed >= monthStart && completed <= monthEnd;
+  }).length;
+
+  const completedRate = tasks.length > 0 ? (tasks.filter(t => t.status === 'completed').length / tasks.length) * 100 : 0;
+
+  return {
+    totalHorses: horses?.length || 0,
+    totalStaff: people?.length || 0,
+    totalTasks: tasks?.length || 0,
+    completedTasksThisMonth: completedThisMonth,
+    averageTaskCompletionRate: Math.round(completedRate),
+    totalHealthRecords: healthRecords?.length || 0,
+    upcomingMaintenance: tasks?.filter(t => {
+      const date = new Date(t.scheduled_date);
+      return date >= now && date <= new Date(now.getTime() + 30 * 24 * 60 * 60 * 1000) && t.status !== 'completed';
+    }).length || 0,
+    dateRange: { start: new Date().toISOString().split('T')[0], end: new Date().toISOString().split('T')[0] },
+  };
+}

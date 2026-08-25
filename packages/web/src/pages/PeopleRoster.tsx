@@ -23,7 +23,7 @@ export default function PeopleRoster({ farmId }: PeopleRosterProps) {
   const { t } = useTranslation();
   const [people, setPeople] = useState<Person[]>([]);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const [errorMsg, setErrorMsg] = useState<string | null>(null);
   const [showForm, setShowForm] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [editingPerson, setEditingPerson] = useState<Person | null>(null);
@@ -55,11 +55,11 @@ export default function PeopleRoster({ farmId }: PeopleRosterProps) {
   async function loadPeople() {
     try {
       setLoading(true);
-      setError(null);
+      setErrorMsg(null);
       const data = await getPeople(farmId);
       setPeople(data || []);
     } catch (err) {
-      setError(err instanceof Error ? err.message : t('peopleRoster.failedToLoad'));
+      setErrorMsg(err instanceof Error ? err.message : t('peopleRoster.failedToLoad'));
       console.error('Error loading people:', err);
     } finally {
       setLoading(false);
@@ -107,7 +107,7 @@ export default function PeopleRoster({ farmId }: PeopleRosterProps) {
 
     try {
       setSubmitting(true);
-      setError(null);
+      setErrorMsg(null);
 
       if (editingPerson) {
         await updatePerson(editingPerson.id, {
@@ -134,7 +134,7 @@ export default function PeopleRoster({ farmId }: PeopleRosterProps) {
     } catch (err) {
       console.error('Error saving person:', err);
       const errorMsg = err instanceof Error ? err.message : t('peopleRoster.failedToSave');
-      setError(errorMsg);
+      setErrorMsg(errorMsg);
       error(errorMsg);
     } finally {
       setSubmitting(false);
@@ -154,7 +154,7 @@ export default function PeopleRoster({ farmId }: PeopleRosterProps) {
     } catch (err) {
       console.error('Error deleting person:', err);
       const errorMsg = err instanceof Error ? err.message : t('peopleRoster.failedToDelete');
-      setError(errorMsg);
+      setErrorMsg(errorMsg);
       error(errorMsg);
     } finally {
       setDeletingId(null);
@@ -177,9 +177,9 @@ export default function PeopleRoster({ farmId }: PeopleRosterProps) {
         </button>
       </div>
 
-      {error && (
+      {errorMsg && (
         <div className="error-message">
-          {error}
+          {errorMsg}
           <button onClick={loadPeople} className="retry-button">
             {t('peopleRoster.retry')}
           </button>

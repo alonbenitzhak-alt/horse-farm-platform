@@ -1,0 +1,366 @@
+.analytics-container {
+  padding: 1.5rem;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+.analytics-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+  gap: 1rem;
+}
+
+.analytics-header h2 {
+  margin: 0;
+  font-size: 1.75rem;
+  color: var(--color-text);
+}
+
+.analytics-header .refresh-button {
+  background: linear-gradient(135deg, #0052a3 0%, #0099cc 100%);
+  color: white;
+  border: none;
+  padding: 0.75rem 1.5rem;
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  font-weight: 600;
+  transition: all 0.2s;
+  white-space: nowrap;
+}
+
+.analytics-header .refresh-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(0, 82, 163, 0.3);
+}
+
+.analytics-section {
+  margin-bottom: 2.5rem;
+}
+
+.analytics-section h3 {
+  margin: 0 0 1.5rem;
+  font-size: 1.25rem;
+  color: var(--color-text);
+  padding-bottom: 0.75rem;
+  border-bottom: 2px solid var(--color-border);
+}
+
+.analytics-section h4 {
+  margin: 1.5rem 0 1rem;
+  font-size: 1.1rem;
+  color: var(--color-text);
+}
+
+/* Metrics Grid */
+.metrics-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1.5rem;
+}
+
+.metric-card {
+  background: white;
+  border-radius: var(--radius-md);
+  padding: 1.5rem;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  border: 1px solid var(--color-border);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.metric-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+}
+
+.metric-icon {
+  font-size: 2rem;
+  flex-shrink: 0;
+}
+
+.metric-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.metric-label {
+  color: var(--color-text-secondary);
+  font-size: 0.85rem;
+  font-weight: 500;
+}
+
+.metric-value {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--color-accent);
+}
+
+/* Expense Summary */
+.expense-summary {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.expense-card {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border-radius: var(--radius-md);
+  padding: 1.5rem;
+  color: white;
+  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.2);
+}
+
+.card-label {
+  color: rgba(255, 255, 255, 0.9);
+  font-size: 0.9rem;
+  margin-bottom: 0.5rem;
+}
+
+.card-value {
+  font-size: 1.75rem;
+  font-weight: 700;
+}
+
+/* Category Breakdown */
+.category-breakdown {
+  background: white;
+  border-radius: var(--radius-md);
+  padding: 1.5rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  border: 1px solid var(--color-border);
+}
+
+.category-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.category-row {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.category-name {
+  min-width: 100px;
+  font-weight: 500;
+  color: var(--color-text);
+  font-size: 0.95rem;
+}
+
+.category-bar {
+  flex: 1;
+  height: 24px;
+  background-color: var(--color-section-bg);
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+}
+
+.category-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+  transition: width 0.5s ease;
+  border-radius: var(--radius-sm);
+}
+
+.category-amount {
+  min-width: 70px;
+  text-align: right;
+  font-weight: 600;
+  color: var(--color-accent);
+}
+
+/* Gauge Container */
+.gauge-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 2rem;
+  margin-top: 2rem;
+}
+
+.gauge {
+  background: white;
+  border-radius: var(--radius-md);
+  padding: 2rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  border: 1px solid var(--color-border);
+  text-align: center;
+}
+
+.gauge-label {
+  color: var(--color-text-secondary);
+  font-size: 0.95rem;
+  margin-bottom: 1.5rem;
+  font-weight: 500;
+}
+
+.gauge-circle {
+  position: relative;
+  width: 150px;
+  height: 150px;
+  margin: 0 auto;
+}
+
+.gauge-svg {
+  transform: rotate(-90deg);
+}
+
+.gauge-background {
+  fill: none;
+  stroke: var(--color-section-bg);
+  stroke-width: 8;
+}
+
+.gauge-progress {
+  fill: none;
+  stroke: url(#gradient);
+  stroke-width: 8;
+  stroke-linecap: round;
+  stroke-dasharray: 283;
+  transition: stroke-dashoffset 0.5s ease;
+}
+
+.gauge-value {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: var(--color-accent);
+}
+
+/* Insights */
+.insights-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  background: white;
+  border-radius: var(--radius-md);
+  padding: 1.5rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  border: 1px solid var(--color-border);
+}
+
+.insight-item {
+  padding: 1rem;
+  border-radius: var(--radius-sm);
+  border-left: 4px solid;
+  font-size: 0.95rem;
+}
+
+.insight-warning {
+  background-color: #fff9e6;
+  border-left-color: #ffc107;
+  color: #856404;
+}
+
+.insight-success {
+  background-color: #e8f5e9;
+  border-left-color: #4caf50;
+  color: #2e7d32;
+}
+
+.insight-info {
+  background-color: #e3f2fd;
+  border-left-color: #2196f3;
+  color: #0d47a1;
+}
+
+.loading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 400px;
+  font-size: 1.1rem;
+  color: var(--color-text-secondary);
+}
+
+.error-message {
+  background-color: #fee;
+  border: 1px solid #fcc;
+  color: #c33;
+  padding: 1rem;
+  border-radius: var(--radius-md);
+  margin-bottom: 1rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+}
+
+.error-message .retry-button {
+  background: #c33;
+  color: white;
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.error-message .retry-button:hover {
+  background: #a22;
+}
+
+/* RTL Support */
+[dir="rtl"] .analytics-header {
+  flex-direction: row-reverse;
+}
+
+[dir="rtl"] .metric-card {
+  flex-direction: row-reverse;
+}
+
+[dir="rtl"] .category-row {
+  flex-direction: row-reverse;
+}
+
+[dir="rtl"] .category-amount {
+  text-align: left;
+}
+
+[dir="rtl"] .insight-item {
+  border-left: none;
+  border-right: 4px solid;
+}
+
+[dir="rtl"] .gauge-svg {
+  transform: rotate(90deg) scaleX(-1);
+}
+
+@media (max-width: 768px) {
+  .analytics-container {
+    padding: 1rem;
+  }
+
+  .metrics-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .expense-summary {
+    grid-template-columns: 1fr;
+  }
+
+  .gauge-container {
+    grid-template-columns: 1fr;
+  }
+
+  .analytics-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .analytics-header h2 {
+    font-size: 1.5rem;
+  }
+}

@@ -20,7 +20,7 @@ export default function HorseProfile({ horse, onBack }: HorseProfileProps) {
   const [deletingId, setDeletingId] = useState<string | null>(null);
   const [validationErrors, setValidationErrors] = useState<Record<string, string>>({});
   const [formData, setFormData] = useState({
-    recordType: 'feeding' as const,
+    recordType: 'feeding' as 'feeding' | 'vaccination' | 'farrier' | 'health_issue' | 'vital_signs' | 'exercise',
     title: '',
     description: '',
     recordDate: new Date().toISOString().split('T')[0],
@@ -52,7 +52,7 @@ export default function HorseProfile({ horse, onBack }: HorseProfileProps) {
     if (record) {
       setEditingRecord(record);
       setFormData({
-        recordType: record.record_type,
+        recordType: record.record_type as 'feeding' | 'vaccination' | 'farrier' | 'health_issue' | 'vital_signs' | 'exercise',
         title: record.title,
         description: record.description || '',
         recordDate: record.recorded_date,

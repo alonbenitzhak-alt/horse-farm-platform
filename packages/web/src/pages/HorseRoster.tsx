@@ -13,7 +13,7 @@ export default function HorseRoster({ farmId }: HorseRosterProps) {
   const { t } = useTranslation();
   const [horses, setHorses] = useState<Horse[]>([]);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const [errorMsg, setErrorMsg] = useState<string | null>(null);
   const [showForm, setShowForm] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [editingHorse, setEditingHorse] = useState<Horse | null>(null);
@@ -64,11 +64,11 @@ export default function HorseRoster({ farmId }: HorseRosterProps) {
   async function loadHorses() {
     try {
       setLoading(true);
-      setError(null);
+      setErrorMsg(null);
       const data = await getHorses(farmId);
       setHorses(data || []);
     } catch (err) {
-      setError(err instanceof Error ? err.message : t('horseRoster.failedToLoad'));
+      setErrorMsg(err instanceof Error ? err.message : t('horseRoster.failedToLoad'));
       console.error('Error loading horses:', err);
     } finally {
       setLoading(false);
@@ -164,7 +164,7 @@ export default function HorseRoster({ farmId }: HorseRosterProps) {
 
     try {
       setSubmitting(true);
-      setError(null);
+      setErrorMsg(null);
 
       if (editingHorse) {
         await updateHorse(editingHorse.id, {
@@ -172,7 +172,7 @@ export default function HorseRoster({ farmId }: HorseRosterProps) {
           breed: formData.breed || undefined,
           color: formData.color || undefined,
           age: formData.age ? parseInt(formData.age, 10) : undefined,
-          gender: formData.gender || undefined,
+          gender: (formData.gender as 'male' | 'female' | '') || undefined,
           height: formData.height || undefined,
           weight: formData.weight ? parseInt(formData.weight, 10) : undefined,
           microchip_id: formData.microchipId || undefined,
@@ -182,7 +182,7 @@ export default function HorseRoster({ farmId }: HorseRosterProps) {
           allergies: formData.allergies || undefined,
           medications: formData.medications || undefined,
           diet_requirements: formData.dietRequirements || undefined,
-          training_level: formData.trainingLevel || undefined,
+          training_level: (formData.trainingLevel as 'beginner' | 'intermediate' | 'advanced' | '') || undefined,
           emergency_contact: formData.emergencyContact || undefined,
           emergency_phone: formData.emergencyPhone || undefined,
           vet_name: formData.vetName || undefined,
@@ -197,7 +197,7 @@ export default function HorseRoster({ farmId }: HorseRosterProps) {
           breed: formData.breed || undefined,
           color: formData.color || undefined,
           age: formData.age ? parseInt(formData.age, 10) : undefined,
-          gender: formData.gender || undefined,
+          gender: (formData.gender as 'male' | 'female' | '') || undefined,
           height: formData.height || undefined,
           weight: formData.weight ? parseInt(formData.weight, 10) : undefined,
           microchip_id: formData.microchipId || undefined,
@@ -207,7 +207,7 @@ export default function HorseRoster({ farmId }: HorseRosterProps) {
           allergies: formData.allergies || undefined,
           medications: formData.medications || undefined,
           diet_requirements: formData.dietRequirements || undefined,
-          training_level: formData.trainingLevel || undefined,
+          training_level: (formData.trainingLevel as 'beginner' | 'intermediate' | 'advanced' | '') || undefined,
           emergency_contact: formData.emergencyContact || undefined,
           emergency_phone: formData.emergencyPhone || undefined,
           vet_name: formData.vetName || undefined,
@@ -225,7 +225,7 @@ export default function HorseRoster({ farmId }: HorseRosterProps) {
     } catch (err) {
       console.error('Error saving horse:', err);
       const errorMsg = err instanceof Error ? err.message : t('horseRoster.failedToSave');
-      setError(errorMsg);
+      setErrorMsg(errorMsg);
       error(errorMsg);
     } finally {
       setSubmitting(false);
@@ -245,7 +245,7 @@ export default function HorseRoster({ farmId }: HorseRosterProps) {
     } catch (err) {
       console.error('Error deleting horse:', err);
       const errorMsg = err instanceof Error ? err.message : t('horseRoster.failedToDelete');
-      setError(errorMsg);
+      setErrorMsg(errorMsg);
       error(errorMsg);
     } finally {
       setDeletingId(null);
@@ -272,9 +272,9 @@ export default function HorseRoster({ farmId }: HorseRosterProps) {
         </button>
       </div>
 
-      {error && (
+      {errorMsg && (
         <div className="error-message">
-          {error}
+          {errorMsg}
           <button onClick={loadHorses} className="retry-button">
             {t('horseRoster.retry')}
           </button>

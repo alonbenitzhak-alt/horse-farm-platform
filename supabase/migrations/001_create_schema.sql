@@ -132,20 +132,97 @@ ALTER TABLE events ENABLE ROW LEVEL SECURITY;
 ALTER TABLE activities ENABLE ROW LEVEL SECURITY;
 
 -- Basic RLS policies for MVP (allow all for now, tighten later)
+-- Farms policies
 CREATE POLICY "allow_read_own_farm" ON farms
   FOR SELECT USING (TRUE);
 
+CREATE POLICY "allow_insert_farm" ON farms
+  FOR INSERT WITH CHECK (TRUE);
+
+CREATE POLICY "allow_update_farm" ON farms
+  FOR UPDATE USING (TRUE) WITH CHECK (TRUE);
+
+CREATE POLICY "allow_delete_farm" ON farms
+  FOR DELETE USING (TRUE);
+
+-- People policies
 CREATE POLICY "allow_read_farm_people" ON people
   FOR SELECT USING (TRUE);
 
+CREATE POLICY "allow_insert_people" ON people
+  FOR INSERT WITH CHECK (TRUE);
+
+CREATE POLICY "allow_update_people" ON people
+  FOR UPDATE USING (TRUE) WITH CHECK (TRUE);
+
+CREATE POLICY "allow_delete_people" ON people
+  FOR DELETE USING (TRUE);
+
+-- Horses policies
 CREATE POLICY "allow_read_farm_horses" ON horses
   FOR SELECT USING (TRUE);
 
+CREATE POLICY "allow_insert_horses" ON horses
+  FOR INSERT WITH CHECK (TRUE);
+
+CREATE POLICY "allow_update_horses" ON horses
+  FOR UPDATE USING (TRUE) WITH CHECK (TRUE);
+
+CREATE POLICY "allow_delete_horses" ON horses
+  FOR DELETE USING (TRUE);
+
+-- Task Templates policies
+CREATE POLICY "allow_read_task_templates" ON task_templates
+  FOR SELECT USING (TRUE);
+
+CREATE POLICY "allow_insert_task_templates" ON task_templates
+  FOR INSERT WITH CHECK (TRUE);
+
+CREATE POLICY "allow_update_task_templates" ON task_templates
+  FOR UPDATE USING (TRUE) WITH CHECK (TRUE);
+
+CREATE POLICY "allow_delete_task_templates" ON task_templates
+  FOR DELETE USING (TRUE);
+
+-- Tasks policies
 CREATE POLICY "allow_read_farm_tasks" ON tasks
   FOR SELECT USING (TRUE);
 
+CREATE POLICY "allow_insert_tasks" ON tasks
+  FOR INSERT WITH CHECK (TRUE);
+
+CREATE POLICY "allow_update_tasks" ON tasks
+  FOR UPDATE USING (TRUE) WITH CHECK (TRUE);
+
+CREATE POLICY "allow_delete_tasks" ON tasks
+  FOR DELETE USING (TRUE);
+
+-- Task-Horse relationship policies
+CREATE POLICY "allow_read_task_horses" ON task_horses
+  FOR SELECT USING (TRUE);
+
+CREATE POLICY "allow_insert_task_horses" ON task_horses
+  FOR INSERT WITH CHECK (TRUE);
+
+CREATE POLICY "allow_delete_task_horses" ON task_horses
+  FOR DELETE USING (TRUE);
+
+-- Events policies
 CREATE POLICY "allow_read_farm_events" ON events
   FOR SELECT USING (TRUE);
 
+CREATE POLICY "allow_insert_events" ON events
+  FOR INSERT WITH CHECK (TRUE);
+
+CREATE POLICY "allow_update_events" ON events
+  FOR UPDATE USING (TRUE) WITH CHECK (TRUE);
+
+CREATE POLICY "allow_delete_events" ON events
+  FOR DELETE USING (TRUE);
+
+-- Activities policies
 CREATE POLICY "allow_read_farm_activities" ON activities
   FOR SELECT USING (TRUE);
+
+CREATE POLICY "allow_insert_activities" ON activities
+  FOR INSERT WITH CHECK (TRUE);
