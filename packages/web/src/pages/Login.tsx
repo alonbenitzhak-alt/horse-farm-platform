@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { loginUser } from '@stableos/shared';
+import { loginUser, getSupabaseClient } from '@stableos/shared';
 import { useTranslation } from '../hooks/useTranslation';
 import { success, error as showError } from '../utils/toast';
 import '../styles/auth.css';
@@ -32,6 +32,27 @@ export default function Login({ onSuccess, onSwitchToRegister }: LoginProps) {
       onSuccess();
     } catch (err) {
       const msg = err instanceof Error ? err.message : t('auth.loginFailed');
+      setErrorMsg(msg);
+      showError(msg);
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  async function handleGoogleSignIn() {
+    try {
+      setLoading(true);
+      setErrorMsg(null);
+      const client = getSupabaseClient();
+      const { error } = await client.auth.signInWithOAuth({
+        provider: 'google',
+        options: {
+          redirectTo: `${window.location.origin}`,
+        },
+      });
+      if (error) throw error;
+    } catch (err) {
+      const msg = err instanceof Error ? err.message : 'Google sign-in failed';
       setErrorMsg(msg);
       showError(msg);
     } finally {
@@ -76,6 +97,18 @@ export default function Login({ onSuccess, onSwitchToRegister }: LoginProps) {
 
           <button type="submit" className="submit-button" disabled={loading}>
             {loading ? t('auth.loggingIn') : t('auth.login')}
+          </button>
+
+          <div className="divider">או</div>
+
+          <button
+            type="button"
+            className="oauth-button google"
+            onClick={handleGoogleSignIn}
+            disabled={loading}
+          >
+            <span className="oauth-icon">🔍</span>
+            התחבר עם Google
           </button>
         </form>
 

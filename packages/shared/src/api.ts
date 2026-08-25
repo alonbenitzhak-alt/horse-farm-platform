@@ -577,6 +577,137 @@ export function subscribeToHorses(
 // Authentication & User Management
 // ============================================================================
 
+function generateFarmCode(): string {
+  const timestamp = Date.now().toString(36).toUpperCase().slice(-4);
+  const random = Math.random().toString(36).substring(2, 7).toUpperCase();
+  return `FARM-${timestamp}${random}`;
+}
+
+async function createDemoData(farmId: string): Promise<void> {
+  const client = getSupabaseClient();
+
+  const demoHorses = [
+    {
+      farm_id: farmId,
+      name: 'סטאר - Star',
+      breed: 'Thoroughbred',
+      color: 'Bay',
+      age: 5,
+      gender: 'female',
+      is_active: true,
+    },
+    {
+      farm_id: farmId,
+      name: 'פרינס - Prince',
+      breed: 'Arabian',
+      color: 'Chestnut',
+      age: 7,
+      gender: 'male',
+      is_active: true,
+    },
+    {
+      farm_id: farmId,
+      name: 'לונה - Luna',
+      breed: 'Quarter Horse',
+      color: 'Gray',
+      age: 4,
+      gender: 'female',
+      is_active: true,
+    },
+  ];
+
+  const { data: insertedHorses, error: horsesError } = await client
+    .from('horses')
+    .insert(demoHorses)
+    .select();
+
+  if (horsesError) {
+    console.error('Failed to create demo horses:', horsesError);
+    return;
+  }
+
+  if (!insertedHorses || insertedHorses.length === 0) return;
+
+  const today = new Date().toISOString().split('T')[0];
+  const tomorrow = new Date(Date.now() + 86400000).toISOString().split('T')[0];
+  const nextWeek = new Date(Date.now() + 7 * 86400000).toISOString().split('T')[0];
+
+  const demoTasks = [
+    {
+      farm_id: farmId,
+      title: 'האכלה בוקר',
+      description: 'האכל את כל הסוסים בשעה 7:00 בבוקר',
+      scheduled_date: today,
+      scheduled_time: '07:00',
+      status: 'pending',
+    },
+    {
+      farm_id: farmId,
+      title: 'ניקוי הסטבל',
+      description: 'נקה את כל קומות הסטבל וחלף סחובה',
+      scheduled_date: today,
+      scheduled_time: '08:00',
+      status: 'pending',
+    },
+    {
+      farm_id: farmId,
+      title: 'תרגול עם סטאר',
+      description: 'תרגול רכיבה עם סטאר במגרש',
+      scheduled_date: today,
+      scheduled_time: '10:00',
+      status: 'pending',
+    },
+    {
+      farm_id: farmId,
+      title: 'בדיקת בריאות',
+      description: 'בדוק את בריאות כל הסוסים - טמפרטורה, דופק, נשימה',
+      scheduled_date: tomorrow,
+      scheduled_time: '09:00',
+      status: 'pending',
+    },
+    {
+      farm_id: farmId,
+      title: 'טרימינג כפות',
+      description: 'קצץ כפות לכל הסוסים',
+      scheduled_date: nextWeek,
+      scheduled_time: '14:00',
+      status: 'pending',
+    },
+  ];
+
+  const { data: insertedTasks, error: tasksError } = await client
+    .from('tasks')
+    .insert(demoTasks)
+    .select();
+
+  if (tasksError) {
+    console.error('Failed to create demo tasks:', tasksError);
+    return;
+  }
+
+  if (!insertedTasks || insertedTasks.length < 3) return;
+
+  const taskHorseLinks = [
+    { task_id: insertedTasks[0].id, horse_id: insertedHorses[0].id },
+    { task_id: insertedTasks[0].id, horse_id: insertedHorses[1].id },
+    { task_id: insertedTasks[0].id, horse_id: insertedHorses[2].id },
+    { task_id: insertedTasks[1].id, horse_id: insertedHorses[0].id },
+    { task_id: insertedTasks[1].id, horse_id: insertedHorses[1].id },
+    { task_id: insertedTasks[1].id, horse_id: insertedHorses[2].id },
+    { task_id: insertedTasks[2].id, horse_id: insertedHorses[0].id },
+    { task_id: insertedTasks[3].id, horse_id: insertedHorses[0].id },
+    { task_id: insertedTasks[3].id, horse_id: insertedHorses[1].id },
+  ];
+
+  const { error: linkError } = await client
+    .from('task_horses')
+    .insert(taskHorseLinks);
+
+  if (linkError) {
+    console.error('Failed to link demo tasks to horses:', linkError);
+  }
+}
+
 export async function registerUser(
   email: string,
   password: string,
@@ -593,9 +724,11 @@ export async function registerUser(
   if (authError) throw authError;
   if (!authData.user) throw new Error('Failed to create user');
 
+  const farmCode = generateFarmCode();
+
   const { data: farm, error: farmError } = await client
     .from('farms')
-    .insert([{ name: farmName }])
+    .insert([{ name: farmName, farm_code: farmCode }])
     .select()
     .single();
 
@@ -616,6 +749,10 @@ export async function registerUser(
 
   if (profileError) throw profileError;
 
+  await createDemoData(farm.id).catch(err => {
+    console.error('Failed to create demo data:', err);
+  });
+
   return {
     user: {
       id: authData.user.id,
@@ -623,6 +760,57 @@ export async function registerUser(
       created_at: authData.user.created_at,
     },
     farm,
+  };
+}
+
+export async function joinFarmWithCode(
+  email: string,
+  password: string,
+  name: string,
+  farmCode: string,
+  role: 'manager' | 'staff'
+): Promise<{ user: AuthUser; farm: Farm }> {
+  const client = getSupabaseClient();
+
+  const { data: authData, error: authError } = await client.auth.signUp({
+    email,
+    password,
+  });
+
+  if (authError) throw authError;
+  if (!authData.user) throw new Error('Failed to create user');
+
+  const { data: farms, error: farmError } = await client
+    .from('farms')
+    .select('*')
+    .eq('farm_code', farmCode)
+    .single();
+
+  if (farmError) throw new Error('Farm code not found or invalid');
+  if (!farms) throw new Error('Farm not found');
+
+  const { error: profileError } = await client
+    .from('user_profiles')
+    .insert([
+      {
+        user_id: authData.user.id,
+        farm_id: farms.id,
+        name,
+        email,
+        role: role === 'manager' ? 'manager' : 'staff',
+        is_active: true,
+      },
+    ]);
+
+  if (profileError) throw profileError;
+
+  return {
+    user: {
+      id: authData.user.id,
+      email: authData.user.email!,
+      created_at: authData.user.created_at,
+    },
+    farm: farms,
   };
 }
 

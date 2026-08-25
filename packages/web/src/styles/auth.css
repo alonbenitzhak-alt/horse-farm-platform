@@ -161,3 +161,184 @@
 [dir="rtl"] .auth-footer p {
   text-align: center;
 }
+
+/* Role Selection */
+.role-selection {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+
+.role-button {
+  background: white;
+  border: 2px solid #ddd;
+  border-radius: 8px;
+  padding: 1.5rem 1rem;
+  cursor: pointer;
+  transition: all 0.3s;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.75rem;
+  text-align: center;
+  font-family: inherit;
+}
+
+.role-button:hover {
+  border-color: #667eea;
+  background: #f9f7ff;
+}
+
+.role-button.selected {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  border-color: #667eea;
+}
+
+.role-button.selected .role-description {
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.role-icon {
+  font-size: 2rem;
+}
+
+.role-title {
+  font-weight: 600;
+  font-size: 1rem;
+}
+
+.role-description {
+  font-size: 0.8rem;
+  color: #999;
+  margin: 0;
+}
+
+/* Manager Action Selection */
+.manager-action-selection {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  margin-bottom: 1.5rem;
+}
+
+.action-button {
+  background: white;
+  border: 2px solid #ddd;
+  border-radius: 6px;
+  padding: 0.75rem 1rem;
+  cursor: pointer;
+  font-weight: 500;
+  transition: all 0.2s;
+  text-align: center;
+  font-family: inherit;
+  font-size: 0.95rem;
+}
+
+.action-button:hover {
+  border-color: #667eea;
+  background: #f9f7ff;
+}
+
+.action-button.active {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  border-color: #667eea;
+}
+
+/* Back Button */
+.back-button {
+  background: none;
+  border: none;
+  color: #667eea;
+  font-size: 0.9rem;
+  cursor: pointer;
+  margin-top: 1rem;
+  padding: 0;
+  font-weight: 500;
+  transition: color 0.2s;
+  display: block;
+}
+
+.back-button:hover:not(:disabled) {
+  color: #764ba2;
+}
+
+.back-button:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+/* Divider */
+.divider {
+  position: relative;
+  text-align: center;
+  margin: 1.5rem 0 1rem;
+  color: #999;
+  font-size: 0.9rem;
+}
+
+.divider::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 50%;
+  width: 100%;
+  height: 1px;
+  background: #ddd;
+  z-index: 1;
+}
+
+.divider {
+  position: relative;
+  z-index: 2;
+  background: white;
+  padding: 0 10px;
+}
+
+/* OAuth Buttons */
+.oauth-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  width: 100%;
+  padding: 0.75rem 1.5rem;
+  border: 2px solid #ddd;
+  border-radius: 6px;
+  background: white;
+  color: #333;
+  font-size: 1rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+  font-family: inherit;
+}
+
+.oauth-button:hover:not(:disabled) {
+  border-color: #667eea;
+  background: #f9f7ff;
+}
+
+.oauth-button:active:not(:disabled) {
+  transform: scale(0.98);
+}
+
+.oauth-button:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+.oauth-button.google {
+  border-color: #d0d0d0;
+}
+
+.oauth-button.google:hover:not(:disabled) {
+  border-color: #db4437;
+  background: #fef8f7;
+}
+
+.oauth-icon {
+  font-size: 1.25rem;
+}
