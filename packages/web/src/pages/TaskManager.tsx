@@ -444,7 +444,7 @@ export default function TaskManager({ farmId, currentUserId }: TaskManagerProps)
                       className="delete-button"
                       onClick={() => handleDelete(task.id, task.title)}
                       disabled={deletingId !== null}
-                      title={t('taskManager.deleteConfirm')}
+                      title={t('taskManager.delete') || 'Delete task'}
                     >
                       {deletingId === task.id ? '⏳' : '🗑️'}
                     </button>
