@@ -46,17 +46,28 @@ html[dir="rtl"] .search-input {
 }
 
 /* Modal */
+html[dir="rtl"] .modal-overlay {
+  direction: rtl;
+}
+
+html[dir="rtl"] .modal {
+  direction: rtl;
+}
+
 html[dir="rtl"] .modal-header {
   flex-direction: row-reverse;
+  text-align: right;
 }
 
 html[dir="rtl"] .modal-header h3 {
   text-align: right;
+  flex: 1;
 }
 
 html[dir="rtl"] .close-button {
   margin-right: auto;
   margin-left: 0;
+  order: 1;
 }
 
 /* Form */
@@ -66,14 +77,31 @@ html[dir="rtl"] .form-group {
 
 html[dir="rtl"] .form-group label {
   text-align: right;
+  display: block;
+  margin-bottom: 0.5rem;
+}
+
+html[dir="rtl"] .form-group input::placeholder,
+html[dir="rtl"] .form-group textarea::placeholder,
+html[dir="rtl"] .form-group select {
+  text-align: right;
+}
+
+html[dir="rtl"] .form-group textarea {
+  text-align: right;
 }
 
 html[dir="rtl"] .error-text {
   text-align: right;
+  display: block;
 }
 
 html[dir="rtl"] .form-actions {
   flex-direction: row-reverse;
+}
+
+html[dir="rtl"] .form-row {
+  direction: rtl;
 }
 
 /* Roster Card */
@@ -168,9 +196,18 @@ html[dir="rtl"] .help-item {
   padding-left: 0;
 }
 
+/* Task Form */
+html[dir="rtl"] .task-form {
+  direction: rtl;
+}
+
 /* Task Filters */
 html[dir="rtl"] .task-filters {
   flex-direction: row-reverse;
+}
+
+html[dir="rtl"] .filter-button {
+  text-align: center;
 }
 
 /* Language Buttons */
@@ -375,4 +412,20 @@ html[dir="rtl"] .task-manager {
 
 html[dir="rtl"] .task-item-meta {
   flex-direction: row-reverse;
+}
+
+/* Horse Checkboxes */
+html[dir="rtl"] .horse-checkboxes {
+  text-align: right;
+  direction: rtl;
+}
+
+html[dir="rtl"] .checkbox-label {
+  flex-direction: row-reverse;
+  text-align: right;
+}
+
+html[dir="rtl"] .checkbox-label input[type='checkbox'] {
+  margin-left: 0;
+  margin-right: 0.5rem;
 }
