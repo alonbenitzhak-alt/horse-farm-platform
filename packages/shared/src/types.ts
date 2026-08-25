@@ -180,3 +180,26 @@ export interface CalendarDay {
   tasks: Task[];
   events: Event[];
 }
+
+// Horse Health Record Types
+export type HealthRecordType = 'feeding' | 'vaccination' | 'farrier' | 'health_issue' | 'vital_signs' | 'exercise';
+
+export interface HorseHealthRecord {
+  id: string;
+  horse_id: string;
+  farm_id: string;
+  record_type: HealthRecordType;
+  title: string;
+  description?: string;
+  recorded_date: string; // YYYY-MM-DD
+  recorded_time?: string; // HH:MM
+  next_due_date?: string; // For recurring items like farrier (every 6-8 weeks), vaccinations (annual)
+  notes?: string;
+  created_at: string;
+  updated_at: string;
+}
+
+// Health record with horse details (for display)
+export interface HorseHealthRecordWithHorse extends HorseHealthRecord {
+  horse?: Horse;
+}
