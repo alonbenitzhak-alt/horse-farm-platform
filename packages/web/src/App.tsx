@@ -1,7 +1,9 @@
 import { useState } from 'react';
 import TodayDashboard from './pages/TodayDashboard';
+import Calendar from './pages/Calendar';
 import './App.css';
 import './styles/today-dashboard.css';
+import './styles/calendar.css';
 
 export default function App() {
   const [activeTab, setActiveTab] = useState('today');
@@ -21,10 +23,7 @@ export default function App() {
           <TodayDashboard farmId={farmId} currentUserId={userId} />
         )}
         {activeTab === 'calendar' && (
-          <div className="page">
-            <h2>Calendar</h2>
-            <p>Calendar view coming soon...</p>
-          </div>
+          <Calendar farmId={farmId} />
         )}
         {activeTab === 'tasks' && (
           <div className="page">
