@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import type { Horse } from '@stableos/shared';
-import { getHorses, createHorse, updateHorse } from '@stableos/shared';
+import { getHorses, createHorse, updateHorse, deleteHorse } from '@stableos/shared';
 
 interface HorseRosterProps {
   farmId: string;
@@ -11,7 +11,10 @@ export default function HorseRoster({ farmId }: HorseRosterProps) {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [showForm, setShowForm] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
   const [editingHorse, setEditingHorse] = useState<Horse | null>(null);
+  const [deletingId, setDeletingId] = useState<string | null>(null);
+  const [validationErrors, setValidationErrors] = useState<Record<string, string>>({});
   const [formData, setFormData] = useState({
     name: '',
     breed: '',
@@ -58,13 +61,27 @@ export default function HorseRoster({ farmId }: HorseRosterProps) {
     setShowForm(true);
   }
 
+  function validateForm(): boolean {
+    const errors: Record<string, string> = {};
+
+    if (!formData.name.trim()) {
+      errors.name = 'Horse name is required';
+    }
+    if (formData.age && (isNaN(parseInt(formData.age)) || parseInt(formData.age) < 0)) {
+      errors.age = 'Please enter a valid age';
+    }
+
+    setValidationErrors(errors);
+    return Object.keys(errors).length === 0;
+  }
+
   async function handleSubmit(e: any) {
     e.preventDefault();
+    if (!validateForm()) return;
+
     try {
-      if (!formData.name.trim()) {
-        alert('Horse name is required');
-        return;
-      }
+      setSubmitting(true);
+      setError(null);
 
       if (editingHorse) {
         await updateHorse(editingHorse.id, {
@@ -85,10 +102,30 @@ export default function HorseRoster({ farmId }: HorseRosterProps) {
       }
 
       setShowForm(false);
+      setValidationErrors({});
       loadHorses();
     } catch (err) {
       console.error('Error saving horse:', err);
-      alert('Failed to save horse');
+      setError(err instanceof Error ? err.message : 'Failed to save horse');
+    } finally {
+      setSubmitting(false);
+    }
+  }
+
+  async function handleDelete(horseId: string, horseName: string) {
+    if (!window.confirm(`Are you sure you want to delete ${horseName}? This action cannot be undone.`)) {
+      return;
+    }
+
+    try {
+      setDeletingId(horseId);
+      await deleteHorse(horseId);
+      loadHorses();
+    } catch (err) {
+      console.error('Error deleting horse:', err);
+      setError(err instanceof Error ? err.message : 'Failed to delete horse');
+    } finally {
+      setDeletingId(null);
     }
   }
 
@@ -138,7 +175,11 @@ export default function HorseRoster({ farmId }: HorseRosterProps) {
                       onChange={e => setFormData(prev => ({ ...prev, name: e.target.value }))}
                       placeholder="Enter horse name"
                       required
+                      className={validationErrors.name ? 'error' : ''}
                     />
+                    {validationErrors.name && (
+                      <span className="error-text">{validationErrors.name}</span>
+                    )}
                   </div>
 
                   <div className="form-row">
@@ -171,7 +212,11 @@ export default function HorseRoster({ farmId }: HorseRosterProps) {
                       placeholder="e.g., 5"
                       min="0"
                       max="50"
+                      className={validationErrors.age ? 'error' : ''}
                     />
+                    {validationErrors.age && (
+                      <span className="error-text">{validationErrors.age}</span>
+                    )}
                   </div>
 
                   <div className="form-actions">
@@ -179,11 +224,16 @@ export default function HorseRoster({ farmId }: HorseRosterProps) {
                       type="button"
                       className="cancel-button"
                       onClick={() => setShowForm(false)}
+                      disabled={submitting}
                     >
                       Cancel
                     </button>
-                    <button type="submit" className="submit-button">
-                      {editingHorse ? 'Update Horse' : 'Add Horse'}
+                    <button
+                      type="submit"
+                      className="submit-button"
+                      disabled={submitting}
+                    >
+                      {submitting ? '⏳ Saving...' : editingHorse ? 'Update Horse' : 'Add Horse'}
                     </button>
                   </div>
                 </form>
@@ -209,12 +259,24 @@ export default function HorseRoster({ farmId }: HorseRosterProps) {
                       <div className="card-detail">Age: {horse.age} years</div>
                     )}
                   </div>
-                  <button
-                    className="edit-button"
-                    onClick={() => handleOpenForm(horse)}
-                  >
-                    ✎
-                  </button>
+                  <div className="card-actions">
+                    <button
+                      className="edit-button"
+                      onClick={() => handleOpenForm(horse)}
+                      disabled={deletingId === horse.id}
+                      title="Edit horse"
+                    >
+                      ✎
+                    </button>
+                    <button
+                      className="delete-button"
+                      onClick={() => handleDelete(horse.id, horse.name)}
+                      disabled={deletingId !== null}
+                      title="Delete horse"
+                    >
+                      {deletingId === horse.id ? '⏳' : '🗑️'}
+                    </button>
+                  </div>
                 </div>
               ))}
             </div>

@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import type { TaskWithDetails, Horse, Person } from '@stableos/shared';
-import { getTasks, createTask, updateTask, getHorses, getPeople } from '@stableos/shared';
+import { getTasks, createTask, updateTask, deleteTask, getHorses, getPeople } from '@stableos/shared';
 import { formatDate, formatTime, formatTaskStatus } from '@stableos/shared';
 
 interface TaskManagerProps {
@@ -15,8 +15,11 @@ export default function TaskManager({ farmId, currentUserId }: TaskManagerProps)
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [showForm, setShowForm] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
   const [filterStatus, setFilterStatus] = useState<'all' | 'pending' | 'in_progress' | 'completed'>('all');
   const [editingTask, setEditingTask] = useState<TaskWithDetails | null>(null);
+  const [deletingId, setDeletingId] = useState<string | null>(null);
+  const [validationErrors, setValidationErrors] = useState<Record<string, string>>({});
 
   const [formData, setFormData] = useState<{
     title: string;
@@ -87,13 +90,27 @@ export default function TaskManager({ farmId, currentUserId }: TaskManagerProps)
     setShowForm(true);
   }
 
+  function validateForm(): boolean {
+    const errors: Record<string, string> = {};
+
+    if (!formData.title.trim()) {
+      errors.title = 'Task title is required';
+    }
+    if (!formData.scheduled_date) {
+      errors.scheduled_date = 'Date is required';
+    }
+
+    setValidationErrors(errors);
+    return Object.keys(errors).length === 0;
+  }
+
   async function handleSubmit(e: any) {
     e.preventDefault();
+    if (!validateForm()) return;
+
     try {
-      if (!formData.title.trim()) {
-        alert('Task title is required');
-        return;
-      }
+      setSubmitting(true);
+      setError(null);
 
       if (editingTask) {
         await updateTask(editingTask.id, {
@@ -120,10 +137,30 @@ export default function TaskManager({ farmId, currentUserId }: TaskManagerProps)
       }
 
       setShowForm(false);
+      setValidationErrors({});
       loadData();
     } catch (err) {
       console.error('Error saving task:', err);
-      alert('Failed to save task');
+      setError(err instanceof Error ? err.message : 'Failed to save task');
+    } finally {
+      setSubmitting(false);
+    }
+  }
+
+  async function handleDelete(taskId: string, taskTitle: string) {
+    if (!window.confirm(`Are you sure you want to delete "${taskTitle}"? This action cannot be undone.`)) {
+      return;
+    }
+
+    try {
+      setDeletingId(taskId);
+      await deleteTask(taskId);
+      loadData();
+    } catch (err) {
+      console.error('Error deleting task:', err);
+      setError(err instanceof Error ? err.message : 'Failed to delete task');
+    } finally {
+      setDeletingId(null);
     }
   }
 
@@ -214,7 +251,11 @@ export default function TaskManager({ farmId, currentUserId }: TaskManagerProps)
                       onChange={e => setFormData(prev => ({ ...prev, title: e.target.value }))}
                       placeholder="Enter task title"
                       required
+                      className={validationErrors.title ? 'error' : ''}
                     />
+                    {validationErrors.title && (
+                      <span className="error-text">{validationErrors.title}</span>
+                    )}
                   </div>
 
                   <div className="form-group">
@@ -235,7 +276,11 @@ export default function TaskManager({ farmId, currentUserId }: TaskManagerProps)
                         value={formData.scheduled_date}
                         onChange={e => setFormData(prev => ({ ...prev, scheduled_date: e.target.value }))}
                         required
+                        className={validationErrors.scheduled_date ? 'error' : ''}
                       />
+                      {validationErrors.scheduled_date && (
+                        <span className="error-text">{validationErrors.scheduled_date}</span>
+                      )}
                     </div>
                     <div className="form-group">
                       <label>Time (optional)</label>
@@ -301,11 +346,16 @@ export default function TaskManager({ farmId, currentUserId }: TaskManagerProps)
                       type="button"
                       className="cancel-button"
                       onClick={() => setShowForm(false)}
+                      disabled={submitting}
                     >
                       Cancel
                     </button>
-                    <button type="submit" className="submit-button">
-                      {editingTask ? 'Update Task' : 'Create Task'}
+                    <button
+                      type="submit"
+                      className="submit-button"
+                      disabled={submitting}
+                    >
+                      {submitting ? '⏳ Saving...' : editingTask ? 'Update Task' : 'Create Task'}
                     </button>
                   </div>
                 </form>
@@ -344,13 +394,24 @@ export default function TaskManager({ farmId, currentUserId }: TaskManagerProps)
                       </div>
                     )}
                   </div>
-                  <button
-                    className="edit-button"
-                    onClick={() => handleOpenForm(task)}
-                    title="Edit task"
-                  >
-                    ✎
-                  </button>
+                  <div className="task-actions">
+                    <button
+                      className="edit-button"
+                      onClick={() => handleOpenForm(task)}
+                      disabled={deletingId === task.id}
+                      title="Edit task"
+                    >
+                      ✎
+                    </button>
+                    <button
+                      className="delete-button"
+                      onClick={() => handleDelete(task.id, task.title)}
+                      disabled={deletingId !== null}
+                      title="Delete task"
+                    >
+                      {deletingId === task.id ? '⏳' : '🗑️'}
+                    </button>
+                  </div>
                 </div>
               ))}
             </div>

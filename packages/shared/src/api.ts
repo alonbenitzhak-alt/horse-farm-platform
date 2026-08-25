@@ -108,6 +108,15 @@ export async function updatePerson(personId: string, updates: Partial<Person>): 
   return data;
 }
 
+export async function deletePerson(personId: string): Promise<void> {
+  const { error } = await getSupabaseClient()
+    .from('people')
+    .delete()
+    .eq('id', personId);
+
+  if (error) throw error;
+}
+
 // ============================================================================
 // Horse Operations
 // ============================================================================
@@ -156,6 +165,15 @@ export async function updateHorse(horseId: string, updates: Partial<Horse>): Pro
 
   if (error) throw error;
   return data;
+}
+
+export async function deleteHorse(horseId: string): Promise<void> {
+  const { error } = await getSupabaseClient()
+    .from('horses')
+    .delete()
+    .eq('id', horseId);
+
+  if (error) throw error;
 }
 
 // ============================================================================
@@ -264,6 +282,15 @@ export async function completeTask(
     completed_by: completedBy,
     notes: notes,
   });
+}
+
+export async function deleteTask(taskId: string): Promise<void> {
+  const { error } = await getSupabaseClient()
+    .from('tasks')
+    .delete()
+    .eq('id', taskId);
+
+  if (error) throw error;
 }
 
 // ============================================================================

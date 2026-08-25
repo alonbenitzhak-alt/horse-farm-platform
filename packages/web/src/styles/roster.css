@@ -145,6 +145,22 @@
   box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
 }
 
+.form-group input.error {
+  border-color: #dc2626;
+}
+
+.form-group input.error:focus {
+  border-color: #dc2626;
+  box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.1);
+}
+
+.error-text {
+  font-size: 0.85rem;
+  color: #dc2626;
+  margin-top: 0.25rem;
+  display: block;
+}
+
 .form-row {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -245,8 +261,13 @@
   line-height: 1.4;
 }
 
-.edit-button {
+.card-actions {
+  display: flex;
+  gap: 0.5rem;
   flex-shrink: 0;
+}
+
+.edit-button {
   width: 44px;
   height: 44px;
   border-radius: 50%;
@@ -261,13 +282,47 @@
   transition: all 0.2s ease;
 }
 
-.edit-button:hover {
+.edit-button:hover:not(:disabled) {
   background-color: #1e40af;
   transform: scale(1.05);
 }
 
-.edit-button:active {
+.edit-button:active:not(:disabled) {
   transform: scale(0.95);
+}
+
+.edit-button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.delete-button {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background-color: #dc2626;
+  color: white;
+  border: none;
+  font-size: 1.25rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+}
+
+.delete-button:hover:not(:disabled) {
+  background-color: #991b1b;
+  transform: scale(1.05);
+}
+
+.delete-button:active:not(:disabled) {
+  transform: scale(0.95);
+}
+
+.delete-button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
 }
 
 /* Empty State */

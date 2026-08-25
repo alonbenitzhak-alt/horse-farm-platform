@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import type { Person, PersonRole } from '@stableos/shared';
-import { getPeople, createPerson, updatePerson } from '@stableos/shared';
+import { getPeople, createPerson, updatePerson, deletePerson } from '@stableos/shared';
 import { formatPersonRole } from '@stableos/shared';
 
 interface PeopleRosterProps {
@@ -22,7 +22,10 @@ export default function PeopleRoster({ farmId }: PeopleRosterProps) {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [showForm, setShowForm] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
   const [editingPerson, setEditingPerson] = useState<Person | null>(null);
+  const [deletingId, setDeletingId] = useState<string | null>(null);
+  const [validationErrors, setValidationErrors] = useState<Record<string, string>>({});
   const [formData, setFormData] = useState({
     name: '',
     role: 'staff' as PersonRole,
@@ -69,13 +72,27 @@ export default function PeopleRoster({ farmId }: PeopleRosterProps) {
     setShowForm(true);
   }
 
+  function validateForm(): boolean {
+    const errors: Record<string, string> = {};
+
+    if (!formData.name.trim()) {
+      errors.name = 'Name is required';
+    }
+    if (formData.email && !formData.email.includes('@')) {
+      errors.email = 'Please enter a valid email address';
+    }
+
+    setValidationErrors(errors);
+    return Object.keys(errors).length === 0;
+  }
+
   async function handleSubmit(e: any) {
     e.preventDefault();
+    if (!validateForm()) return;
+
     try {
-      if (!formData.name.trim()) {
-        alert('Name is required');
-        return;
-      }
+      setSubmitting(true);
+      setError(null);
 
       if (editingPerson) {
         await updatePerson(editingPerson.id, {
@@ -96,10 +113,30 @@ export default function PeopleRoster({ farmId }: PeopleRosterProps) {
       }
 
       setShowForm(false);
+      setValidationErrors({});
       loadPeople();
     } catch (err) {
       console.error('Error saving person:', err);
-      alert('Failed to save person');
+      setError(err instanceof Error ? err.message : 'Failed to save person');
+    } finally {
+      setSubmitting(false);
+    }
+  }
+
+  async function handleDelete(personId: string, personName: string) {
+    if (!window.confirm(`Are you sure you want to delete ${personName}? This action cannot be undone.`)) {
+      return;
+    }
+
+    try {
+      setDeletingId(personId);
+      await deletePerson(personId);
+      loadPeople();
+    } catch (err) {
+      console.error('Error deleting person:', err);
+      setError(err instanceof Error ? err.message : 'Failed to delete person');
+    } finally {
+      setDeletingId(null);
     }
   }
 
@@ -149,7 +186,11 @@ export default function PeopleRoster({ farmId }: PeopleRosterProps) {
                       onChange={e => setFormData(prev => ({ ...prev, name: e.target.value }))}
                       placeholder="Enter name"
                       required
+                      className={validationErrors.name ? 'error' : ''}
                     />
+                    {validationErrors.name && (
+                      <span className="error-text">{validationErrors.name}</span>
+                    )}
                   </div>
 
                   <div className="form-group">
@@ -183,7 +224,11 @@ export default function PeopleRoster({ farmId }: PeopleRosterProps) {
                       value={formData.email}
                       onChange={e => setFormData(prev => ({ ...prev, email: e.target.value }))}
                       placeholder="Enter email address"
+                      className={validationErrors.email ? 'error' : ''}
                     />
+                    {validationErrors.email && (
+                      <span className="error-text">{validationErrors.email}</span>
+                    )}
                   </div>
 
                   <div className="form-actions">
@@ -191,11 +236,16 @@ export default function PeopleRoster({ farmId }: PeopleRosterProps) {
                       type="button"
                       className="cancel-button"
                       onClick={() => setShowForm(false)}
+                      disabled={submitting}
                     >
                       Cancel
                     </button>
-                    <button type="submit" className="submit-button">
-                      {editingPerson ? 'Update Person' : 'Add Person'}
+                    <button
+                      type="submit"
+                      className="submit-button"
+                      disabled={submitting}
+                    >
+                      {submitting ? '⏳ Saving...' : editingPerson ? 'Update Person' : 'Add Person'}
                     </button>
                   </div>
                 </form>
@@ -219,12 +269,24 @@ export default function PeopleRoster({ farmId }: PeopleRosterProps) {
                       <div className="card-detail">✉️ {person.email}</div>
                     )}
                   </div>
-                  <button
-                    className="edit-button"
-                    onClick={() => handleOpenForm(person)}
-                  >
-                    ✎
-                  </button>
+                  <div className="card-actions">
+                    <button
+                      className="edit-button"
+                      onClick={() => handleOpenForm(person)}
+                      disabled={deletingId === person.id}
+                      title="Edit person"
+                    >
+                      ✎
+                    </button>
+                    <button
+                      className="delete-button"
+                      onClick={() => handleDelete(person.id, person.name)}
+                      disabled={deletingId !== null}
+                      title="Delete person"
+                    >
+                      {deletingId === person.id ? '⏳' : '🗑️'}
+                    </button>
+                  </div>
                 </div>
               ))}
             </div>
