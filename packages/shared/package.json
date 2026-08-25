@@ -1,0 +1,25 @@
+{
+  "name": "@stableos/shared",
+  "version": "0.1.0",
+  "description": "Shared types, API client, and hooks for StableOS",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "files": [
+    "dist",
+    "src"
+  ],
+  "scripts": {
+    "build": "tsc",
+    "type-check": "tsc --noEmit",
+    "watch": "tsc --watch"
+  },
+  "dependencies": {
+    "@supabase/supabase-js": "^2.38.4",
+    "react": "^18.2.0",
+    "react-query": "^3.39.3"
+  },
+  "devDependencies": {
+    "@types/node": "^20.10.5",
+    "typescript": "^5.3.3"
+  }
+}

@@ -1,0 +1,21 @@
+{
+  "name": "horse-farm-platform",
+  "version": "0.1.0",
+  "description": "StableOS - Mobile-first Horse Farm Operations Platform",
+  "private": true,
+  "workspaces": [
+    "packages/*"
+  ],
+  "scripts": {
+    "install-all": "pnpm install",
+    "dev:mobile": "cd packages/mobile && pnpm dev",
+    "dev:web": "cd packages/web && pnpm dev",
+    "build:mobile": "cd packages/mobile && pnpm build",
+    "build:web": "cd packages/web && pnpm build",
+    "type-check": "cd packages/shared && pnpm type-check && cd ../mobile && pnpm type-check && cd ../web && pnpm type-check"
+  },
+  "devDependencies": {
+    "typescript": "^5.3.3"
+  },
+  "packageManager": "pnpm@8.14.0"
+}

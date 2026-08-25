@@ -1,0 +1,28 @@
+# Supabase Configuration
+
+[project]
+# Project ID will be set when you run supabase init
+
+[api]
+# Port for local API
+port = 54321
+
+[db]
+# Port for local database
+port = 54322
+
+[studio]
+# Port for Supabase Studio
+port = 54323
+
+[inbucket]
+# Port for email testing
+port = 54324
+
+[auth]
+# Enable email provider
+enable_email = true
+
+[realtime]
+# Enable realtime subscriptions
+enabled = true
