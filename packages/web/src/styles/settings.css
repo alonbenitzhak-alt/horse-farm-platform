@@ -101,33 +101,41 @@
 .language-buttons {
   display: flex;
   gap: 1rem;
-  padding: 1rem 0;
+  padding: 1.5rem 0;
 }
 
 .language-button {
   flex: 1;
-  padding: 0.75rem 1.5rem;
+  padding: 1rem 1.5rem;
   border: 2px solid var(--color-border);
   background: white;
   color: var(--color-text-secondary);
   border-radius: var(--radius-lg);
   font-weight: 600;
-  font-size: 0.95rem;
+  font-size: 1rem;
   cursor: pointer;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  min-height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: var(--shadow-sm);
 }
 
 .language-button:hover {
-  border-color: var(--color-accent);
+  border-color: var(--color-accent-light);
   color: var(--color-accent);
   background-color: rgba(0, 82, 163, 0.05);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
 }
 
 .language-button.active {
-  border-color: var(--color-accent);
-  background: var(--color-accent);
+  border-color: transparent;
+  background: linear-gradient(135deg, #0052a3 0%, #0099cc 100%);
   color: white;
-  box-shadow: 0 2px 8px rgba(0, 82, 163, 0.2);
+  box-shadow: 0 4px 12px rgba(0, 82, 163, 0.3);
+  font-weight: 700;
 }
 
 /* Toggle Checkbox */
