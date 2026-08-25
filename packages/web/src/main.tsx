@@ -8,12 +8,18 @@ import './styles/index.css';
 const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
 const supabaseKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
 
+console.log('Supabase URL:', supabaseUrl);
+console.log('Supabase Key exists:', !!supabaseKey);
+
 if (!supabaseUrl || !supabaseKey) {
-  console.warn(
-    'Supabase configuration missing. Please set VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY in .env.local'
+  console.error(
+    'ERROR: Supabase configuration missing! Set VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY in .env.local'
   );
+  alert('Supabase not configured! Check console.');
 } else {
+  console.log('Initializing Supabase...');
   initializeSupabase(supabaseUrl, supabaseKey);
+  console.log('Supabase initialized successfully!');
 }
 
 // Register service worker for PWA offline support
