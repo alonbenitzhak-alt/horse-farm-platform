@@ -73,9 +73,13 @@ self.addEventListener('fetch', event => {
     event.respondWith(
       fetch(request)
         .then(response => {
-          if (response && response.status === 200) {
-            const cache = caches.open(RUNTIME_CACHE);
-            cache.then(c => c.put(request, response.clone()));
+          try {
+            if (response && response.status === 200 && response.clone) {
+              const cache = caches.open(RUNTIME_CACHE);
+              cache.then(c => c.put(request, response.clone()));
+            }
+          } catch (e) {
+            console.error('Failed to cache response:', e);
           }
           return response;
         })
@@ -86,13 +90,22 @@ self.addEventListener('fetch', event => {
     return;
   }
 
-  // Default: try network, fallback to cache
+  // Default: try network, fallback to cache (skip POST, DELETE, auth requests)
+  if (request.method === 'POST' || request.method === 'DELETE' || request.url.includes('auth')) {
+    event.respondWith(fetch(request));
+    return;
+  }
+
   event.respondWith(
     fetch(request)
       .then(response => {
-        if (response && response.status === 200) {
-          const cache = caches.open(RUNTIME_CACHE);
-          cache.then(c => c.put(request, response.clone()));
+        try {
+          if (response && response.status === 200 && response.clone) {
+            const cache = caches.open(RUNTIME_CACHE);
+            cache.then(c => c.put(request, response.clone()));
+          }
+        } catch (e) {
+          console.error('Failed to cache response:', e);
         }
         return response;
       })
