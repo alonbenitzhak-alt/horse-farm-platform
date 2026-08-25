@@ -1,8 +1,13 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
+import TodayDashboard from './pages/TodayDashboard';
 import './App.css';
+import './styles/today-dashboard.css';
 
 export default function App() {
   const [activeTab, setActiveTab] = useState('today');
+
+  const farmId = import.meta.env.VITE_FARM_ID || 'demo-farm';
+  const userId = import.meta.env.VITE_USER_ID;
 
   return (
     <div className="app">
@@ -13,10 +18,7 @@ export default function App() {
 
       <main className="app-main">
         {activeTab === 'today' && (
-          <div className="page">
-            <h2>Today</h2>
-            <p>Today's dashboard coming soon...</p>
-          </div>
+          <TodayDashboard farmId={farmId} currentUserId={userId} />
         )}
         {activeTab === 'calendar' && (
           <div className="page">

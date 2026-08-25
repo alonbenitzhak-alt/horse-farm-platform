@@ -410,26 +410,42 @@ export async function getTodayDashboard(farmId: string): Promise<TodayDashboard>
 export function subscribeToTasks(
   farmId: string,
   callback: (tasks: TaskWithDetails[]) => void
-): ReturnType<SupabaseClient['from']> {
+): ReturnType<SupabaseClient['channel']> {
   return getSupabaseClient()
-    .from('tasks')
-    .on('*', (payload) => {
-      // Refetch tasks on any change
-      getTasks(farmId).then(callback).catch(console.error);
-    })
+    .channel(`tasks:${farmId}`)
+    .on(
+      'postgres_changes',
+      {
+        event: '*',
+        schema: 'public',
+        table: 'tasks',
+        filter: `farm_id=eq.${farmId}`,
+      },
+      () => {
+        getTasks(farmId).then(callback).catch(console.error);
+      }
+    )
     .subscribe();
 }
 
 export function subscribeToEvents(
   farmId: string,
   callback: (events: EventWithAttendees[]) => void
-): ReturnType<SupabaseClient['from']> {
+): ReturnType<SupabaseClient['channel']> {
   return getSupabaseClient()
-    .from('events')
-    .on('*', (payload) => {
-      // Refetch events on any change
-      getEvents(farmId).then(callback).catch(console.error);
-    })
+    .channel(`events:${farmId}`)
+    .on(
+      'postgres_changes',
+      {
+        event: '*',
+        schema: 'public',
+        table: 'events',
+        filter: `farm_id=eq.${farmId}`,
+      },
+      () => {
+        getEvents(farmId).then(callback).catch(console.error);
+      }
+    )
     .subscribe();
 }
 
