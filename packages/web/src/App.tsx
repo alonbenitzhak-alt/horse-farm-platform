@@ -33,6 +33,7 @@ import './styles/rtl.css';
 
 function AppContent() {
   const [activeTab, setActiveTab] = useState('dashboard');
+  const [showAuthModal, setShowAuthModal] = useState(false);
   const [showRegister, setShowRegister] = useState(false);
   const [showWelcome, setShowWelcome] = useState(() => {
     return !localStorage.getItem('stableos-welcome-seen');
@@ -41,28 +42,17 @@ function AppContent() {
   const { isAuthenticated, userProfile, logout, refreshAuth } = useAuth();
 
   async function handleLoginSuccess() {
+    setShowAuthModal(false);
     await refreshAuth();
   }
 
   async function handleRegisterSuccess() {
+    setShowAuthModal(false);
     setShowRegister(false);
     await refreshAuth();
   }
 
-  if (!isAuthenticated) {
-    return showRegister ? (
-      <Register
-        onSuccess={handleRegisterSuccess}
-        onSwitchToLogin={() => setShowRegister(false)}
-      />
-    ) : (
-      <Login
-        onSuccess={handleLoginSuccess}
-        onSwitchToRegister={() => setShowRegister(true)}
-      />
-    );
-  }
-
+  const isDemo = !isAuthenticated;
   const farmId = userProfile?.farm_id || import.meta.env.VITE_FARM_ID || 'demo-farm';
   const userId = userProfile?.id;
 
@@ -72,13 +62,24 @@ function AppContent() {
         <img src="/assets/logo.png" alt="StableOS Logo" className="app-header-logo" />
         <div className="app-header-content">
           <h1>{t('appTitle')}</h1>
-          <p className="subtitle">{t('appSubtitle')}</p>
+          <p className="subtitle">{isDemo ? 'Demo Account' : t('appSubtitle')}</p>
         </div>
         <div className="app-header-user">
-          <span>{userProfile?.name}</span>
-          <button className="logout-button" onClick={logout} title={t('auth.logout')}>
-            ↪
-          </button>
+          {isDemo ? (
+            <button
+              className="login-button"
+              onClick={() => setShowAuthModal(true)}
+            >
+              התחבר / הרשם
+            </button>
+          ) : (
+            <>
+              <span>{userProfile?.name}</span>
+              <button className="logout-button" onClick={logout} title={t('auth.logout')}>
+                ↪
+              </button>
+            </>
+          )}
         </div>
       </header>
 
@@ -198,7 +199,31 @@ function AppContent() {
         </button>
       </nav>
 
-      {showWelcome && (
+      {showAuthModal && (
+        <div className="modal-overlay" onClick={() => setShowAuthModal(false)}>
+          <div className="modal auth-modal-overlay" onClick={e => e.stopPropagation()}>
+            <button
+              className="close-button"
+              onClick={() => setShowAuthModal(false)}
+            >
+              ✕
+            </button>
+            {showRegister ? (
+              <Register
+                onSuccess={handleRegisterSuccess}
+                onSwitchToLogin={() => setShowRegister(false)}
+              />
+            ) : (
+              <Login
+                onSuccess={handleLoginSuccess}
+                onSwitchToRegister={() => setShowRegister(true)}
+              />
+            )}
+          </div>
+        </div>
+      )}
+
+      {showWelcome && !isDemo && (
         <div className="modal-overlay" onClick={() => {
           setShowWelcome(false);
           localStorage.setItem('stableos-welcome-seen', 'true');
