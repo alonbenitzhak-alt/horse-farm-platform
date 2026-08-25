@@ -480,3 +480,50 @@ html[dir="rtl"] .record-notes {
 html[dir="rtl"] .record-actions {
   flex-direction: row-reverse;
 }
+
+/* Horse Form RTL */
+html[dir="rtl"] .photo-section {
+  text-align: center;
+}
+
+html[dir="rtl"] .form-section-title {
+  text-align: right;
+  border-bottom: 2px solid var(--color-accent);
+}
+
+html[dir="rtl"] .info-section {
+  text-align: right;
+}
+
+html[dir="rtl"] .info-section h3 {
+  text-align: right;
+  border-bottom: 2px solid var(--color-accent);
+}
+
+html[dir="rtl"] .info-grid {
+  direction: rtl;
+}
+
+html[dir="rtl"] .info-item {
+  text-align: right;
+}
+
+html[dir="rtl"] .health-item {
+  border-left: none;
+  border-right: 4px solid #10b981;
+  padding-left: 1rem;
+  padding-right: 0;
+  text-align: right;
+}
+
+html[dir="rtl"] .health-item strong {
+  text-align: right;
+}
+
+html[dir="rtl"] .contact-item {
+  border-left: none;
+  border-right: 4px solid #f59e0b;
+  padding-left: 0.75rem;
+  padding-right: 0;
+  text-align: right;
+}

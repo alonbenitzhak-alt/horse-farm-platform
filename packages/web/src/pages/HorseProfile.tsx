@@ -175,14 +175,111 @@ export default function HorseProfile({ horse, onBack }: HorseProfileProps) {
           ← {t('horseRoster.title')}
         </button>
         <div className="profile-title">
-          <div className="profile-emoji">🐎</div>
+          {horse.photo_url ? (
+            <img src={horse.photo_url} alt={horse.name} className="profile-photo" />
+          ) : (
+            <div className="profile-emoji">🐎</div>
+          )}
           <div className="profile-info">
             <h2>{horse.name}</h2>
             {horse.breed && <p className="profile-detail">Breed: {horse.breed}</p>}
             {horse.color && <p className="profile-detail">Color: {horse.color}</p>}
             {horse.age && <p className="profile-detail">Age: {horse.age} years</p>}
+            {horse.gender && <p className="profile-detail">Gender: {horse.gender}</p>}
           </div>
         </div>
+      </div>
+
+      {/* Detailed Info Sections */}
+      <div className="profile-sections">
+        {/* Physical Characteristics */}
+        {(horse.height || horse.weight) && (
+          <div className="info-section">
+            <h3>Physical Characteristics</h3>
+            <div className="info-grid">
+              {horse.height && <div className="info-item"><span className="label">Height:</span> {horse.height}</div>}
+              {horse.weight && <div className="info-item"><span className="label">Weight:</span> {horse.weight} kg</div>}
+            </div>
+          </div>
+        )}
+
+        {/* Identification */}
+        {(horse.microchip_id || horse.registration_number) && (
+          <div className="info-section">
+            <h3>Identification</h3>
+            <div className="info-grid">
+              {horse.microchip_id && <div className="info-item"><span className="label">Microchip:</span> {horse.microchip_id}</div>}
+              {horse.registration_number && <div className="info-item"><span className="label">Registration:</span> {horse.registration_number}</div>}
+            </div>
+          </div>
+        )}
+
+        {/* Training & Temperament */}
+        {(horse.training_level || horse.temperament) && (
+          <div className="info-section">
+            <h3>Training & Temperament</h3>
+            {horse.training_level && <p><strong>Training Level:</strong> {horse.training_level}</p>}
+            {horse.temperament && <p><strong>Temperament:</strong> {horse.temperament}</p>}
+          </div>
+        )}
+
+        {/* Health & Medical */}
+        {(horse.medical_conditions || horse.allergies || horse.medications || horse.diet_requirements) && (
+          <div className="info-section health-section">
+            <h3>Health & Medical</h3>
+            {horse.medical_conditions && (
+              <div className="health-item">
+                <strong>Medical Conditions:</strong>
+                <p>{horse.medical_conditions}</p>
+              </div>
+            )}
+            {horse.allergies && (
+              <div className="health-item">
+                <strong>Allergies:</strong>
+                <p>{horse.allergies}</p>
+              </div>
+            )}
+            {horse.medications && (
+              <div className="health-item">
+                <strong>Current Medications:</strong>
+                <p>{horse.medications}</p>
+              </div>
+            )}
+            {horse.diet_requirements && (
+              <div className="health-item">
+                <strong>Diet Requirements:</strong>
+                <p>{horse.diet_requirements}</p>
+              </div>
+            )}
+          </div>
+        )}
+
+        {/* Emergency & Vet Info */}
+        {(horse.emergency_contact || horse.vet_name) && (
+          <div className="info-section contact-section">
+            <h3>Emergency & Veterinary</h3>
+            {horse.emergency_contact && (
+              <div className="contact-item">
+                <strong>Emergency Contact:</strong> {horse.emergency_contact}
+                {horse.emergency_phone && <span className="phone"> - {horse.emergency_phone}</span>}
+              </div>
+            )}
+            {horse.vet_name && (
+              <div className="contact-item">
+                <strong>Veterinarian:</strong> {horse.vet_name}
+                {horse.vet_phone && <span className="phone"> - {horse.vet_phone}</span>}
+              </div>
+            )}
+          </div>
+        )}
+
+        {/* Notes */}
+        {horse.notes && (
+          <div className="info-section">
+            <h3>Notes</h3>
+            <p>{horse.notes}</p>
+          </div>
+        )}
       </div>
 
       {/* Health Records Section */}

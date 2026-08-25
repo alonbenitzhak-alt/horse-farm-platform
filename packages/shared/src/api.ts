@@ -17,7 +17,6 @@ import type {
   ActivityWithUser,
   TodayDashboard,
   HorseHealthRecord,
-  HorseHealthRecordWithHorse,
 } from './types';
 
 let supabaseClient: SupabaseClient | null = null;
