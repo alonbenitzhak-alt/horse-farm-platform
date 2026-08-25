@@ -436,7 +436,7 @@ export default function TaskManager({ farmId, currentUserId }: TaskManagerProps)
                       className="edit-button"
                       onClick={() => handleOpenForm(task)}
                       disabled={deletingId === task.id}
-                      title="Edit task"
+                      title={t('taskManager.editTask')}
                     >
                       ✎
                     </button>
@@ -444,7 +444,7 @@ export default function TaskManager({ farmId, currentUserId }: TaskManagerProps)
                       className="delete-button"
                       onClick={() => handleDelete(task.id, task.title)}
                       disabled={deletingId !== null}
-                      title="Delete task"
+                      title={t('taskManager.deleteConfirm')}
                     >
                       {deletingId === task.id ? '⏳' : '🗑️'}
                     </button>
