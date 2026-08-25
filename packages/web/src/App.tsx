@@ -4,11 +4,13 @@ import Calendar from './pages/Calendar';
 import TaskManager from './pages/TaskManager';
 import HorseRoster from './pages/HorseRoster';
 import PeopleRoster from './pages/PeopleRoster';
+import Settings from './pages/Settings';
 import './App.css';
 import './styles/today-dashboard.css';
 import './styles/calendar.css';
 import './styles/task-manager.css';
 import './styles/roster.css';
+import './styles/settings.css';
 
 export default function App() {
   const [activeTab, setActiveTab] = useState('today');
@@ -40,10 +42,7 @@ export default function App() {
           <PeopleRoster farmId={farmId} />
         )}
         {activeTab === 'settings' && (
-          <div className="page">
-            <h2>Settings</h2>
-            <p>Settings coming soon...</p>
-          </div>
+          <Settings farmId={farmId} />
         )}
       </main>
 
