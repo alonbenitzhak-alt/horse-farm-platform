@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import Dashboard from './pages/Dashboard';
 import TodayDashboard from './pages/TodayDashboard';
+import AdminDashboard from './pages/AdminDashboard';
 import Calendar from './pages/Calendar';
 import TaskManager from './pages/TaskManager';
 import TaskTemplates from './pages/TaskTemplates';
@@ -18,6 +19,7 @@ import { useTranslation } from './hooks/useTranslation';
 import './App.css';
 import './styles/dashboard.css';
 import './styles/today-dashboard.css';
+import './styles/admin-dashboard.css';
 import './styles/calendar.css';
 import './styles/task-manager.css';
 import './styles/task-templates.css';
@@ -87,6 +89,9 @@ function AppContent() {
         {activeTab === 'today' && (
           <TodayDashboard farmId={farmId} currentUserId={userId} />
         )}
+        {activeTab === 'admin' && (
+          <AdminDashboard farmId={farmId} />
+        )}
         {activeTab === 'calendar' && (
           <Calendar farmId={farmId} />
         )}
@@ -125,8 +130,15 @@ function AppContent() {
           className={`nav-button ${activeTab === 'today' ? 'active' : ''}`}
           onClick={() => setActiveTab('today')}
         >
-          <span className="nav-icon">📅</span>
-          <span className="nav-label">{t('nav.today')}</span>
+          <span className="nav-icon">📋</span>
+          <span className="nav-label">לוח העבודה</span>
+        </button>
+        <button
+          className={`nav-button ${activeTab === 'admin' ? 'active' : ''}`}
+          onClick={() => setActiveTab('admin')}
+        >
+          <span className="nav-icon">⚡</span>
+          <span className="nav-label">ניהול</span>
         </button>
         <button
           className={`nav-button ${activeTab === 'calendar' ? 'active' : ''}`}

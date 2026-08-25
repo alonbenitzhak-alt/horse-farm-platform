@@ -34,7 +34,6 @@ export default function Calendar({ farmId }: CalendarProps) {
 
       if (viewMode === 'month') {
         startDate = new Date(year, month, 1).toISOString().split('T')[0];
-        startDate = startDate.replace(/-/g, '-');
         endDate = new Date(year, month + 1, 0).toISOString().split('T')[0];
       } else {
         const weekStart = new Date(currentDate);
@@ -161,11 +160,14 @@ export default function Calendar({ farmId }: CalendarProps) {
         <div className="calendar-month">
           {/* Day headers */}
           <div className="calendar-weekdays">
-            {['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'].map(day => (
-              <div key={day} className="weekday-header">
-                {t(`calendar.day.${day.toLowerCase()}`)}
-              </div>
-            ))}
+            {Array.from({ length: 7 }).map((_, i) => {
+              const dayNames = ['sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday'];
+              return (
+                <div key={dayNames[i]} className="weekday-header">
+                  {t(`calendar.day.${dayNames[i]}`)}
+                </div>
+              );
+            })}
           </div>
 
           {/* Calendar grid */}
