@@ -3,6 +3,7 @@ import type { TaskWithDetails, Horse, Person } from '@stableos/shared';
 import { getTasks, createTask, updateTask, deleteTask, getHorses, getPeople } from '@stableos/shared';
 import { formatDate, formatTime, formatTaskStatus } from '@stableos/shared';
 import { success, error } from '../utils/toast';
+import { useTranslation } from '../hooks/useTranslation';
 
 interface TaskManagerProps {
   farmId: string;
@@ -10,6 +11,7 @@ interface TaskManagerProps {
 }
 
 export default function TaskManager({ farmId, currentUserId }: TaskManagerProps) {
+  const { t } = useTranslation();
   const [tasks, setTasks] = useState<TaskWithDetails[]>([]);
   const [horses, setHorses] = useState<Horse[]>([]);
   const [people, setPeople] = useState<Person[]>([]);
@@ -58,7 +60,8 @@ export default function TaskManager({ farmId, currentUserId }: TaskManagerProps)
       setHorses(horseData || []);
       setPeople(peopleData || []);
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to load data');
+      const errorMsg = err instanceof Error ? err.message : t('taskManager.failedToLoad');
+      setError(errorMsg);
       console.error('Error loading data:', err);
     } finally {
       setLoading(false);
@@ -96,10 +99,10 @@ export default function TaskManager({ farmId, currentUserId }: TaskManagerProps)
     const errors: Record<string, string> = {};
 
     if (!formData.title.trim()) {
-      errors.title = 'Task title is required';
+      errors.title = t('taskManager.titleRequired');
     }
     if (!formData.scheduled_date) {
-      errors.scheduled_date = 'Date is required';
+      errors.scheduled_date = t('taskManager.dateRequired');
     }
 
     setValidationErrors(errors);

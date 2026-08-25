@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from 'react';
 import type { TaskWithDetails, EventWithAttendees } from '@stableos/shared';
 import { getTodayDashboard, completeTask, subscribeToTasks, subscribeToEvents } from '@stableos/shared';
 import { formatTime, getEventTypeEmoji } from '@stableos/shared';
+import { useTranslation } from '../hooks/useTranslation';
 
 interface TodayDashboardProps {
   farmId: string;
@@ -9,6 +10,7 @@ interface TodayDashboardProps {
 }
 
 export default function TodayDashboard({ farmId, currentUserId }: TodayDashboardProps) {
+  const { t } = useTranslation();
   const [tasks, setTasks] = useState<TaskWithDetails[]>([]);
   const [events, setEvents] = useState<EventWithAttendees[]>([]);
   const [completionCount, setCompletionCount] = useState(0);

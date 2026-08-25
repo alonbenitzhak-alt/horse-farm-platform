@@ -2,12 +2,14 @@ import { useState, useEffect, useRef } from 'react';
 import type { Horse } from '@stableos/shared';
 import { getHorses, createHorse, updateHorse, deleteHorse, subscribeToHorses } from '@stableos/shared';
 import { success, error } from '../utils/toast';
+import { useTranslation } from '../hooks/useTranslation';
 
 interface HorseRosterProps {
   farmId: string;
 }
 
 export default function HorseRoster({ farmId }: HorseRosterProps) {
+  const { t } = useTranslation();
   const [horses, setHorses] = useState<Horse[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -46,7 +48,7 @@ export default function HorseRoster({ farmId }: HorseRosterProps) {
       const data = await getHorses(farmId);
       setHorses(data || []);
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to load horses');
+      setError(err instanceof Error ? err.message : t('horseRoster.failedToLoad'));
       console.error('Error loading horses:', err);
     } finally {
       setLoading(false);
@@ -78,10 +80,10 @@ export default function HorseRoster({ farmId }: HorseRosterProps) {
     const errors: Record<string, string> = {};
 
     if (!formData.name.trim()) {
-      errors.name = 'Horse name is required';
+      errors.name = t('horseRoster.nameRequired');
     }
     if (formData.age && (isNaN(parseInt(formData.age)) || parseInt(formData.age) < 0)) {
-      errors.age = 'Please enter a valid age';
+      errors.age = t('horseRoster.invalidAge');
     }
 
     setValidationErrors(errors);
@@ -116,11 +118,11 @@ export default function HorseRoster({ farmId }: HorseRosterProps) {
 
       setShowForm(false);
       setValidationErrors({});
-      success(editingHorse ? 'Horse updated successfully' : 'Horse added successfully');
+      success(editingHorse ? t('horseRoster.updatedSuccess') : t('horseRoster.addedSuccess'));
       loadHorses();
     } catch (err) {
       console.error('Error saving horse:', err);
-      const errorMsg = err instanceof Error ? err.message : 'Failed to save horse';
+      const errorMsg = err instanceof Error ? err.message : t('horseRoster.failedToSave');
       setError(errorMsg);
       error(errorMsg);
     } finally {
@@ -129,18 +131,18 @@ export default function HorseRoster({ farmId }: HorseRosterProps) {
   }
 
   async function handleDelete(horseId: string, horseName: string) {
-    if (!window.confirm(`Are you sure you want to delete ${horseName}? This action cannot be undone.`)) {
+    if (!window.confirm(t('horseRoster.deleteConfirm', { name: horseName }))) {
       return;
     }
 
     try {
       setDeletingId(horseId);
       await deleteHorse(horseId);
-      success(`${horseName} deleted successfully`);
+      success(t('horseRoster.deletedSuccess', { name: horseName }));
       loadHorses();
     } catch (err) {
       console.error('Error deleting horse:', err);
-      const errorMsg = err instanceof Error ? err.message : 'Failed to delete horse';
+      const errorMsg = err instanceof Error ? err.message : t('horseRoster.failedToDelete');
       setError(errorMsg);
       error(errorMsg);
     } finally {
@@ -158,9 +160,9 @@ export default function HorseRoster({ farmId }: HorseRosterProps) {
     <div className="roster">
       {/* Header */}
       <div className="roster-header">
-        <h2>🐎 Horses</h2>
+        <h2>{t('horseRoster.title')}</h2>
         <button className="create-button" onClick={() => handleOpenForm()}>
-          ➕ Add Horse
+          {t('horseRoster.addHorse')}
         </button>
       </div>
 
@@ -168,12 +170,12 @@ export default function HorseRoster({ farmId }: HorseRosterProps) {
         <div className="error-message">
           {error}
           <button onClick={loadHorses} className="retry-button">
-            Retry
+            {t('horseRoster.retry')}
           </button>
         </div>
       )}
 
-      {loading && <div className="loading">Loading horses...</div>}
+      {loading && <div className="loading">{t('horseRoster.loading')}</div>}
 
       {!loading && (
         <>
@@ -182,7 +184,7 @@ export default function HorseRoster({ farmId }: HorseRosterProps) {
             <div className="modal-overlay" onClick={() => setShowForm(false)}>
               <div className="modal" onClick={e => e.stopPropagation()}>
                 <div className="modal-header">
-                  <h3>{editingHorse ? 'Edit Horse' : 'Add Horse'}</h3>
+                  <h3>{editingHorse ? t('horseRoster.editHorse') : t('horseRoster.addNewHorse')}</h3>
                   <button
                     className="close-button"
                     onClick={() => setShowForm(false)}
@@ -193,7 +195,7 @@ export default function HorseRoster({ farmId }: HorseRosterProps) {
 
                 <form onSubmit={handleSubmit} className="form">
                   <div className="form-group">
-                    <label>Horse Name *</label>
+                    <label>{t('horseRoster.horseName')} *</label>
                     <input
                       type="text"
                       value={formData.name}
@@ -209,7 +211,7 @@ export default function HorseRoster({ farmId }: HorseRosterProps) {
 
                   <div className="form-row">
                     <div className="form-group">
-                      <label>Breed</label>
+                      <label>{t('horseRoster.breed')}</label>
                       <input
                         type="text"
                         value={formData.breed}
@@ -218,7 +220,7 @@ export default function HorseRoster({ farmId }: HorseRosterProps) {
                       />
                     </div>
                     <div className="form-group">
-                      <label>Color</label>
+                      <label>{t('horseRoster.color')}</label>
                       <input
                         type="text"
                         value={formData.color}
@@ -229,7 +231,7 @@ export default function HorseRoster({ farmId }: HorseRosterProps) {
                   </div>
 
                   <div className="form-group">
-                    <label>Age (years)</label>
+                    <label>{t('horseRoster.age')}</label>
                     <input
                       type="number"
                       value={formData.age}
@@ -251,14 +253,14 @@ export default function HorseRoster({ farmId }: HorseRosterProps) {
                       onClick={() => setShowForm(false)}
                       disabled={submitting}
                     >
-                      Cancel
+                      {t('horseRoster.cancel')}
                     </button>
                     <button
                       type="submit"
                       className="submit-button"
                       disabled={submitting}
                     >
-                      {submitting ? '⏳ Saving...' : editingHorse ? 'Update Horse' : 'Add Horse'}
+                      {submitting ? `⏳ ${t('horseRoster.saving')}` : editingHorse ? t('horseRoster.update') : t('horseRoster.add')}
                     </button>
                   </div>
                 </form>
@@ -272,7 +274,7 @@ export default function HorseRoster({ farmId }: HorseRosterProps) {
               <input
                 type="text"
                 className="search-input"
-                placeholder="🔍 Search by name, breed, or color..."
+                placeholder={t('horseRoster.searchPlaceholder')}
                 value={searchQuery}
                 onChange={e => setSearchQuery(e.target.value)}
               />
@@ -331,11 +333,11 @@ export default function HorseRoster({ farmId }: HorseRosterProps) {
             <div className="empty-state">
               <div className="empty-icon">🐎</div>
               <div className="empty-text">
-                {searchQuery ? 'No horses found' : 'No horses yet'}
+                {searchQuery ? t('horseRoster.notFound') : t('horseRoster.noHorses')}
               </div>
               {!searchQuery && (
                 <button className="create-button" onClick={() => handleOpenForm()}>
-                  ➕ Add Your First Horse
+                  {t('horseRoster.addFirstHorse')}
                 </button>
               )}
             </div>
@@ -346,7 +348,7 @@ export default function HorseRoster({ farmId }: HorseRosterProps) {
       {/* Refresh button */}
       <div className="refresh-button-container">
         <button onClick={loadHorses} className="refresh-button">
-          🔄 Refresh
+          🔄 {t('horseRoster.refresh')}
         </button>
       </div>
     </div>

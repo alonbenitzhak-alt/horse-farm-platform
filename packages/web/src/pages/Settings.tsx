@@ -1,35 +1,42 @@
 import { useState } from 'react';
+import { useTranslation } from '../hooks/useTranslation';
+import { useLanguage } from '../context/LanguageContext';
+import type { LanguageCode } from '../i18n/translations';
 
 interface SettingsProps {
   farmId: string;
 }
 
 export default function Settings({ farmId }: SettingsProps) {
+  const { t } = useTranslation();
+  const { language, setLanguage } = useLanguage();
   const [darkMode, setDarkMode] = useState(false);
 
   return (
     <div className="settings">
       {/* Header */}
       <div className="settings-header">
-        <h2>⚙️ Settings</h2>
+        <h2>⚙️ {t('settings.title')}</h2>
       </div>
 
       {/* Settings Sections */}
       <div className="settings-sections">
-        {/* App Info */}
+        {/* Language Settings */}
         <div className="settings-section">
-          <h3 className="section-title">📱 App Information</h3>
-          <div className="setting-item">
-            <label>App Name</label>
-            <span>StableOS</span>
-          </div>
-          <div className="setting-item">
-            <label>Version</label>
-            <span>0.1.0 MVP</span>
-          </div>
-          <div className="setting-item">
-            <label>Farm ID</label>
-            <span className="mono">{farmId}</span>
+          <h3 className="section-title">🌐 {t('settings.language')}</h3>
+          <div className="language-buttons">
+            <button
+              className={`language-button ${language === 'en' ? 'active' : ''}`}
+              onClick={() => setLanguage('en')}
+            >
+              {t('settings.English')}
+            </button>
+            <button
+              className={`language-button ${language === 'he' ? 'active' : ''}`}
+              onClick={() => setLanguage('he')}
+            >
+              {t('settings.Hebrew')}
+            </button>
           </div>
         </div>
 
@@ -38,7 +45,7 @@ export default function Settings({ farmId }: SettingsProps) {
           <h3 className="section-title">🎨 Display</h3>
           <div className="setting-item">
             <div className="setting-label">
-              <label>Dark Mode</label>
+              <label>{t('settings.darkMode')}</label>
               <p className="setting-description">Easier on the eyes in low light</p>
             </div>
             <input
