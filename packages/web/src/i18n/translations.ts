@@ -414,7 +414,7 @@ export const translations = {
 
     // Settings
     settings: {
-      title: '⚙️ הגדרות',
+      title: 'הגדרות',
       language: '🌐 שפה',
       English: 'English',
       Hebrew: 'עברית',
