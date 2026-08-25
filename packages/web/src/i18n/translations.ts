@@ -292,12 +292,31 @@ export const translations = {
 
     // Settings
     settings: {
-      title: 'הגדרות',
-      language: 'שפה',
+      title: '⚙️ הגדרות',
+      language: '🌐 שפה',
       English: 'English',
       Hebrew: 'עברית',
       darkMode: 'מצב אפל',
       notifications: 'התראות',
+      display: '🎨 תצוגה',
+      about: 'ℹ️ אודות',
+      development: '👨‍💻 פיתוח',
+      help: '❓ עזרה',
+      features: 'תכונות:',
+      gettingStarted: 'התחלה מהירה',
+      tips: 'טיפים',
+      easierOnEyes: 'קל יותר לעיניים בתאורה נמוכה',
+      mvpVersion: 'זוהי גרסת MVP (Minimum Viable Product). תכונות נוספות יגיעו בקרוב:',
+      recurringTasks: 'משימות חוזרות (מתבניות)',
+      activityHistory: 'היסטוריית פעילות/רישום ביקורת',
+      darkModeTheme: 'ערכת ערכים של מצב אפל',
+      pushNotifications: 'התראות דחיפה',
+      settingsConfiguration: 'הגדרות תצורה',
+      gettingStartedDesc: '1. הוסף חברי צוות בכרטיסיית <strong>צוות</strong><br />2. הוסף סוסים בכרטיסיית <strong>סוסים</strong><br />3. צור משימות בכרטיסיית <strong>משימות</strong><br />4. צפה במשימות של היום בכרטיסיית <strong>היום</strong><br />5. בדוק את <strong>לוח השנה</strong> לאירועים קרובים',
+      tipsContent: 'ניתן להקצות משימות לחברי צוות. ניתן לקשור משימות לסוס אחד או יותר. השתמש בלוח השנה לתכנון עתידות. כל השינויים מסתנכרנים בזמן אמת בכל ההתקנים. האפליקציה פועלת בלא חיבור ומסתנכרנת כאשר חזור לאינטרנט.',
+      stableOsDesc: '<strong>StableOS</strong> הוא פלטפורמה של ניהול חוות סוסים, התואמת למכשירים ניידים, שנועדה לענות על: "מה צריך לקרות בחווה היום, מי אחראי לכך, מתי זה צריך לקרות, והאם זה הושלם?"',
+      builtWith: 'בנוי עם <strong>React + Vite</strong> כ-PWA תגובתי, מופעל על ידי <strong>Supabase</strong> לסנכרון נתונים בזמן אמת.',
+      footer: 'בנוי לחוות משפחתיות. נתונים מסונכרנים בבטחה דרך Supabase.',
     },
 
     // Calendar

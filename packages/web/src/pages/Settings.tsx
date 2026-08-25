@@ -23,7 +23,7 @@ export default function Settings({ farmId }: SettingsProps) {
       <div className="settings-sections">
         {/* Language Settings */}
         <div className="settings-section">
-          <h3 className="section-title">🌐 {t('settings.language')}</h3>
+          <h3 className="section-title">{t('settings.language')}</h3>
           <div className="language-buttons">
             <button
               className={`language-button ${language === 'en' ? 'active' : ''}`}
@@ -42,11 +42,11 @@ export default function Settings({ farmId }: SettingsProps) {
 
         {/* Display Settings */}
         <div className="settings-section">
-          <h3 className="section-title">🎨 Display</h3>
+          <h3 className="section-title">{t('settings.display')}</h3>
           <div className="setting-item">
             <div className="setting-label">
               <label>{t('settings.darkMode')}</label>
-              <p className="setting-description">Easier on the eyes in low light</p>
+              <p className="setting-description">{t('settings.easierOnEyes')}</p>
             </div>
             <input
               type="checkbox"
@@ -60,28 +60,21 @@ export default function Settings({ farmId }: SettingsProps) {
 
         {/* About */}
         <div className="settings-section">
-          <h3 className="section-title">ℹ️ About</h3>
+          <h3 className="section-title">{t('settings.about')}</h3>
           <div className="about-content">
-            <p>
-              <strong>StableOS</strong> is a mobile-first Horse Farm Operations Platform designed
-              to answer: "What needs to happen at the farm today, who is responsible for it, when
-              does it need to happen, and has it been completed?"
-            </p>
-            <p>
-              Built with <strong>React + Vite</strong> as a responsive PWA, powered by
-              <strong> Supabase</strong> for real-time data sync.
-            </p>
+            <p dangerouslySetInnerHTML={{ __html: t('settings.stableOsDesc') }} />
+            <p dangerouslySetInnerHTML={{ __html: t('settings.builtWith') }} />
             <div className="features-list">
-              <h4>Features:</h4>
+              <h4>{t('settings.features')}</h4>
               <ul>
-                <li>📅 Today Dashboard - Central hub for daily tasks</li>
-                <li>📆 Calendar - Month and week views</li>
-                <li>✅ Task Management - Create, assign, and track tasks</li>
-                <li>🐎 Horse Roster - Manage all farm horses</li>
-                <li>👥 People Roster - Manage team members</li>
-                <li>🔄 Real-time Updates - Multi-user sync across devices</li>
-                <li>📱 Installable PWA - Works on phone, tablet, desktop</li>
-                <li>🌐 Offline Support - Service worker caching</li>
+                <li>📅 {language === 'en' ? 'Today Dashboard' : 'לוח בקרה היומי'} - {language === 'en' ? 'Central hub for daily tasks' : 'מרכז מרכזי למשימות יומיות'}</li>
+                <li>📆 {t('nav.calendar')} - {language === 'en' ? 'Month and week views' : 'תצוגות חודש ושבוע'}</li>
+                <li>✅ {t('nav.tasks')} - {language === 'en' ? 'Create, assign, and track tasks' : 'יצירה, הקצאה ותעקוב משימות'}</li>
+                <li>🐎 {t('nav.horses')} - {language === 'en' ? 'Manage all farm horses' : 'ניהול כל סוסי החווה'}</li>
+                <li>👥 {t('nav.people')} - {language === 'en' ? 'Manage team members' : 'ניהול חברי צוות'}</li>
+                <li>🔄 {language === 'en' ? 'Real-time Updates' : 'עדכונים בזמן אמת'} - {language === 'en' ? 'Multi-user sync across devices' : 'סנכרון מרובה משתמשים בהתקנים'}</li>
+                <li>📱 {language === 'en' ? 'Installable PWA' : 'PWA הניתן להתקנה'} - {language === 'en' ? 'Works on phone, tablet, desktop' : 'עובד בטלפון, טאבלט, שולחן עבודה'}</li>
+                <li>🌐 {language === 'en' ? 'Offline Support' : 'תמיכה בלא חיבור'} - {language === 'en' ? 'Service worker caching' : 'מטמון של עובד שירות'}</li>
               </ul>
             </div>
           </div>
@@ -89,45 +82,30 @@ export default function Settings({ farmId }: SettingsProps) {
 
         {/* Development */}
         <div className="settings-section">
-          <h3 className="section-title">👨‍💻 Development</h3>
+          <h3 className="section-title">{t('settings.development')}</h3>
           <div className="dev-info">
-            <p className="dev-note">
-              This is the <strong>MVP (Minimum Viable Product)</strong> version. Additional features
-              coming soon:
-            </p>
+            <p className="dev-note">{t('settings.mvpVersion')}</p>
             <ul>
-              <li>Recurring Tasks (from templates)</li>
-              <li>Activity History/Audit Log</li>
-              <li>Dark Mode Theme</li>
-              <li>Push Notifications</li>
-              <li>Settings Configuration</li>
+              <li>{t('settings.recurringTasks')}</li>
+              <li>{t('settings.activityHistory')}</li>
+              <li>{t('settings.darkModeTheme')}</li>
+              <li>{t('settings.pushNotifications')}</li>
+              <li>{t('settings.settingsConfiguration')}</li>
             </ul>
           </div>
         </div>
 
         {/* Help */}
         <div className="settings-section">
-          <h3 className="section-title">❓ Help</h3>
+          <h3 className="section-title">{t('settings.help')}</h3>
           <div className="help-content">
             <div className="help-item">
-              <h4>Getting Started</h4>
-              <p>
-                1. Add your team members in the <strong>People</strong> tab<br />
-                2. Add your horses in the <strong>Horses</strong> tab<br />
-                3. Create tasks in the <strong>Tasks</strong> tab<br />
-                4. View today's tasks in the <strong>Today</strong> tab<br />
-                5. Check the <strong>Calendar</strong> for upcoming events
-              </p>
+              <h4>{t('settings.gettingStarted')}</h4>
+              <p dangerouslySetInnerHTML={{ __html: t('settings.gettingStartedDesc') }} />
             </div>
             <div className="help-item">
-              <h4>Tips</h4>
-              <ul>
-                <li>Tasks can be assigned to team members</li>
-                <li>Tasks can be linked to one or more horses</li>
-                <li>Use the calendar to plan ahead</li>
-                <li>All changes sync in real-time across devices</li>
-                <li>The app works offline and syncs when back online</li>
-              </ul>
+              <h4>{t('settings.tips')}</h4>
+              <p>{t('settings.tipsContent')}</p>
             </div>
           </div>
         </div>
@@ -135,9 +113,7 @@ export default function Settings({ farmId }: SettingsProps) {
 
       {/* Footer */}
       <div className="settings-footer">
-        <p className="footer-text">
-          Built for family farms. Data synced securely via Supabase.
-        </p>
+        <p className="footer-text">{t('settings.footer')}</p>
       </div>
     </div>
   );

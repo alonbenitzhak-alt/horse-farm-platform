@@ -4,6 +4,24 @@ html[dir="rtl"] {
   direction: rtl;
 }
 
+/* App Header */
+html[dir="rtl"] .app-header {
+  flex-direction: row-reverse;
+  text-align: right;
+}
+
+html[dir="rtl"] .app-header-content {
+  text-align: right;
+}
+
+html[dir="rtl"] .app-header h1 {
+  text-align: right;
+}
+
+html[dir="rtl"] .app-header .subtitle {
+  text-align: right;
+}
+
 /* App Navigation */
 html[dir="rtl"] .app-nav {
   flex-direction: row-reverse;
@@ -163,4 +181,198 @@ html[dir="rtl"] .language-buttons {
 /* Refresh Button Container */
 html[dir="rtl"] .refresh-button-container {
   justify-content: center;
+}
+
+/* Today Dashboard */
+html[dir="rtl"] .today-header {
+  flex-direction: row-reverse;
+  text-align: right;
+}
+
+html[dir="rtl"] .today-date {
+  text-align: right;
+}
+
+html[dir="rtl"] .task-card {
+  flex-direction: row-reverse;
+  text-align: right;
+}
+
+html[dir="rtl"] .task-content {
+  text-align: right;
+}
+
+html[dir="rtl"] .task-main {
+  text-align: right;
+}
+
+html[dir="rtl"] .complete-button {
+  order: -1;
+  margin-left: 1rem;
+  margin-right: 0;
+}
+
+html[dir="rtl"] .event-card {
+  flex-direction: row-reverse;
+  text-align: right;
+}
+
+html[dir="rtl"] .event-emoji {
+  order: 1;
+  margin-left: 1rem;
+  margin-right: 0;
+}
+
+html[dir="rtl"] .event-content {
+  text-align: right;
+}
+
+/* Calendar */
+html[dir="rtl"] .calendar-header {
+  flex-direction: row-reverse;
+  text-align: right;
+}
+
+html[dir="rtl"] .calendar-title {
+  text-align: right;
+}
+
+html[dir="rtl"] .calendar-nav {
+  flex-direction: row-reverse;
+}
+
+html[dir="rtl"] .calendar-day {
+  text-align: right;
+}
+
+html[dir="rtl"] .day-number {
+  text-align: right;
+}
+
+html[dir="rtl"] .week-day {
+  text-align: right;
+}
+
+html[dir="rtl"] .week-day-header {
+  text-align: center;
+}
+
+html[dir="rtl"] .calendar-item {
+  flex-direction: row-reverse;
+  text-align: right;
+}
+
+html[dir="rtl"] .item-emoji {
+  order: 1;
+  margin-left: 0.5rem;
+  margin-right: 0;
+}
+
+html[dir="rtl"] .item-text {
+  text-align: right;
+}
+
+/* Task Manager Header */
+html[dir="rtl"] .task-manager-header {
+  flex-direction: row-reverse;
+  text-align: right;
+}
+
+html[dir="rtl"] .task-manager-header h2 {
+  text-align: right;
+  flex: 1;
+}
+
+html[dir="rtl"] .task-manager {
+  text-align: right;
+}
+
+/* Settings */
+html[dir="rtl"] .settings {
+  text-align: right;
+}
+
+html[dir="rtl"] .settings-section {
+  text-align: right;
+}
+
+html[dir="rtl"] .section-title {
+  text-align: right;
+}
+
+html[dir="rtl"] .setting-item {
+  text-align: right;
+  flex-direction: row-reverse;
+}
+
+html[dir="rtl"] .language-button {
+  text-align: center;
+}
+
+html[dir="rtl"] .features-list h4,
+html[dir="rtl"] .dev-info .dev-note,
+html[dir="rtl"] .help-item h4 {
+  text-align: right;
+}
+
+html[dir="rtl"] .features-list ul,
+html[dir="rtl"] .dev-info ul,
+html[dir="rtl"] .help-item ul {
+  text-align: right;
+  padding-right: 1.5rem;
+  padding-left: 0;
+}
+
+html[dir="rtl"] .features-list li,
+html[dir="rtl"] .dev-info li,
+html[dir="rtl"] .help-item li {
+  text-align: right;
+}
+
+html[dir="rtl"] .about-content p {
+  text-align: right;
+}
+
+/* Additional RTL fixes */
+html[dir="rtl"] .search-container {
+  margin: 0 auto 1rem auto;
+}
+
+html[dir="rtl"] .roster-header {
+  text-align: right;
+}
+
+html[dir="rtl"] .roster-header h2 {
+  text-align: right;
+}
+
+html[dir="rtl"] .create-button {
+  text-align: center;
+}
+
+html[dir="rtl"] .modal-header {
+  text-align: right;
+}
+
+html[dir="rtl"] .form-group {
+  text-align: right;
+}
+
+html[dir="rtl"] .form-group label {
+  text-align: right;
+}
+
+html[dir="rtl"] .form-group input,
+html[dir="rtl"] .form-group select,
+html[dir="rtl"] .form-group textarea {
+  text-align: right;
+  direction: rtl;
+}
+
+html[dir="rtl"] .task-manager {
+  text-align: right;
+}
+
+html[dir="rtl"] .task-item-meta {
+  flex-direction: row-reverse;
 }
