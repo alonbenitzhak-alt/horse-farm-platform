@@ -214,8 +214,3 @@ export interface HorseHealthRecord {
   created_at: string;
   updated_at: string;
 }
-
-// Health record with horse details (for display)
-export interface HorseHealthRecordWithHorse extends HorseHealthRecord {
-  horse?: Horse;
-}
