@@ -332,3 +332,47 @@ html[dir="rtl"] .help-item li {
 html[dir="rtl"] .about-content p {
   text-align: right;
 }
+
+/* Additional RTL fixes */
+html[dir="rtl"] .search-container {
+  margin: 0 auto 1rem auto;
+}
+
+html[dir="rtl"] .roster-header {
+  text-align: right;
+}
+
+html[dir="rtl"] .roster-header h2 {
+  text-align: right;
+}
+
+html[dir="rtl"] .create-button {
+  text-align: center;
+}
+
+html[dir="rtl"] .modal-header {
+  text-align: right;
+}
+
+html[dir="rtl"] .form-group {
+  text-align: right;
+}
+
+html[dir="rtl"] .form-group label {
+  text-align: right;
+}
+
+html[dir="rtl"] .form-group input,
+html[dir="rtl"] .form-group select,
+html[dir="rtl"] .form-group textarea {
+  text-align: right;
+  direction: rtl;
+}
+
+html[dir="rtl"] .task-manager {
+  text-align: right;
+}
+
+html[dir="rtl"] .task-item-meta {
+  flex-direction: row-reverse;
+}
