@@ -577,6 +577,131 @@ export function subscribeToHorses(
 // Authentication & User Management
 // ============================================================================
 
+async function createDemoData(farmId: string): Promise<void> {
+  const client = getSupabaseClient();
+
+  const demoHorses = [
+    {
+      farm_id: farmId,
+      name: 'סטאר - Star',
+      breed: 'Thoroughbred',
+      color: 'Bay',
+      age: 5,
+      gender: 'female',
+      is_active: true,
+    },
+    {
+      farm_id: farmId,
+      name: 'פרינס - Prince',
+      breed: 'Arabian',
+      color: 'Chestnut',
+      age: 7,
+      gender: 'male',
+      is_active: true,
+    },
+    {
+      farm_id: farmId,
+      name: 'לונה - Luna',
+      breed: 'Quarter Horse',
+      color: 'Gray',
+      age: 4,
+      gender: 'female',
+      is_active: true,
+    },
+  ];
+
+  const { data: insertedHorses, error: horsesError } = await client
+    .from('horses')
+    .insert(demoHorses)
+    .select();
+
+  if (horsesError) {
+    console.error('Failed to create demo horses:', horsesError);
+    return;
+  }
+
+  if (!insertedHorses || insertedHorses.length === 0) return;
+
+  const today = new Date().toISOString().split('T')[0];
+  const tomorrow = new Date(Date.now() + 86400000).toISOString().split('T')[0];
+  const nextWeek = new Date(Date.now() + 7 * 86400000).toISOString().split('T')[0];
+
+  const demoTasks = [
+    {
+      farm_id: farmId,
+      title: 'האכלה בוקר',
+      description: 'האכל את כל הסוסים בשעה 7:00 בבוקר',
+      scheduled_date: today,
+      scheduled_time: '07:00',
+      status: 'pending',
+    },
+    {
+      farm_id: farmId,
+      title: 'ניקוי הסטבל',
+      description: 'נקה את כל קומות הסטבל וחלף סחובה',
+      scheduled_date: today,
+      scheduled_time: '08:00',
+      status: 'pending',
+    },
+    {
+      farm_id: farmId,
+      title: 'תרגול עם סטאר',
+      description: 'תרגול רכיבה עם סטאר במגרש',
+      scheduled_date: today,
+      scheduled_time: '10:00',
+      status: 'pending',
+    },
+    {
+      farm_id: farmId,
+      title: 'בדיקת בריאות',
+      description: 'בדוק את בריאות כל הסוסים - טמפרטורה, דופק, נשימה',
+      scheduled_date: tomorrow,
+      scheduled_time: '09:00',
+      status: 'pending',
+    },
+    {
+      farm_id: farmId,
+      title: 'טרימינג כפות',
+      description: 'קצץ כפות לכל הסוסים',
+      scheduled_date: nextWeek,
+      scheduled_time: '14:00',
+      status: 'pending',
+    },
+  ];
+
+  const { data: insertedTasks, error: tasksError } = await client
+    .from('tasks')
+    .insert(demoTasks)
+    .select();
+
+  if (tasksError) {
+    console.error('Failed to create demo tasks:', tasksError);
+    return;
+  }
+
+  if (!insertedTasks || insertedTasks.length < 3) return;
+
+  const taskHorseLinks = [
+    { task_id: insertedTasks[0].id, horse_id: insertedHorses[0].id },
+    { task_id: insertedTasks[0].id, horse_id: insertedHorses[1].id },
+    { task_id: insertedTasks[0].id, horse_id: insertedHorses[2].id },
+    { task_id: insertedTasks[1].id, horse_id: insertedHorses[0].id },
+    { task_id: insertedTasks[1].id, horse_id: insertedHorses[1].id },
+    { task_id: insertedTasks[1].id, horse_id: insertedHorses[2].id },
+    { task_id: insertedTasks[2].id, horse_id: insertedHorses[0].id },
+    { task_id: insertedTasks[3].id, horse_id: insertedHorses[0].id },
+    { task_id: insertedTasks[3].id, horse_id: insertedHorses[1].id },
+  ];
+
+  const { error: linkError } = await client
+    .from('task_horses')
+    .insert(taskHorseLinks);
+
+  if (linkError) {
+    console.error('Failed to link demo tasks to horses:', linkError);
+  }
+}
+
 export async function registerUser(
   email: string,
   password: string,
@@ -615,6 +740,10 @@ export async function registerUser(
     ]);
 
   if (profileError) throw profileError;
+
+  await createDemoData(farm.id).catch(err => {
+    console.error('Failed to create demo data:', err);
+  });
 
   return {
     user: {
