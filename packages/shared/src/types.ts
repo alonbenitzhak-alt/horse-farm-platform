@@ -3,6 +3,29 @@
  * Shared across mobile and web applications
  */
 
+// Auth & User Management
+export type UserRole = 'owner' | 'staff' | 'viewer';
+
+export interface AuthUser {
+  id: string;
+  email: string;
+  created_at: string;
+}
+
+export interface UserProfile {
+  id: string;
+  user_id: string;
+  farm_id: string;
+  name: string;
+  role: UserRole;
+  email: string;
+  phone?: string;
+  photo_url?: string;
+  is_active: boolean;
+  created_at: string;
+  updated_at: string;
+}
+
 // Farm
 export interface Farm {
   id: string;

@@ -6,8 +6,40 @@ export const translations = {
     appTitle: 'StableOS',
     appSubtitle: 'Farm Operations Dashboard',
 
+    // Authentication
+    auth: {
+      loginSubtitle: 'Welcome to StableOS',
+      registerSubtitle: 'Create Your StableOS Account',
+      login: 'Login',
+      register: 'Register',
+      logout: 'Logout',
+      loggingIn: 'Logging in...',
+      registering: 'Registering...',
+      email: 'Email Address',
+      emailPlaceholder: 'you@example.com',
+      password: 'Password',
+      passwordPlaceholder: 'Enter your password',
+      confirmPassword: 'Confirm Password',
+      confirmPasswordPlaceholder: 'Confirm your password',
+      name: 'Full Name',
+      namePlaceholder: 'Your full name',
+      farmName: 'Farm Name',
+      farmNamePlaceholder: 'Your farm name',
+      requiredFields: 'Please fill in all required fields',
+      invalidEmail: 'Please enter a valid email address',
+      passwordMismatch: 'Passwords do not match',
+      passwordTooShort: 'Password must be at least 6 characters',
+      loginSuccess: 'Successfully logged in!',
+      loginFailed: 'Login failed. Please check your credentials.',
+      registerSuccess: 'Successfully registered! You can now login.',
+      registerFailed: 'Registration failed. Please try again.',
+      noAccount: 'Don\'t have an account?',
+      hasAccount: 'Already have an account?',
+    },
+
     // Navigation
     nav: {
+      dashboard: 'Dashboard',
       today: 'Today',
       calendar: 'Calendar',
       tasks: 'Tasks',
@@ -209,6 +241,23 @@ export const translations = {
       noItems: 'No tasks or events',
     },
 
+    // Dashboard
+    dashboard: {
+      title: 'Dashboard',
+      loading: 'Loading dashboard...',
+      retry: 'Retry',
+      refresh: 'Refresh',
+      horses: 'Horses',
+      totalTasks: 'Total Tasks',
+      completedTasks: 'Completed',
+      upcomingEvents: 'Upcoming Events',
+      teamMembers: 'Team Members',
+      completion: 'Completion Rate',
+      taskProgress: 'Task Progress',
+      of: 'of',
+      tasksCompleted: 'tasks completed',
+    },
+
     // Today Dashboard
     todayDashboard: {
       title: 'Today Dashboard',
@@ -233,8 +282,40 @@ export const translations = {
     appTitle: 'StableOS',
     appSubtitle: 'לוח בקרה לניהול החווה',
 
+    // Authentication
+    auth: {
+      loginSubtitle: 'ברוכים הבאים ל-StableOS',
+      registerSubtitle: 'צור את חשבון StableOS שלך',
+      login: 'התחברות',
+      register: 'הרשמה',
+      logout: 'התנתקות',
+      loggingIn: 'מתחבר...',
+      registering: 'מירשם...',
+      email: 'כתובת דוא"ל',
+      emailPlaceholder: 'you@example.com',
+      password: 'סיסמא',
+      passwordPlaceholder: 'הזן את הסיסמה שלך',
+      confirmPassword: 'אשר סיסמא',
+      confirmPasswordPlaceholder: 'אשר את הסיסמה שלך',
+      name: 'שם מלא',
+      namePlaceholder: 'שמך המלא',
+      farmName: 'שם החווה',
+      farmNamePlaceholder: 'שם החווה שלך',
+      requiredFields: 'אנא מלא את כל השדות הנדרשים',
+      invalidEmail: 'אנא הזן כתובת דוא"ל תקינה',
+      passwordMismatch: 'הסיסמאות אינן תואמות',
+      passwordTooShort: 'הסיסמה חייבת להיות לפחות 6 תווים',
+      loginSuccess: 'התחברת בהצלחה!',
+      loginFailed: 'התחברות נכשלה. אנא בדוק את בעיות הגישה שלך.',
+      registerSuccess: 'הרשמה בוצעה בהצלחה! כעת תוכל להתחבר.',
+      registerFailed: 'הרשמה נכשלה. אנא נסה שוב.',
+      noAccount: 'אין לך חשבון?',
+      hasAccount: 'יש לך כבר חשבון?',
+    },
+
     // Navigation
     nav: {
+      dashboard: 'לוח בקרה',
       today: 'היום',
       calendar: 'לוח שנה',
       tasks: 'משימות',
@@ -453,6 +534,23 @@ export const translations = {
       failedToLoad: 'כשל בטעינת לוח השנה',
       retry: 'נסה שנית',
       noItems: 'אין משימות או אירועים',
+    },
+
+    // Dashboard
+    dashboard: {
+      title: 'לוח בקרה',
+      loading: 'טוען לוח בקרה...',
+      retry: 'נסה שנית',
+      refresh: 'רענן',
+      horses: 'סוסים',
+      totalTasks: 'סך הכל משימות',
+      completedTasks: 'הושלם',
+      upcomingEvents: 'אירועים קרובים',
+      teamMembers: 'חברי צוות',
+      completion: 'שיעור הביצוע',
+      taskProgress: 'התקדמות המשימות',
+      of: 'מתוך',
+      tasksCompleted: 'משימות הושלמו',
     },
 
     // Today Dashboard

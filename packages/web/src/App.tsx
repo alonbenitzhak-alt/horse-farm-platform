@@ -1,14 +1,19 @@
 import { useState } from 'react';
+import Dashboard from './pages/Dashboard';
 import TodayDashboard from './pages/TodayDashboard';
 import Calendar from './pages/Calendar';
 import TaskManager from './pages/TaskManager';
 import HorseRoster from './pages/HorseRoster';
 import PeopleRoster from './pages/PeopleRoster';
 import Settings from './pages/Settings';
+import Login from './pages/Login';
+import Register from './pages/Register';
 import Toast from './components/Toast';
+import { AuthProvider, useAuth } from './context/AuthContext';
 import { LanguageProvider } from './context/LanguageContext';
 import { useTranslation } from './hooks/useTranslation';
 import './App.css';
+import './styles/dashboard.css';
 import './styles/today-dashboard.css';
 import './styles/calendar.css';
 import './styles/task-manager.css';
@@ -19,11 +24,27 @@ import './styles/toast.css';
 import './styles/rtl.css';
 
 function AppContent() {
-  const [activeTab, setActiveTab] = useState('today');
+  const [activeTab, setActiveTab] = useState('dashboard');
+  const [showRegister, setShowRegister] = useState(false);
   const { t } = useTranslation();
+  const { isAuthenticated, userProfile, logout } = useAuth();
 
-  const farmId = import.meta.env.VITE_FARM_ID || 'demo-farm';
-  const userId = import.meta.env.VITE_USER_ID;
+  if (!isAuthenticated) {
+    return showRegister ? (
+      <Register
+        onSuccess={() => setShowRegister(false)}
+        onSwitchToLogin={() => setShowRegister(false)}
+      />
+    ) : (
+      <Login
+        onSuccess={() => {}}
+        onSwitchToRegister={() => setShowRegister(true)}
+      />
+    );
+  }
+
+  const farmId = userProfile?.farm_id || import.meta.env.VITE_FARM_ID || 'demo-farm';
+  const userId = userProfile?.id;
 
   return (
     <div className="app">
@@ -33,9 +54,18 @@ function AppContent() {
           <h1>{t('appTitle')}</h1>
           <p className="subtitle">{t('appSubtitle')}</p>
         </div>
+        <div className="app-header-user">
+          <span>{userProfile?.name}</span>
+          <button className="logout-button" onClick={logout} title={t('auth.logout')}>
+            🚪
+          </button>
+        </div>
       </header>
 
       <main className="app-main">
+        {activeTab === 'dashboard' && (
+          <Dashboard farmId={farmId} />
+        )}
         {activeTab === 'today' && (
           <TodayDashboard farmId={farmId} currentUserId={userId} />
         )}
@@ -57,6 +87,13 @@ function AppContent() {
       </main>
 
       <nav className="app-nav">
+        <button
+          className={`nav-button ${activeTab === 'dashboard' ? 'active' : ''}`}
+          onClick={() => setActiveTab('dashboard')}
+          title={t('nav.dashboard')}
+        >
+          📊
+        </button>
         <button
           className={`nav-button ${activeTab === 'today' ? 'active' : ''}`}
           onClick={() => setActiveTab('today')}
@@ -109,7 +146,9 @@ function AppContent() {
 export default function App() {
   return (
     <LanguageProvider>
-      <AppContent />
+      <AuthProvider>
+        <AppContent />
+      </AuthProvider>
     </LanguageProvider>
   );
 }

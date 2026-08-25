@@ -5,6 +5,8 @@
 
 import { createClient, SupabaseClient } from '@supabase/supabase-js';
 import type {
+  AuthUser,
+  UserProfile,
   Farm,
   Person,
   Horse,
@@ -593,6 +595,126 @@ export function subscribeToHorses(
       }
     )
     .subscribe();
+}
+
+// ============================================================================
+// Authentication & User Management
+// ============================================================================
+
+export async function registerUser(
+  email: string,
+  password: string,
+  name: string,
+  farmName: string
+): Promise<{ user: AuthUser; farm: Farm }> {
+  const client = getSupabaseClient();
+
+  const { data: authData, error: authError } = await client.auth.signUp({
+    email,
+    password,
+  });
+
+  if (authError) throw authError;
+  if (!authData.user) throw new Error('Failed to create user');
+
+  const { data: farm, error: farmError } = await client
+    .from('farms')
+    .insert([{ name: farmName }])
+    .select()
+    .single();
+
+  if (farmError) throw farmError;
+
+  const { error: profileError } = await client
+    .from('user_profiles')
+    .insert([
+      {
+        user_id: authData.user.id,
+        farm_id: farm.id,
+        name,
+        email,
+        role: 'owner',
+        is_active: true,
+      },
+    ]);
+
+  if (profileError) throw profileError;
+
+  return {
+    user: {
+      id: authData.user.id,
+      email: authData.user.email!,
+      created_at: authData.user.created_at,
+    },
+    farm,
+  };
+}
+
+export async function loginUser(email: string, password: string): Promise<AuthUser> {
+  const { data, error } = await getSupabaseClient().auth.signInWithPassword({
+    email,
+    password,
+  });
+
+  if (error) throw error;
+  if (!data.user) throw new Error('Failed to login');
+
+  return {
+    id: data.user.id,
+    email: data.user.email!,
+    created_at: data.user.created_at,
+  };
+}
+
+export async function logoutUser(): Promise<void> {
+  const { error } = await getSupabaseClient().auth.signOut();
+  if (error) throw error;
+}
+
+export async function getCurrentUser(): Promise<AuthUser | null> {
+  const { data } = await getSupabaseClient().auth.getUser();
+  if (!data.user) return null;
+
+  return {
+    id: data.user.id,
+    email: data.user.email!,
+    created_at: data.user.created_at,
+  };
+}
+
+export async function getUserProfile(userId: string): Promise<UserProfile | null> {
+  const { data, error } = await getSupabaseClient()
+    .from('user_profiles')
+    .select('*')
+    .eq('user_id', userId)
+    .single();
+
+  if (error) throw error;
+  return data;
+}
+
+export async function updateUserProfile(userId: string, updates: Partial<UserProfile>): Promise<UserProfile> {
+  const { data, error } = await getSupabaseClient()
+    .from('user_profiles')
+    .update({ ...updates, updated_at: new Date().toISOString() })
+    .eq('user_id', userId)
+    .select()
+    .single();
+
+  if (error) throw error;
+  return data;
+}
+
+export async function getFarmUsers(farmId: string): Promise<UserProfile[]> {
+  const { data, error } = await getSupabaseClient()
+    .from('user_profiles')
+    .select('*')
+    .eq('farm_id', farmId)
+    .eq('is_active', true)
+    .order('name');
+
+  if (error) throw error;
+  return data || [];
 }
 
 // Type alias for convenience
