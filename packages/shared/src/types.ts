@@ -237,3 +237,42 @@ export interface HorseHealthRecord {
   created_at: string;
   updated_at: string;
 }
+
+// Expense Types
+export type ExpenseCategory = 'feed' | 'veterinary' | 'farrier' | 'equipment' | 'facility' | 'training' | 'transport' | 'other';
+
+export interface Expense {
+  id: string;
+  farm_id: string;
+  horse_id?: string;
+  category: ExpenseCategory;
+  amount: number;
+  currency?: string; // USD, EUR, ILS, etc.
+  description?: string;
+  expense_date: string; // YYYY-MM-DD
+  notes?: string;
+  created_by?: string;
+  created_at: string;
+  updated_at: string;
+}
+
+// Analytics Dashboard
+export interface ExpenseAnalytics {
+  totalExpenses: number;
+  byCategory: Record<ExpenseCategory, number>;
+  byMonth: Record<string, number>;
+  averagePerDay: number;
+  largestExpense: { amount: number; description?: string };
+  dateRange: { start: string; end: string };
+}
+
+export interface FarmAnalytics {
+  totalHorses: number;
+  totalStaff: number;
+  totalTasks: number;
+  completedTasksThisMonth: number;
+  averageTaskCompletionRate: number;
+  totalHealthRecords: number;
+  upcomingMaintenance: number;
+  dateRange: { start: string; end: string };
+}

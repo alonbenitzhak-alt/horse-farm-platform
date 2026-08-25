@@ -19,6 +19,9 @@ import type {
   ActivityWithUser,
   TodayDashboard,
   HorseHealthRecord,
+  Expense,
+  ExpenseAnalytics,
+  FarmAnalytics,
 } from './types';
 
 let supabaseClient: SupabaseClient | null = null;
@@ -785,4 +788,127 @@ export async function generateRecurringTasksFromTemplate(
 
   if (error) throw error;
   return data || [];
+}
+
+// Expense Management
+export async function getExpenses(farmId: string, filters?: { startDate?: string; endDate?: string; category?: string }): Promise<Expense[]> {
+  let query = getSupabaseClient()
+    .from('expenses')
+    .select('*')
+    .eq('farm_id', farmId);
+
+  if (filters?.startDate) {
+    query = query.gte('expense_date', filters.startDate);
+  }
+
+  if (filters?.endDate) {
+    query = query.lte('expense_date', filters.endDate);
+  }
+
+  if (filters?.category) {
+    query = query.eq('category', filters.category);
+  }
+
+  const { data, error } = await query.order('expense_date', { ascending: false });
+
+  if (error) throw error;
+  return data || [];
+}
+
+export async function createExpense(expense: Omit<Expense, 'id' | 'created_at' | 'updated_at'>): Promise<Expense> {
+  const { data, error } = await getSupabaseClient()
+    .from('expenses')
+    .insert([expense])
+    .select()
+    .single();
+
+  if (error) throw error;
+  return data;
+}
+
+export async function updateExpense(expenseId: string, updates: Partial<Omit<Expense, 'id' | 'created_at' | 'updated_at'>>): Promise<Expense> {
+  const { data, error } = await getSupabaseClient()
+    .from('expenses')
+    .update({ ...updates, updated_at: new Date().toISOString() })
+    .eq('id', expenseId)
+    .select()
+    .single();
+
+  if (error) throw error;
+  return data;
+}
+
+export async function deleteExpense(expenseId: string): Promise<void> {
+  const { error } = await getSupabaseClient()
+    .from('expenses')
+    .delete()
+    .eq('id', expenseId);
+
+  if (error) throw error;
+}
+
+// Analytics Functions
+export async function getExpenseAnalytics(farmId: string, startDate?: string, endDate?: string): Promise<ExpenseAnalytics> {
+  const expenses = await getExpenses(farmId, { startDate, endDate });
+
+  const totalExpenses = expenses.reduce((sum, e) => sum + e.amount, 0);
+
+  const byCategory: Record<string, number> = {};
+  expenses.forEach(exp => {
+    byCategory[exp.category] = (byCategory[exp.category] || 0) + exp.amount;
+  });
+
+  const byMonth: Record<string, number> = {};
+  expenses.forEach(exp => {
+    const month = exp.expense_date.substring(0, 7);
+    byMonth[month] = (byMonth[month] || 0) + exp.amount;
+  });
+
+  const daysDiff = startDate && endDate
+    ? Math.ceil((new Date(endDate).getTime() - new Date(startDate).getTime()) / (1000 * 60 * 60 * 24))
+    : 30;
+
+  return {
+    totalExpenses,
+    byCategory,
+    byMonth,
+    averagePerDay: daysDiff > 0 ? totalExpenses / daysDiff : 0,
+    largestExpense: expenses.length > 0 ? { amount: Math.max(...expenses.map(e => e.amount)), description: expenses.find(e => e.amount === Math.max(...expenses.map(x => x.amount)))?.description } : { amount: 0 },
+    dateRange: { start: startDate || new Date().toISOString().split('T')[0], end: endDate || new Date().toISOString().split('T')[0] },
+  };
+}
+
+export async function getFarmAnalytics(farmId: string): Promise<FarmAnalytics> {
+  const [horses, people, tasks, healthRecords] = await Promise.all([
+    getHorses(farmId),
+    getFarmUsers(farmId),
+    getTasks(farmId),
+    getHorseHealthRecords(farmId),
+  ]);
+
+  const now = new Date();
+  const monthStart = new Date(now.getFullYear(), now.getMonth(), 1);
+  const monthEnd = new Date(now.getFullYear(), now.getMonth() + 1, 0);
+
+  const completedThisMonth = tasks.filter(t => {
+    if (!t.completed_at) return false;
+    const completed = new Date(t.completed_at);
+    return completed >= monthStart && completed <= monthEnd;
+  }).length;
+
+  const completedRate = tasks.length > 0 ? (tasks.filter(t => t.status === 'completed').length / tasks.length) * 100 : 0;
+
+  return {
+    totalHorses: horses?.length || 0,
+    totalStaff: people?.length || 0,
+    totalTasks: tasks?.length || 0,
+    completedTasksThisMonth: completedThisMonth,
+    averageTaskCompletionRate: Math.round(completedRate),
+    totalHealthRecords: healthRecords?.length || 0,
+    upcomingMaintenance: tasks?.filter(t => {
+      const date = new Date(t.scheduled_date);
+      return date >= now && date <= new Date(now.getTime() + 30 * 24 * 60 * 60 * 1000) && t.status !== 'completed';
+    }).length || 0,
+    dateRange: { start: new Date().toISOString().split('T')[0], end: new Date().toISOString().split('T')[0] },
+  };
 }

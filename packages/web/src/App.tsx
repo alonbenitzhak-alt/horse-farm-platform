@@ -4,6 +4,8 @@ import TodayDashboard from './pages/TodayDashboard';
 import Calendar from './pages/Calendar';
 import TaskManager from './pages/TaskManager';
 import TaskTemplates from './pages/TaskTemplates';
+import Expenses from './pages/Expenses';
+import Analytics from './pages/Analytics';
 import HorseRoster from './pages/HorseRoster';
 import PeopleRoster from './pages/PeopleRoster';
 import Settings from './pages/Settings';
@@ -19,6 +21,8 @@ import './styles/today-dashboard.css';
 import './styles/calendar.css';
 import './styles/task-manager.css';
 import './styles/task-templates.css';
+import './styles/expenses.css';
+import './styles/analytics.css';
 import './styles/roster.css';
 import './styles/settings.css';
 import './styles/horse-profile.css';
@@ -80,6 +84,12 @@ function AppContent() {
         {activeTab === 'templates' && (
           <TaskTemplates farmId={farmId} />
         )}
+        {activeTab === 'expenses' && (
+          <Expenses farmId={farmId} />
+        )}
+        {activeTab === 'analytics' && (
+          <Analytics farmId={farmId} />
+        )}
         {activeTab === 'horses' && (
           <HorseRoster farmId={farmId} />
         )}
@@ -126,6 +136,20 @@ function AppContent() {
           title={t('nav.templates')}
         >
           📋
+        </button>
+        <button
+          className={`nav-button ${activeTab === 'expenses' ? 'active' : ''}`}
+          onClick={() => setActiveTab('expenses')}
+          title={t('nav.expenses')}
+        >
+          💰
+        </button>
+        <button
+          className={`nav-button ${activeTab === 'analytics' ? 'active' : ''}`}
+          onClick={() => setActiveTab('analytics')}
+          title={t('nav.analytics')}
+        >
+          📊
         </button>
         <button
           className={`nav-button ${activeTab === 'horses' ? 'active' : ''}`}
