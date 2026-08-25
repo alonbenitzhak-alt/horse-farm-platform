@@ -577,6 +577,12 @@ export function subscribeToHorses(
 // Authentication & User Management
 // ============================================================================
 
+function generateFarmCode(): string {
+  const timestamp = Date.now().toString(36).toUpperCase().slice(-4);
+  const random = Math.random().toString(36).substring(2, 7).toUpperCase();
+  return `FARM-${timestamp}${random}`;
+}
+
 async function createDemoData(farmId: string): Promise<void> {
   const client = getSupabaseClient();
 
@@ -718,9 +724,11 @@ export async function registerUser(
   if (authError) throw authError;
   if (!authData.user) throw new Error('Failed to create user');
 
+  const farmCode = generateFarmCode();
+
   const { data: farm, error: farmError } = await client
     .from('farms')
-    .insert([{ name: farmName }])
+    .insert([{ name: farmName, farm_code: farmCode }])
     .select()
     .single();
 
@@ -752,6 +760,57 @@ export async function registerUser(
       created_at: authData.user.created_at,
     },
     farm,
+  };
+}
+
+export async function joinFarmWithCode(
+  email: string,
+  password: string,
+  name: string,
+  farmCode: string,
+  role: 'manager' | 'staff'
+): Promise<{ user: AuthUser; farm: Farm }> {
+  const client = getSupabaseClient();
+
+  const { data: authData, error: authError } = await client.auth.signUp({
+    email,
+    password,
+  });
+
+  if (authError) throw authError;
+  if (!authData.user) throw new Error('Failed to create user');
+
+  const { data: farms, error: farmError } = await client
+    .from('farms')
+    .select('*')
+    .eq('farm_code', farmCode)
+    .single();
+
+  if (farmError) throw new Error('Farm code not found or invalid');
+  if (!farms) throw new Error('Farm not found');
+
+  const { error: profileError } = await client
+    .from('user_profiles')
+    .insert([
+      {
+        user_id: authData.user.id,
+        farm_id: farms.id,
+        name,
+        email,
+        role: role === 'manager' ? 'manager' : 'staff',
+        is_active: true,
+      },
+    ]);
+
+  if (profileError) throw profileError;
+
+  return {
+    user: {
+      id: authData.user.id,
+      email: authData.user.email!,
+      created_at: authData.user.created_at,
+    },
+    farm: farms,
   };
 }
 
