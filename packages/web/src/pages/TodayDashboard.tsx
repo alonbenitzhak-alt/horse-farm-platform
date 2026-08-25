@@ -52,7 +52,7 @@ export default function TodayDashboard({ farmId, currentUserId }: TodayDashboard
       setCompletionCount(dashboard.completion_count || 0);
       setTotalCount(dashboard.total_count || 0);
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to load today\'s data');
+      setError(err instanceof Error ? err.message : t('todayDashboard.failedToLoad'));
       console.error('Error loading today dashboard:', err);
     } finally {
       setLoading(false);
@@ -62,7 +62,7 @@ export default function TodayDashboard({ farmId, currentUserId }: TodayDashboard
   async function handleCompleteTask(taskId: string) {
     try {
       if (!currentUserId) {
-        alert('User ID required to complete task');
+        alert(t('todayDashboard.userIdRequired'));
         return;
       }
 
@@ -124,13 +124,13 @@ export default function TodayDashboard({ farmId, currentUserId }: TodayDashboard
         <div className="error-message">
           {error}
           <button onClick={loadTodayData} className="retry-button">
-            Retry
+            {t('todayDashboard.retry')}
           </button>
         </div>
       )}
 
       {/* Loading state */}
-      {loading && <div className="loading">Loading today's tasks...</div>}
+      {loading && <div className="loading">{t('todayDashboard.loading')}</div>}
 
       {/* Tasks section */}
       {!loading && (
@@ -138,7 +138,7 @@ export default function TodayDashboard({ farmId, currentUserId }: TodayDashboard
           {/* Incomplete tasks */}
           {incompleteTasks.length > 0 && (
             <div className="tasks-section">
-              <h3 className="section-title">To Do</h3>
+              <h3 className="section-title">{t('todayDashboard.incompleteTasks')}</h3>
               <div className="tasks-list">
                 {incompleteTasks.map(task => (
                   <div key={task.id} className="task-card">
@@ -182,14 +182,14 @@ export default function TodayDashboard({ farmId, currentUserId }: TodayDashboard
           {incompleteTasks.length === 0 && completedTasks.length === 0 && (
             <div className="empty-state">
               <div className="empty-icon">🎉</div>
-              <div className="empty-text">No tasks for today!</div>
+              <div className="empty-text">{t('todayDashboard.noTasks')}</div>
             </div>
           )}
 
           {/* Completed tasks */}
           {completedTasks.length > 0 && (
             <div className="tasks-section completed-section">
-              <h3 className="section-title">Completed</h3>
+              <h3 className="section-title">{t('todayDashboard.completedTasks')}</h3>
               <div className="tasks-list">
                 {completedTasks.map(task => (
                   <div key={task.id} className="task-card completed">
@@ -209,7 +209,7 @@ export default function TodayDashboard({ farmId, currentUserId }: TodayDashboard
           {/* Events section */}
           {events.length > 0 && (
             <div className="events-section">
-              <h3 className="section-title">Events Today</h3>
+              <h3 className="section-title">{t('todayDashboard.events')}</h3>
               <div className="events-list">
                 {events.map(event => (
                   <div key={event.id} className="event-card">

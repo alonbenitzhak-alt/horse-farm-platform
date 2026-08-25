@@ -133,6 +133,38 @@ export const translations = {
       darkMode: 'Dark Mode',
       notifications: 'Notifications',
     },
+
+    // Calendar
+    calendar: {
+      title: 'Calendar',
+      month: 'Month',
+      week: 'Week',
+      previous: 'Previous',
+      next: 'Next',
+      today: 'Today',
+      loading: 'Loading calendar...',
+      failedToLoad: 'Failed to load calendar',
+      retry: 'Retry',
+      noItems: 'No tasks or events',
+    },
+
+    // Today Dashboard
+    todayDashboard: {
+      title: 'Today Dashboard',
+      progress: 'Progress',
+      complete: 'Complete',
+      tasks: 'Tasks',
+      incompleteTasks: 'Incomplete Tasks',
+      completedTasks: 'Completed Tasks',
+      events: 'Events',
+      noTasks: 'No tasks for today',
+      noEvents: 'No events for today',
+      markComplete: 'Mark Complete',
+      userIdRequired: 'User ID required to complete task',
+      failedToLoad: 'Failed to load today\'s data',
+      failedToComplete: 'Failed to complete task',
+      retry: 'Retry',
+    },
   },
 
   he: {
@@ -266,6 +298,38 @@ export const translations = {
       Hebrew: 'עברית',
       darkMode: 'מצב אפל',
       notifications: 'התראות',
+    },
+
+    // Calendar
+    calendar: {
+      title: 'לוח שנה',
+      month: 'חודש',
+      week: 'שבוע',
+      previous: 'הקודם',
+      next: 'הבא',
+      today: 'היום',
+      loading: 'טוען לוח שנה...',
+      failedToLoad: 'כשל בטעינת לוח השנה',
+      retry: 'נסה שנית',
+      noItems: 'אין משימות או אירועים',
+    },
+
+    // Today Dashboard
+    todayDashboard: {
+      title: 'לוח בקרה היומי',
+      progress: 'התקדמות',
+      complete: 'הושלם',
+      tasks: 'משימות',
+      incompleteTasks: 'משימות לא הושלמו',
+      completedTasks: 'משימות הושלמו',
+      events: 'אירועים',
+      noTasks: 'אין משימות לכיום',
+      noEvents: 'אין אירועים לכיום',
+      markComplete: 'סמן כהושלם',
+      userIdRequired: 'נדרש מזהה משתמש כדי להשלים משימה',
+      failedToLoad: 'כשל בטעינת נתוני היום',
+      failedToComplete: 'כשל בהשלמת משימה',
+      retry: 'נסה שנית',
     },
   },
 };

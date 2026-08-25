@@ -2,12 +2,14 @@ import { useState, useEffect } from 'react';
 import type { TaskWithDetails, EventWithAttendees } from '@stableos/shared';
 import { getTasks, getEvents } from '@stableos/shared';
 import { formatDate, getEventTypeEmoji } from '@stableos/shared';
+import { useTranslation } from '../hooks/useTranslation';
 
 interface CalendarProps {
   farmId: string;
 }
 
 export default function Calendar({ farmId }: CalendarProps) {
+  const { t } = useTranslation();
   const [currentDate, setCurrentDate] = useState(new Date());
   const [tasks, setTasks] = useState<TaskWithDetails[]>([]);
   const [events, setEvents] = useState<EventWithAttendees[]>([]);
@@ -52,7 +54,7 @@ export default function Calendar({ farmId }: CalendarProps) {
       setTasks(taskData || []);
       setEvents(eventData || []);
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to load calendar');
+      setError(err instanceof Error ? err.message : t('calendar.failedToLoad'));
       console.error('Error loading calendar:', err);
     } finally {
       setLoading(false);
@@ -97,7 +99,7 @@ export default function Calendar({ farmId }: CalendarProps) {
     setCurrentDate(newDate);
   }
 
-  const monthName = currentDate.toLocaleDateString('en-US', {
+  const monthName = currentDate.toLocaleDateString('he-IL', {
     month: 'long',
     year: 'numeric',
   });
@@ -116,7 +118,7 @@ export default function Calendar({ farmId }: CalendarProps) {
           <button
             className="nav-button-small"
             onClick={viewMode === 'month' ? previousMonth : previousWeek}
-            title="Previous"
+            title={t('calendar.previous')}
           >
             ←
           </button>
@@ -125,19 +127,19 @@ export default function Calendar({ farmId }: CalendarProps) {
               className={`toggle-button ${viewMode === 'month' ? 'active' : ''}`}
               onClick={() => setViewMode('month')}
             >
-              Month
+              {t('calendar.month')}
             </button>
             <button
               className={`toggle-button ${viewMode === 'week' ? 'active' : ''}`}
               onClick={() => setViewMode('week')}
             >
-              Week
+              {t('calendar.week')}
             </button>
           </div>
           <button
             className="nav-button-small"
             onClick={viewMode === 'month' ? nextMonth : nextWeek}
-            title="Next"
+            title={t('calendar.next')}
           >
             →
           </button>
@@ -148,20 +150,20 @@ export default function Calendar({ farmId }: CalendarProps) {
         <div className="error-message">
           {error}
           <button onClick={loadCalendarData} className="retry-button">
-            Retry
+            {t('calendar.retry')}
           </button>
         </div>
       )}
 
-      {loading && <div className="loading">Loading calendar...</div>}
+      {loading && <div className="loading">{t('calendar.loadingCalendar')}</div>}
 
       {!loading && viewMode === 'month' && (
         <div className="calendar-month">
           {/* Day headers */}
           <div className="calendar-weekdays">
-            {['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].map(day => (
+            {['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'].map(day => (
               <div key={day} className="weekday-header">
-                {day}
+                {t(`calendar.day.${day.toLowerCase()}`)}
               </div>
             ))}
           </div>
@@ -220,7 +222,7 @@ export default function Calendar({ farmId }: CalendarProps) {
               const date = new Date(currentDate);
               date.setDate(currentDate.getDate() - currentDate.getDay() + i);
               const dateStr = date.toISOString().split('T')[0];
-              const dayName = date.toLocaleDateString('en-US', { weekday: 'short' });
+              const dayName = date.toLocaleDateString('he-IL', { weekday: 'short' });
               const dayNum = date.getDate();
               const { tasks: dayTasks, events: dayEvents } = getItemsForDate(dateStr);
               const isToday = dateStr === new Date().toISOString().split('T')[0];
@@ -265,7 +267,7 @@ export default function Calendar({ farmId }: CalendarProps) {
       {/* Refresh button */}
       <div className="refresh-button-container">
         <button onClick={loadCalendarData} className="refresh-button">
-          🔄 Refresh
+          🔄 {t('calendar.refresh')}
         </button>
       </div>
     </div>

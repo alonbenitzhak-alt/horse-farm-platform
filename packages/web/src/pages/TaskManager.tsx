@@ -143,11 +143,11 @@ export default function TaskManager({ farmId, currentUserId }: TaskManagerProps)
 
       setShowForm(false);
       setValidationErrors({});
-      success(editingTask ? 'Task updated successfully' : 'Task created successfully');
+      success(editingTask ? t('taskManager.updatedSuccess') : t('taskManager.createdSuccess'));
       loadData();
     } catch (err) {
       console.error('Error saving task:', err);
-      const errorMsg = err instanceof Error ? err.message : 'Failed to save task';
+      const errorMsg = err instanceof Error ? err.message : t('taskManager.failedToSave');
       setError(errorMsg);
       error(errorMsg);
     } finally {
@@ -156,18 +156,18 @@ export default function TaskManager({ farmId, currentUserId }: TaskManagerProps)
   }
 
   async function handleDelete(taskId: string, taskTitle: string) {
-    if (!window.confirm(`Are you sure you want to delete "${taskTitle}"? This action cannot be undone.`)) {
+    if (!window.confirm(t('taskManager.deleteConfirm', { title: taskTitle }))) {
       return;
     }
 
     try {
       setDeletingId(taskId);
       await deleteTask(taskId);
-      success(`"${taskTitle}" deleted successfully`);
+      success(t('taskManager.deletedSuccess', { title: taskTitle }));
       loadData();
     } catch (err) {
       console.error('Error deleting task:', err);
-      const errorMsg = err instanceof Error ? err.message : 'Failed to delete task';
+      const errorMsg = err instanceof Error ? err.message : t('taskManager.failedToDelete');
       setError(errorMsg);
       error(errorMsg);
     } finally {
@@ -196,9 +196,9 @@ export default function TaskManager({ farmId, currentUserId }: TaskManagerProps)
     <div className="task-manager">
       {/* Header */}
       <div className="task-manager-header">
-        <h2>Tasks</h2>
+        <h2>{t('taskManager.title')}</h2>
         <button className="create-button" onClick={() => handleOpenForm()}>
-          ➕ New Task
+          {t('taskManager.newTask')}
         </button>
       </div>
 
@@ -206,12 +206,12 @@ export default function TaskManager({ farmId, currentUserId }: TaskManagerProps)
         <div className="error-message">
           {error}
           <button onClick={loadData} className="retry-button">
-            Retry
+            {t('taskManager.retry')}
           </button>
         </div>
       )}
 
-      {loading && <div className="loading">Loading tasks...</div>}
+      {loading && <div className="loading">{t('taskManager.loading')}</div>}
 
       {!loading && (
         <>
@@ -221,25 +221,25 @@ export default function TaskManager({ farmId, currentUserId }: TaskManagerProps)
               className={`filter-button ${filterStatus === 'all' ? 'active' : ''}`}
               onClick={() => setFilterStatus('all')}
             >
-              All ({tasks.length})
+              {t('taskManager.all')} ({tasks.length})
             </button>
             <button
               className={`filter-button ${filterStatus === 'pending' ? 'active' : ''}`}
               onClick={() => setFilterStatus('pending')}
             >
-              Pending ({tasks.filter(t => t.status === 'pending').length})
+              {t('taskManager.pending')} ({tasks.filter(t => t.status === 'pending').length})
             </button>
             <button
               className={`filter-button ${filterStatus === 'in_progress' ? 'active' : ''}`}
               onClick={() => setFilterStatus('in_progress')}
             >
-              In Progress ({tasks.filter(t => t.status === 'in_progress').length})
+              {t('taskManager.inProgress')} ({tasks.filter(t => t.status === 'in_progress').length})
             </button>
             <button
               className={`filter-button ${filterStatus === 'completed' ? 'active' : ''}`}
               onClick={() => setFilterStatus('completed')}
             >
-              Completed ({tasks.filter(t => t.status === 'completed').length})
+              {t('taskManager.completed')} ({tasks.filter(t => t.status === 'completed').length})
             </button>
           </div>
 
@@ -249,7 +249,7 @@ export default function TaskManager({ farmId, currentUserId }: TaskManagerProps)
               <input
                 type="text"
                 className="search-input"
-                placeholder="🔍 Search by title or description..."
+                placeholder={t('taskManager.searchPlaceholder')}
                 value={searchQuery}
                 onChange={e => setSearchQuery(e.target.value)}
               />
@@ -257,7 +257,7 @@ export default function TaskManager({ farmId, currentUserId }: TaskManagerProps)
                 <button
                   className="search-clear"
                   onClick={() => setSearchQuery('')}
-                  title="Clear search"
+                  title={t('taskManager.searchPlaceholder')}
                 >
                   ✕
                 </button>
@@ -270,7 +270,7 @@ export default function TaskManager({ farmId, currentUserId }: TaskManagerProps)
             <div className="modal-overlay" onClick={() => setShowForm(false)}>
               <div className="modal" onClick={e => e.stopPropagation()}>
                 <div className="modal-header">
-                  <h3>{editingTask ? 'Edit Task' : 'New Task'}</h3>
+                  <h3>{editingTask ? t('taskManager.editTask') : t('taskManager.newTaskForm')}</h3>
                   <button
                     className="close-button"
                     onClick={() => setShowForm(false)}
@@ -281,12 +281,12 @@ export default function TaskManager({ farmId, currentUserId }: TaskManagerProps)
 
                 <form onSubmit={handleSubmit} className="task-form">
                   <div className="form-group">
-                    <label>Task Title *</label>
+                    <label>{t('taskManager.taskTitle')} *</label>
                     <input
                       type="text"
                       value={formData.title}
                       onChange={e => setFormData(prev => ({ ...prev, title: e.target.value }))}
-                      placeholder="Enter task title"
+                      placeholder={t('taskManager.taskTitle')}
                       required
                       className={validationErrors.title ? 'error' : ''}
                     />
@@ -296,18 +296,18 @@ export default function TaskManager({ farmId, currentUserId }: TaskManagerProps)
                   </div>
 
                   <div className="form-group">
-                    <label>Description</label>
+                    <label>{t('taskManager.description')}</label>
                     <textarea
                       value={formData.description}
                       onChange={e => setFormData(prev => ({ ...prev, description: e.target.value }))}
-                      placeholder="Enter task description (optional)"
+                      placeholder={t('taskManager.descriptionOptional')}
                       rows={3}
                     />
                   </div>
 
                   <div className="form-row">
                     <div className="form-group">
-                      <label>Date *</label>
+                      <label>{t('taskManager.date')} *</label>
                       <input
                         type="date"
                         value={formData.scheduled_date}
@@ -320,7 +320,7 @@ export default function TaskManager({ farmId, currentUserId }: TaskManagerProps)
                       )}
                     </div>
                     <div className="form-group">
-                      <label>Time (optional)</label>
+                      <label>{t('taskManager.time')}</label>
                       <input
                         type="time"
                         value={formData.scheduled_time}
@@ -331,12 +331,12 @@ export default function TaskManager({ farmId, currentUserId }: TaskManagerProps)
 
                   <div className="form-row">
                     <div className="form-group">
-                      <label>Assign To</label>
+                      <label>{t('taskManager.assignTo')}</label>
                       <select
                         value={formData.assigned_to}
                         onChange={e => setFormData(prev => ({ ...prev, assigned_to: e.target.value }))}
                       >
-                        <option value="">Unassigned</option>
+                        <option value="">{t('taskManager.unassigned')}</option>
                         {people.map(person => (
                           <option key={person.id} value={person.id}>
                             {person.name}
@@ -345,21 +345,21 @@ export default function TaskManager({ farmId, currentUserId }: TaskManagerProps)
                       </select>
                     </div>
                     <div className="form-group">
-                      <label>Status</label>
+                      <label>{t('taskManager.status')}</label>
                       <select
                         value={formData.status}
                         onChange={e => setFormData(prev => ({ ...prev, status: e.target.value as any }))}
                       >
-                        <option value="pending">Pending</option>
-                        <option value="in_progress">In Progress</option>
-                        <option value="completed">Completed</option>
-                        <option value="cancelled">Cancelled</option>
+                        <option value="pending">{t('taskManager.pending')}</option>
+                        <option value="in_progress">{t('taskManager.inProgress')}</option>
+                        <option value="completed">{t('taskManager.completed')}</option>
+                        <option value="cancelled">{t('taskManager.cancelled')}</option>
                       </select>
                     </div>
                   </div>
 
                   <div className="form-group">
-                    <label>Horses Involved</label>
+                    <label>{t('taskManager.horsesInvolved')}</label>
                     <div className="horse-checkboxes">
                       {horses.length > 0 ? (
                         horses.map(horse => (
@@ -373,7 +373,7 @@ export default function TaskManager({ farmId, currentUserId }: TaskManagerProps)
                           </label>
                         ))
                       ) : (
-                        <p className="empty-text">No horses available</p>
+                        <p className="empty-text">{t('taskManager.noHorses')}</p>
                       )}
                     </div>
                   </div>
@@ -385,14 +385,14 @@ export default function TaskManager({ farmId, currentUserId }: TaskManagerProps)
                       onClick={() => setShowForm(false)}
                       disabled={submitting}
                     >
-                      Cancel
+                      {t('taskManager.cancel')}
                     </button>
                     <button
                       type="submit"
                       className="submit-button"
                       disabled={submitting}
                     >
-                      {submitting ? '⏳ Saving...' : editingTask ? 'Update Task' : 'Create Task'}
+                      {submitting ? `⏳ ${t('taskManager.saving')}` : editingTask ? t('taskManager.update') : t('taskManager.create')}
                     </button>
                   </div>
                 </form>
@@ -466,7 +466,7 @@ export default function TaskManager({ farmId, currentUserId }: TaskManagerProps)
       {/* Refresh button */}
       <div className="refresh-button-container">
         <button onClick={loadData} className="refresh-button">
-          🔄 Refresh
+          🔄 {t('taskManager.refresh')}
         </button>
       </div>
     </div>
