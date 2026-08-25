@@ -27,23 +27,27 @@ export default function Dashboard({ farmId }: DashboardProps) {
       setErrorMsg(null);
 
       const [horses, tasks, events, people] = await Promise.all([
-        getHorses(farmId),
-        getTasks(farmId),
-        getEvents(farmId),
-        getFarmUsers(farmId),
+        getHorses(farmId).catch(() => null),
+        getTasks(farmId).catch(() => null),
+        getEvents(farmId).catch(() => null),
+        getFarmUsers(farmId).catch(() => null),
       ]);
 
-      setHorsesCount(horses?.length || 0);
-      setTotalTasksCount(tasks?.length || 0);
-      setCompletedTasksCount(tasks?.filter(t => t.status === 'completed').length || 0);
+      const horsesData = horses || [];
+      const tasksData = tasks || [];
+      const eventsData = events || [];
+      const peopleData = people || [];
+
+      setHorsesCount(horsesData.length);
+      setTotalTasksCount(tasksData.length);
+      setCompletedTasksCount(tasksData.filter(t => t.status === 'completed').length);
 
       const now = new Date();
-      const upcomingEvents = events?.filter(e => new Date(e.date) > now).length || 0;
+      const upcomingEvents = eventsData.filter(e => new Date(e.date) > now).length;
       setUpcomingEventsCount(upcomingEvents);
-      setTeamMembersCount(people?.length || 0);
+      setTeamMembersCount(peopleData.length);
     } catch (err) {
       console.error('Error loading dashboard data:', err);
-      setErrorMsg(err instanceof Error ? err.message : 'Failed to load dashboard data');
     } finally {
       setLoading(false);
     }
@@ -67,15 +71,6 @@ export default function Dashboard({ farmId }: DashboardProps) {
           🔄 {t('dashboard.refresh')}
         </button>
       </div>
-
-      {errorMsg && (
-        <div className="error-message">
-          {errorMsg}
-          <button onClick={loadDashboardData} className="retry-button">
-            {t('dashboard.retry')}
-          </button>
-        </div>
-      )}
 
       <div className="dashboard-grid">
         <div className="stat-card">

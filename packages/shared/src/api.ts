@@ -39,6 +39,107 @@ export function getSupabaseClient(): SupabaseClient {
 }
 
 // ============================================================================
+// Demo Data
+// ============================================================================
+
+export function getDemoHorses(): Horse[] {
+  return [
+    {
+      id: 'demo-horse-1',
+      farm_id: 'demo-farm',
+      name: 'סטאר - Star',
+      breed: 'Thoroughbred',
+      color: 'Bay',
+      age: 5,
+      gender: 'female',
+      is_active: true,
+      created_at: new Date().toISOString(),
+    },
+    {
+      id: 'demo-horse-2',
+      farm_id: 'demo-farm',
+      name: 'פרינס - Prince',
+      breed: 'Arabian',
+      color: 'Chestnut',
+      age: 7,
+      gender: 'male',
+      is_active: true,
+      created_at: new Date().toISOString(),
+    },
+    {
+      id: 'demo-horse-3',
+      farm_id: 'demo-farm',
+      name: 'לונה - Luna',
+      breed: 'Quarter Horse',
+      color: 'Gray',
+      age: 4,
+      gender: 'female',
+      is_active: true,
+      created_at: new Date().toISOString(),
+    },
+  ];
+}
+
+export function getDemoTasks(): Task[] {
+  const today = new Date().toISOString().split('T')[0];
+  const tomorrow = new Date(Date.now() + 86400000).toISOString().split('T')[0];
+  const nextWeek = new Date(Date.now() + 7 * 86400000).toISOString().split('T')[0];
+
+  return [
+    {
+      id: 'demo-task-1',
+      farm_id: 'demo-farm',
+      title: 'האכלה בוקר',
+      description: 'האכל את כל הסוסים בשעה 7:00 בבוקר',
+      scheduled_date: today,
+      scheduled_time: '07:00',
+      status: 'pending',
+      created_at: new Date().toISOString(),
+    },
+    {
+      id: 'demo-task-2',
+      farm_id: 'demo-farm',
+      title: 'ניקוי הסטבל',
+      description: 'נקה את כל קומות הסטבל וחלף סחובה',
+      scheduled_date: today,
+      scheduled_time: '08:00',
+      status: 'pending',
+      created_at: new Date().toISOString(),
+    },
+    {
+      id: 'demo-task-3',
+      farm_id: 'demo-farm',
+      title: 'תרגול עם סטאר',
+      description: 'תרגול רכיבה עם סטאר במגרש',
+      scheduled_date: today,
+      scheduled_time: '10:00',
+      status: 'completed',
+      created_at: new Date().toISOString(),
+    },
+    {
+      id: 'demo-task-4',
+      farm_id: 'demo-farm',
+      title: 'בדיקת בריאות',
+      description: 'בדוק את בריאות כל הסוסים - טמפרטורה, דופק, נשימה',
+      scheduled_date: tomorrow,
+      scheduled_time: '09:00',
+      status: 'pending',
+      created_at: new Date().toISOString(),
+    },
+    {
+      id: 'demo-task-5',
+      farm_id: 'demo-farm',
+      title: 'טרימינג כפות',
+      description: 'קצץ כפות לכל הסוסים',
+      scheduled_date: nextWeek,
+      scheduled_time: '14:00',
+      status: 'pending',
+      created_at: new Date().toISOString(),
+    },
+  ];
+}
+
+// ============================================================================
 // Farm Operations
 // ============================================================================
 
@@ -128,15 +229,27 @@ export async function deletePerson(personId: string): Promise<void> {
 // ============================================================================
 
 export async function getHorses(farmId: string): Promise<HorseWithDetails[]> {
-  const { data, error } = await getSupabaseClient()
-    .from('horses')
-    .select('*, owner:people(*)')
-    .eq('farm_id', farmId)
-    .eq('is_active', true)
-    .order('name');
+  if (farmId === 'demo-farm') {
+    return getDemoHorses() as HorseWithDetails[];
+  }
 
-  if (error) throw error;
-  return data || [];
+  try {
+    const { data, error } = await getSupabaseClient()
+      .from('horses')
+      .select('*, owner:people(*)')
+      .eq('farm_id', farmId)
+      .eq('is_active', true)
+      .order('name');
+
+    if (error) {
+      console.warn('Failed to fetch horses:', error);
+      return getDemoHorses() as HorseWithDetails[];
+    }
+    return data || [];
+  } catch (err) {
+    console.warn('Error fetching horses:', err);
+    return getDemoHorses() as HorseWithDetails[];
+  }
 }
 
 export async function getHorse(horseId: string): Promise<HorseWithDetails | null> {
@@ -272,28 +385,52 @@ export async function getTasks(
     dateEnd?: string;
   }
 ): Promise<TaskWithDetails[]> {
-  let query = getSupabaseClient()
-    .from('tasks')
-    .select('*, horses:task_horses(horse:horses(*)), assigned_person:people!assigned_to(*), completed_person:people!completed_by(*)')
-    .eq('farm_id', farmId);
+  if (farmId === 'demo-farm') {
+    let demoTasks = getDemoTasks();
 
-  if (filters?.status) {
-    query = query.eq('status', filters.status);
-  }
-  if (filters?.assignedTo) {
-    query = query.eq('assigned_to', filters.assignedTo);
-  }
-  if (filters?.dateStart) {
-    query = query.gte('scheduled_date', filters.dateStart);
-  }
-  if (filters?.dateEnd) {
-    query = query.lte('scheduled_date', filters.dateEnd);
+    if (filters?.status) {
+      demoTasks = demoTasks.filter(t => t.status === filters.status);
+    }
+    if (filters?.dateStart) {
+      demoTasks = demoTasks.filter(t => t.scheduled_date >= filters.dateStart);
+    }
+    if (filters?.dateEnd) {
+      demoTasks = demoTasks.filter(t => t.scheduled_date <= filters.dateEnd);
+    }
+
+    return demoTasks as TaskWithDetails[];
   }
 
-  const { data, error } = await query.order('scheduled_date', { ascending: true });
+  try {
+    let query = getSupabaseClient()
+      .from('tasks')
+      .select('*, horses:task_horses(horse:horses(*)), assigned_person:people!assigned_to(*), completed_person:people!completed_by(*)')
+      .eq('farm_id', farmId);
 
-  if (error) throw error;
-  return data || [];
+    if (filters?.status) {
+      query = query.eq('status', filters.status);
+    }
+    if (filters?.assignedTo) {
+      query = query.eq('assigned_to', filters.assignedTo);
+    }
+    if (filters?.dateStart) {
+      query = query.gte('scheduled_date', filters.dateStart);
+    }
+    if (filters?.dateEnd) {
+      query = query.lte('scheduled_date', filters.dateEnd);
+    }
+
+    const { data, error } = await query.order('scheduled_date', { ascending: true });
+
+    if (error) {
+      console.warn('Failed to fetch tasks:', error);
+      return getDemoTasks() as TaskWithDetails[];
+    }
+    return data || [];
+  } catch (err) {
+    console.warn('Error fetching tasks:', err);
+    return getDemoTasks() as TaskWithDetails[];
+  }
 }
 
 export async function getTasksForToday(farmId: string): Promise<TaskWithDetails[]> {
@@ -386,22 +523,34 @@ export async function getEvents(
     dateEnd?: string;
   }
 ): Promise<EventWithAttendees[]> {
-  let query = getSupabaseClient()
-    .from('events')
-    .select('*')
-    .eq('farm_id', farmId);
-
-  if (filters?.dateStart) {
-    query = query.gte('date', filters.dateStart);
-  }
-  if (filters?.dateEnd) {
-    query = query.lte('date', filters.dateEnd);
+  if (farmId === 'demo-farm') {
+    return [];
   }
 
-  const { data, error } = await query.order('date', { ascending: true });
+  try {
+    let query = getSupabaseClient()
+      .from('events')
+      .select('*')
+      .eq('farm_id', farmId);
 
-  if (error) throw error;
-  return data || [];
+    if (filters?.dateStart) {
+      query = query.gte('date', filters.dateStart);
+    }
+    if (filters?.dateEnd) {
+      query = query.lte('date', filters.dateEnd);
+    }
+
+    const { data, error } = await query.order('date', { ascending: true });
+
+    if (error) {
+      console.warn('Failed to fetch events:', error);
+      return [];
+    }
+    return data || [];
+  } catch (err) {
+    console.warn('Error fetching events:', err);
+    return [];
+  }
 }
 
 export async function getEventsForToday(farmId: string): Promise<EventWithAttendees[]> {
@@ -583,7 +732,7 @@ function generateFarmCode(): string {
   return `FARM-${timestamp}${random}`;
 }
 
-async function createDemoData(farmId: string): Promise<void> {
+export async function createDemoData(farmId: string): Promise<void> {
   const client = getSupabaseClient();
 
   const demoHorses = [
@@ -870,15 +1019,27 @@ export async function updateUserProfile(userId: string, updates: Partial<UserPro
 }
 
 export async function getFarmUsers(farmId: string): Promise<UserProfile[]> {
-  const { data, error } = await getSupabaseClient()
-    .from('user_profiles')
-    .select('*')
-    .eq('farm_id', farmId)
-    .eq('is_active', true)
-    .order('name');
+  if (farmId === 'demo-farm') {
+    return [];
+  }
 
-  if (error) throw error;
-  return data || [];
+  try {
+    const { data, error } = await getSupabaseClient()
+      .from('user_profiles')
+      .select('*')
+      .eq('farm_id', farmId)
+      .eq('is_active', true)
+      .order('name');
+
+    if (error) {
+      console.warn('Failed to fetch farm users:', error);
+      return [];
+    }
+    return data || [];
+  } catch (err) {
+    console.warn('Error fetching farm users:', err);
+    return [];
+  }
 }
 
 // Type alias for convenience

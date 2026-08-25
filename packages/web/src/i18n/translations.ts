@@ -276,6 +276,15 @@ export const translations = {
       failedToLoad: 'Failed to load calendar',
       retry: 'Retry',
       noItems: 'No tasks or events',
+      day: {
+        sunday: 'Sunday',
+        monday: 'Monday',
+        tuesday: 'Tuesday',
+        wednesday: 'Wednesday',
+        thursday: 'Thursday',
+        friday: 'Friday',
+        saturday: 'Saturday',
+      },
     },
 
     // Dashboard
@@ -682,6 +691,15 @@ export const translations = {
       failedToLoad: 'כשל בטעינת לוח השנה',
       retry: 'נסה שנית',
       noItems: 'אין משימות או אירועים',
+      day: {
+        sunday: 'ראשון',
+        monday: 'שני',
+        tuesday: 'שלישי',
+        wednesday: 'רביעי',
+        thursday: 'חמישי',
+        friday: 'שישי',
+        saturday: 'שבת',
+      },
     },
 
     // Dashboard
