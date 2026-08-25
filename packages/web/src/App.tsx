@@ -32,6 +32,9 @@ import './styles/rtl.css';
 function AppContent() {
   const [activeTab, setActiveTab] = useState('dashboard');
   const [showRegister, setShowRegister] = useState(false);
+  const [showWelcome, setShowWelcome] = useState(() => {
+    return !localStorage.getItem('stableos-welcome-seen');
+  });
   const { t } = useTranslation();
   const { isAuthenticated, userProfile, logout, refreshAuth } = useAuth();
 
@@ -72,7 +75,7 @@ function AppContent() {
         <div className="app-header-user">
           <span>{userProfile?.name}</span>
           <button className="logout-button" onClick={logout} title={t('auth.logout')}>
-            🚪
+            ↪
           </button>
         </div>
       </header>
@@ -114,74 +117,130 @@ function AppContent() {
         <button
           className={`nav-button ${activeTab === 'dashboard' ? 'active' : ''}`}
           onClick={() => setActiveTab('dashboard')}
-          title={t('nav.dashboard')}
         >
-          📊
+          <span className="nav-icon">📊</span>
+          <span className="nav-label">{t('nav.dashboard')}</span>
         </button>
         <button
           className={`nav-button ${activeTab === 'today' ? 'active' : ''}`}
           onClick={() => setActiveTab('today')}
-          title={t('nav.today')}
         >
-          📅
+          <span className="nav-icon">📅</span>
+          <span className="nav-label">{t('nav.today')}</span>
         </button>
         <button
           className={`nav-button ${activeTab === 'calendar' ? 'active' : ''}`}
           onClick={() => setActiveTab('calendar')}
-          title={t('nav.calendar')}
         >
-          📆
+          <span className="nav-icon">📆</span>
+          <span className="nav-label">{t('nav.calendar')}</span>
         </button>
         <button
           className={`nav-button ${activeTab === 'tasks' ? 'active' : ''}`}
           onClick={() => setActiveTab('tasks')}
-          title={t('nav.tasks')}
         >
-          ✅
+          <span className="nav-icon">✓</span>
+          <span className="nav-label">{t('nav.tasks')}</span>
         </button>
         <button
           className={`nav-button ${activeTab === 'templates' ? 'active' : ''}`}
           onClick={() => setActiveTab('templates')}
-          title={t('nav.templates')}
         >
-          📋
+          <span className="nav-icon">≡</span>
+          <span className="nav-label">{t('nav.templates')}</span>
         </button>
         <button
           className={`nav-button ${activeTab === 'expenses' ? 'active' : ''}`}
           onClick={() => setActiveTab('expenses')}
-          title={t('nav.expenses')}
         >
-          💰
+          <span className="nav-icon">$</span>
+          <span className="nav-label">{t('nav.expenses')}</span>
         </button>
         <button
           className={`nav-button ${activeTab === 'analytics' ? 'active' : ''}`}
           onClick={() => setActiveTab('analytics')}
-          title={t('nav.analytics')}
         >
-          📊
+          <span className="nav-icon">📈</span>
+          <span className="nav-label">{t('nav.analytics')}</span>
         </button>
         <button
           className={`nav-button ${activeTab === 'horses' ? 'active' : ''}`}
           onClick={() => setActiveTab('horses')}
-          title={t('nav.horses')}
         >
-          🐎
+          <span className="nav-icon">🐎</span>
+          <span className="nav-label">{t('nav.horses')}</span>
         </button>
         <button
           className={`nav-button ${activeTab === 'people' ? 'active' : ''}`}
           onClick={() => setActiveTab('people')}
-          title={t('nav.people')}
         >
-          👥
+          <span className="nav-icon">👤</span>
+          <span className="nav-label">{t('nav.people')}</span>
         </button>
         <button
           className={`nav-button ${activeTab === 'settings' ? 'active' : ''}`}
           onClick={() => setActiveTab('settings')}
-          title={t('nav.settings')}
         >
-          ⚙️
+          <span className="nav-icon">⚙</span>
+          <span className="nav-label">{t('nav.settings')}</span>
         </button>
       </nav>
+
+      {showWelcome && (
+        <div className="modal-overlay" onClick={() => {
+          setShowWelcome(false);
+          localStorage.setItem('stableos-welcome-seen', 'true');
+        }}>
+          <div className="modal welcome-modal" onClick={e => e.stopPropagation()}>
+            <div className="modal-header">
+              <h2>ברוכים הבאים ל-StableOS</h2>
+              <button
+                className="close-button"
+                onClick={() => {
+                  setShowWelcome(false);
+                  localStorage.setItem('stableos-welcome-seen', 'true');
+                }}
+              >
+                ✕
+              </button>
+            </div>
+            <div className="modal-content welcome-content">
+              <p>
+                <strong>StableOS</strong> היא פלטפורמה מנהלת מקיפה לחוות סוסים המאפשרת לך:
+              </p>
+              <ul>
+                <li>🐎 ניהול מידע מפורט על כל הסוסים שלך</li>
+                <li>✓ תזמון וניהול משימות יומיומיות ותחזוקה</li>
+                <li>👥 ניהול צוות וחלוקת משימות</li>
+                <li>📊 מעקב כלכלי ודוחות ניתוח</li>
+                <li>📅 תכנון אירועים וקביעות</li>
+              </ul>
+              <hr />
+              <h4>איך להתחיל:</h4>
+              <ol>
+                <li>עברו לכרטיסייה "סוסים" להוסיף את הסוסים שלכם</li>
+                <li>הגדרו את צוות החוות בכרטיסייה "צוות"</li>
+                <li>צרו משימות וקבעו לוחות זמנים</li>
+                <li>עקבו אחרי כלכלת החוות בדוחות</li>
+              </ol>
+              <p style={{ marginTop: '20px', fontSize: '0.9em', color: '#666' }}>
+                כדי להבין טוב יותר את כל התכונות, בדקו את כל הכרטיסיות בתפריט הסייד.
+              </p>
+            </div>
+            <div className="modal-actions">
+              <button
+                className="submit-button"
+                onClick={() => {
+                  setShowWelcome(false);
+                  localStorage.setItem('stableos-welcome-seen', 'true');
+                }}
+              >
+                הבנתי, בואו נתחיל!
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
       <Toast />
     </div>
