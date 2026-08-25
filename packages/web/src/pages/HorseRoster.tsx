@@ -16,6 +16,7 @@ export default function HorseRoster({ farmId }: HorseRosterProps) {
   const [editingHorse, setEditingHorse] = useState<Horse | null>(null);
   const [deletingId, setDeletingId] = useState<string | null>(null);
   const [validationErrors, setValidationErrors] = useState<Record<string, string>>({});
+  const [searchQuery, setSearchQuery] = useState('');
   const subscriptionRef = useRef<any>(null);
   const [formData, setFormData] = useState({
     name: '',
@@ -147,6 +148,12 @@ export default function HorseRoster({ farmId }: HorseRosterProps) {
     }
   }
 
+  const filteredHorses = horses.filter(horse =>
+    horse.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    (horse.breed && horse.breed.toLowerCase().includes(searchQuery.toLowerCase())) ||
+    (horse.color && horse.color.toLowerCase().includes(searchQuery.toLowerCase()))
+  );
+
   return (
     <div className="roster">
       {/* Header */}
@@ -259,10 +266,32 @@ export default function HorseRoster({ farmId }: HorseRosterProps) {
             </div>
           )}
 
+          {/* Search Bar */}
+          {horses.length > 0 && (
+            <div className="search-container">
+              <input
+                type="text"
+                className="search-input"
+                placeholder="🔍 Search by name, breed, or color..."
+                value={searchQuery}
+                onChange={e => setSearchQuery(e.target.value)}
+              />
+              {searchQuery && (
+                <button
+                  className="search-clear"
+                  onClick={() => setSearchQuery('')}
+                  title="Clear search"
+                >
+                  ✕
+                </button>
+              )}
+            </div>
+          )}
+
           {/* Horses Grid */}
-          {horses.length > 0 ? (
+          {filteredHorses.length > 0 ? (
             <div className="roster-grid">
-              {horses.map(horse => (
+              {filteredHorses.map(horse => (
                 <div key={horse.id} className="roster-card">
                   <div className="card-emoji">🐎</div>
                   <div className="card-content">
@@ -301,10 +330,14 @@ export default function HorseRoster({ farmId }: HorseRosterProps) {
           ) : (
             <div className="empty-state">
               <div className="empty-icon">🐎</div>
-              <div className="empty-text">No horses yet</div>
-              <button className="create-button" onClick={() => handleOpenForm()}>
-                ➕ Add Your First Horse
-              </button>
+              <div className="empty-text">
+                {searchQuery ? 'No horses found' : 'No horses yet'}
+              </div>
+              {!searchQuery && (
+                <button className="create-button" onClick={() => handleOpenForm()}>
+                  ➕ Add Your First Horse
+                </button>
+              )}
             </div>
           )}
         </>

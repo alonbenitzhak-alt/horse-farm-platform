@@ -22,6 +22,7 @@ export default function TaskManager({ farmId, currentUserId }: TaskManagerProps)
   const [deletingId, setDeletingId] = useState<string | null>(null);
   const [validationErrors, setValidationErrors] = useState<Record<string, string>>({});
 
+  const [searchQuery, setSearchQuery] = useState('');
   const [formData, setFormData] = useState<{
     title: string;
     description: string;
@@ -180,9 +181,13 @@ export default function TaskManager({ farmId, currentUserId }: TaskManagerProps)
     }));
   }
 
-  const filteredTasks = tasks.filter(t =>
-    filterStatus === 'all' ? true : t.status === filterStatus
-  );
+  const filteredTasks = tasks.filter(t => {
+    const matchesStatus = filterStatus === 'all' ? true : t.status === filterStatus;
+    const matchesSearch = searchQuery === '' ||
+      t.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      (t.description && t.description.toLowerCase().includes(searchQuery.toLowerCase()));
+    return matchesStatus && matchesSearch;
+  });
 
   return (
     <div className="task-manager">
@@ -234,6 +239,28 @@ export default function TaskManager({ farmId, currentUserId }: TaskManagerProps)
               Completed ({tasks.filter(t => t.status === 'completed').length})
             </button>
           </div>
+
+          {/* Search Bar */}
+          {tasks.length > 0 && (
+            <div className="search-container">
+              <input
+                type="text"
+                className="search-input"
+                placeholder="🔍 Search by title or description..."
+                value={searchQuery}
+                onChange={e => setSearchQuery(e.target.value)}
+              />
+              {searchQuery && (
+                <button
+                  className="search-clear"
+                  onClick={() => setSearchQuery('')}
+                  title="Clear search"
+                >
+                  ✕
+                </button>
+              )}
+            </div>
+          )}
 
           {/* Task Form Modal */}
           {showForm && (
@@ -426,7 +453,7 @@ export default function TaskManager({ farmId, currentUserId }: TaskManagerProps)
             <div className="empty-state">
               <div className="empty-icon">📋</div>
               <div className="empty-text">
-                No {filterStatus !== 'all' ? filterStatus : ''} tasks
+                {searchQuery ? 'No tasks found' : `No ${filterStatus !== 'all' ? filterStatus : ''} tasks`}
               </div>
             </div>
           )}

@@ -27,6 +27,7 @@ export default function PeopleRoster({ farmId }: PeopleRosterProps) {
   const [editingPerson, setEditingPerson] = useState<Person | null>(null);
   const [deletingId, setDeletingId] = useState<string | null>(null);
   const [validationErrors, setValidationErrors] = useState<Record<string, string>>({});
+  const [searchQuery, setSearchQuery] = useState('');
   const subscriptionRef = useRef<any>(null);
   const [formData, setFormData] = useState({
     name: '',
@@ -158,6 +159,12 @@ export default function PeopleRoster({ farmId }: PeopleRosterProps) {
     }
   }
 
+  const filteredPeople = people.filter(person =>
+    person.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    (person.email && person.email.toLowerCase().includes(searchQuery.toLowerCase())) ||
+    (person.phone && person.phone.includes(searchQuery))
+  );
+
   return (
     <div className="roster">
       {/* Header */}
@@ -271,10 +278,32 @@ export default function PeopleRoster({ farmId }: PeopleRosterProps) {
             </div>
           )}
 
+          {/* Search Bar */}
+          {people.length > 0 && (
+            <div className="search-container">
+              <input
+                type="text"
+                className="search-input"
+                placeholder="🔍 Search by name, email, or phone..."
+                value={searchQuery}
+                onChange={e => setSearchQuery(e.target.value)}
+              />
+              {searchQuery && (
+                <button
+                  className="search-clear"
+                  onClick={() => setSearchQuery('')}
+                  title="Clear search"
+                >
+                  ✕
+                </button>
+              )}
+            </div>
+          )}
+
           {/* People Grid */}
-          {people.length > 0 ? (
+          {filteredPeople.length > 0 ? (
             <div className="roster-grid">
-              {people.map(person => (
+              {filteredPeople.map(person => (
                 <div key={person.id} className="roster-card">
                   <div className="card-emoji">{ROLE_EMOJI[person.role]}</div>
                   <div className="card-content">
@@ -311,10 +340,14 @@ export default function PeopleRoster({ farmId }: PeopleRosterProps) {
           ) : (
             <div className="empty-state">
               <div className="empty-icon">👥</div>
-              <div className="empty-text">No team members yet</div>
-              <button className="create-button" onClick={() => handleOpenForm()}>
-                ➕ Add Your First Member
-              </button>
+              <div className="empty-text">
+                {searchQuery ? 'No team members found' : 'No team members yet'}
+              </div>
+              {!searchQuery && (
+                <button className="create-button" onClick={() => handleOpenForm()}>
+                  ➕ Add Your First Member
+                </button>
+              )}
             </div>
           )}
         </>
