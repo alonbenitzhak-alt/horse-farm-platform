@@ -33,17 +33,26 @@ function AppContent() {
   const [activeTab, setActiveTab] = useState('dashboard');
   const [showRegister, setShowRegister] = useState(false);
   const { t } = useTranslation();
-  const { isAuthenticated, userProfile, logout } = useAuth();
+  const { isAuthenticated, userProfile, logout, refreshAuth } = useAuth();
+
+  async function handleLoginSuccess() {
+    await refreshAuth();
+  }
+
+  async function handleRegisterSuccess() {
+    setShowRegister(false);
+    await refreshAuth();
+  }
 
   if (!isAuthenticated) {
     return showRegister ? (
       <Register
-        onSuccess={() => setShowRegister(false)}
+        onSuccess={handleRegisterSuccess}
         onSwitchToLogin={() => setShowRegister(false)}
       />
     ) : (
       <Login
-        onSuccess={() => {}}
+        onSuccess={handleLoginSuccess}
         onSwitchToRegister={() => setShowRegister(true)}
       />
     );

@@ -8,6 +8,7 @@ interface AuthContextType {
   loading: boolean;
   isAuthenticated: boolean;
   logout: () => Promise<void>;
+  refreshAuth: () => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -28,6 +29,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         setUser(currentUser);
         const profile = await getUserProfile(currentUser.id);
         setUserProfile(profile);
+      } else {
+        setUser(null);
+        setUserProfile(null);
       }
     } catch (err) {
       console.error('Auth check failed:', err);
@@ -50,6 +54,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         loading,
         isAuthenticated: !!user,
         logout,
+        refreshAuth: checkAuth,
       }}
     >
       {children}
