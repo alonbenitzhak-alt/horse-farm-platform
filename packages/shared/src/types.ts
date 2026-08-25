@@ -38,6 +38,22 @@ export interface Horse {
   age?: number;
   owner_id?: string;
   photo_url?: string;
+  gender?: 'male' | 'female';
+  height?: string; // e.g., "15.2 hh"
+  weight?: number; // in kg
+  microchip_id?: string;
+  registration_number?: string;
+  temperament?: string;
+  medical_conditions?: string;
+  allergies?: string;
+  medications?: string;
+  diet_requirements?: string;
+  training_level?: 'beginner' | 'intermediate' | 'advanced';
+  emergency_contact?: string;
+  emergency_phone?: string;
+  vet_name?: string;
+  vet_phone?: string;
+  notes?: string;
   is_active: boolean;
   created_at: string;
   updated_at: string;

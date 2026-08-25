@@ -49,6 +49,16 @@
 .profile-emoji {
   font-size: 3rem;
   line-height: 1;
+  flex-shrink: 0;
+}
+
+.profile-photo {
+  width: 120px;
+  height: 120px;
+  border-radius: var(--radius-lg);
+  object-fit: cover;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  flex-shrink: 0;
 }
 
 .profile-info {
@@ -68,6 +78,119 @@
   margin: 0;
   font-size: 0.95rem;
   opacity: 0.9;
+}
+
+/* Profile Sections */
+.profile-sections {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.info-section {
+  background: white;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  padding: 1.5rem;
+  box-shadow: var(--shadow-sm);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.info-section:hover {
+  box-shadow: var(--shadow-md);
+  border-color: var(--color-accent-light);
+}
+
+.info-section h3 {
+  margin: 0 0 1rem 0;
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #1f2937;
+  padding-bottom: 0.5rem;
+  border-bottom: 2px solid var(--color-accent);
+}
+
+.info-section p {
+  margin: 0.5rem 0;
+  line-height: 1.5;
+  color: #4b5563;
+}
+
+.info-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+}
+
+.info-item {
+  padding: 0.75rem;
+  background-color: #f9fafb;
+  border-radius: 6px;
+  font-size: 0.95rem;
+}
+
+.info-item .label {
+  font-weight: 600;
+  color: #1f2937;
+  display: block;
+  margin-bottom: 0.25rem;
+}
+
+.health-section {
+  background-color: #f0fdf4;
+  border-color: #d1fae5;
+}
+
+.health-section h3 {
+  border-bottom-color: #10b981;
+  color: #065f46;
+}
+
+.health-item {
+  margin-bottom: 1rem;
+  padding: 1rem;
+  background-color: white;
+  border-radius: 6px;
+  border-left: 4px solid #10b981;
+}
+
+.health-item strong {
+  color: #065f46;
+  display: block;
+  margin-bottom: 0.5rem;
+}
+
+.health-item p {
+  margin: 0;
+  line-height: 1.5;
+}
+
+.contact-section {
+  background-color: #fef3c7;
+  border-color: #fcd34d;
+}
+
+.contact-section h3 {
+  border-bottom-color: #f59e0b;
+  color: #92400e;
+}
+
+.contact-item {
+  margin-bottom: 0.75rem;
+  padding: 0.75rem;
+  background-color: white;
+  border-radius: 6px;
+  border-left: 4px solid #f59e0b;
+  font-size: 0.95rem;
+}
+
+.contact-item strong {
+  color: #92400e;
+}
+
+.contact-item .phone {
+  color: #6b7280;
+  font-family: monospace;
 }
 
 /* Health Records Section */
