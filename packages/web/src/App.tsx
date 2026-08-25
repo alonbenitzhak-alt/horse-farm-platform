@@ -34,6 +34,7 @@ function AppContent() {
   const [showRegister, setShowRegister] = useState(false);
   const { t } = useTranslation();
   const { isAuthenticated, userProfile, logout } = useAuth();
+  // Trigger rebuild
 
   if (!isAuthenticated) {
     return showRegister ? (
