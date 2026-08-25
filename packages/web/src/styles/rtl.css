@@ -131,7 +131,7 @@ html[dir="rtl"] .about-content {
 
 html[dir="rtl"] .features-list {
   border-left: none;
-  border-right: 3px solid #2563eb;
+  border-right: 3px solid #0052a3;
   padding-right: 1rem;
   padding-left: 0;
 }

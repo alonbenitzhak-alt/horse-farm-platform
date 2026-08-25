@@ -27,8 +27,11 @@ function AppContent() {
   return (
     <div className="app">
       <header className="app-header">
-        <h1>🐴 {t('appTitle')}</h1>
-        <p className="subtitle">{t('appSubtitle')}</p>
+        <img src="/assets/logo.png" alt="StableOS Logo" className="app-header-logo" />
+        <div className="app-header-content">
+          <h1>{t('appTitle')}</h1>
+          <p className="subtitle">{t('appSubtitle')}</p>
+        </div>
       </header>
 
       <main className="app-main">

@@ -16,7 +16,7 @@
   align-items: center;
   gap: 1rem;
   padding: 1rem;
-  background: linear-gradient(135deg, #2563eb 0%, #1e40af 100%);
+  background: linear-gradient(135deg, #0052a3 0%, #0099cc 100%);
   border-radius: 12px;
   color: white;
 }
@@ -30,7 +30,7 @@
 .create-button {
   padding: 0.75rem 1.5rem;
   background-color: white;
-  color: #2563eb;
+  color: #0052a3;
   border: none;
   border-radius: 8px;
   font-weight: 600;
@@ -78,7 +78,7 @@
   align-items: center;
   padding: 1.5rem;
   border-bottom: 1px solid #e5e7eb;
-  background: linear-gradient(135deg, #2563eb 0%, #1e40af 100%);
+  background: linear-gradient(135deg, #0052a3 0%, #0099cc 100%);
   color: white;
   border-radius: 16px 16px 0 0;
 }
@@ -141,7 +141,7 @@
 .form-group input:focus,
 .form-group select:focus {
   outline: none;
-  border-color: #2563eb;
+  border-color: #0052a3;
   box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
 }
 
@@ -229,7 +229,7 @@
 
 .search-input:focus {
   outline: none;
-  border-color: #2563eb;
+  border-color: #0052a3;
   box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
 }
 
@@ -314,7 +314,7 @@
   width: 44px;
   height: 44px;
   border-radius: 50%;
-  background-color: #2563eb;
+  background-color: #0052a3;
   color: white;
   border: none;
   font-size: 1.25rem;
@@ -326,7 +326,7 @@
 }
 
 .edit-button:hover:not(:disabled) {
-  background-color: #1e40af;
+  background-color: #0099cc;
   transform: scale(1.05);
 }
 
