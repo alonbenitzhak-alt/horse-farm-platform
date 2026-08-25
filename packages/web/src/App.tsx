@@ -1,0 +1,99 @@
+import React, { useState } from 'react';
+import './App.css';
+
+export default function App() {
+  const [activeTab, setActiveTab] = useState('today');
+
+  return (
+    <div className="app">
+      <header className="app-header">
+        <h1>🐴 StableOS</h1>
+        <p className="subtitle">Farm Operations Dashboard</p>
+      </header>
+
+      <main className="app-main">
+        {activeTab === 'today' && (
+          <div className="page">
+            <h2>Today</h2>
+            <p>Today's dashboard coming soon...</p>
+          </div>
+        )}
+        {activeTab === 'calendar' && (
+          <div className="page">
+            <h2>Calendar</h2>
+            <p>Calendar view coming soon...</p>
+          </div>
+        )}
+        {activeTab === 'tasks' && (
+          <div className="page">
+            <h2>Tasks</h2>
+            <p>Task list coming soon...</p>
+          </div>
+        )}
+        {activeTab === 'horses' && (
+          <div className="page">
+            <h2>Horses</h2>
+            <p>Horse roster coming soon...</p>
+          </div>
+        )}
+        {activeTab === 'people' && (
+          <div className="page">
+            <h2>People</h2>
+            <p>Team roster coming soon...</p>
+          </div>
+        )}
+        {activeTab === 'settings' && (
+          <div className="page">
+            <h2>Settings</h2>
+            <p>Settings coming soon...</p>
+          </div>
+        )}
+      </main>
+
+      <nav className="app-nav">
+        <button
+          className={`nav-button ${activeTab === 'today' ? 'active' : ''}`}
+          onClick={() => setActiveTab('today')}
+          title="Today"
+        >
+          📅
+        </button>
+        <button
+          className={`nav-button ${activeTab === 'calendar' ? 'active' : ''}`}
+          onClick={() => setActiveTab('calendar')}
+          title="Calendar"
+        >
+          📆
+        </button>
+        <button
+          className={`nav-button ${activeTab === 'tasks' ? 'active' : ''}`}
+          onClick={() => setActiveTab('tasks')}
+          title="Tasks"
+        >
+          ✅
+        </button>
+        <button
+          className={`nav-button ${activeTab === 'horses' ? 'active' : ''}`}
+          onClick={() => setActiveTab('horses')}
+          title="Horses"
+        >
+          🐎
+        </button>
+        <button
+          className={`nav-button ${activeTab === 'people' ? 'active' : ''}`}
+          onClick={() => setActiveTab('people')}
+          title="People"
+        >
+          👥
+        </button>
+        <button
+          className={`nav-button ${activeTab === 'settings' ? 'active' : ''}`}
+          onClick={() => setActiveTab('settings')}
+          title="Settings"
+        >
+          ⚙️
+        </button>
+      </nav>
+    </div>
+  );
+}

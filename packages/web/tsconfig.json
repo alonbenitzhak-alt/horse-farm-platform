@@ -8,9 +8,8 @@
     "esModuleInterop": true,
     "allowSyntheticDefaultImports": true,
 
-    /* Next.js */
-    "jsx": "preserve",
-    "incremental": true,
+    /* Vite */
+    "jsx": "react-jsx",
     "paths": {
       "@/*": ["./src/*"]
     },
@@ -28,6 +27,6 @@
     "noUnusedParameters": true,
     "noFallthroughCasesInSwitch": true
   },
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx"],
-  "exclude": ["node_modules", ".next"]
+  "include": ["src"],
+  "exclude": ["node_modules", "dist"]
 }

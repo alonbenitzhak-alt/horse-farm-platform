@@ -1,0 +1,136 @@
+/* App Layout */
+.app {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  max-width: 100vw;
+  overflow: hidden;
+}
+
+/* Header */
+.app-header {
+  background: var(--color-accent);
+  color: white;
+  padding: var(--spacing-lg);
+  text-align: center;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.app-header h1 {
+  font-size: var(--font-size-2xl);
+  margin-bottom: var(--spacing-sm);
+}
+
+.app-header .subtitle {
+  font-size: var(--font-size-sm);
+  opacity: 0.9;
+}
+
+/* Main Content */
+.app-main {
+  flex: 1;
+  overflow-y: auto;
+  padding: var(--spacing-lg);
+}
+
+.page {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.page h2 {
+  margin-bottom: var(--spacing-lg);
+}
+
+/* Navigation Bar */
+.app-nav {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  padding: var(--spacing-md);
+  border-top: 1px solid var(--color-border);
+  background: var(--color-section-bg);
+  gap: var(--spacing-sm);
+}
+
+.nav-button {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: var(--spacing-md);
+  font-size: 1.5rem;
+  border-radius: var(--radius-md);
+  color: var(--color-text-secondary);
+  transition: all 0.2s ease;
+  min-height: 60px;
+}
+
+.nav-button:hover {
+  background: var(--color-border);
+  color: var(--color-text);
+}
+
+.nav-button.active {
+  background: var(--color-accent);
+  color: white;
+}
+
+/* Responsive Design */
+@media (min-width: 768px) {
+  .app-nav {
+    position: fixed;
+    bottom: 0;
+    right: 0;
+    width: 80px;
+    flex-direction: column;
+    height: 100vh;
+    border-top: none;
+    border-left: 1px solid var(--color-border);
+    padding: var(--spacing-md) 0;
+  }
+
+  .app {
+    margin-right: 80px;
+  }
+
+  .nav-button {
+    width: 100%;
+    min-height: 70px;
+  }
+}
+
+@media (min-width: 1024px) {
+  .app-header {
+    padding: var(--spacing-xl);
+  }
+
+  .app-main {
+    padding: var(--spacing-xl);
+  }
+
+  .page {
+    max-width: 1400px;
+  }
+}
+
+/* Responsive Text */
+@media (max-width: 480px) {
+  .app-header h1 {
+    font-size: var(--font-size-xl);
+  }
+
+  .app-header .subtitle {
+    font-size: 0.75rem;
+  }
+
+  .app-main {
+    padding: var(--spacing-md);
+  }
+
+  .nav-button {
+    font-size: 1.25rem;
+    min-height: 48px;
+  }
+}
