@@ -3,9 +3,9 @@
 .today-dashboard {
   display: flex;
   flex-direction: column;
-  gap: 1rem;
+  gap: 1.5rem;
   padding: 1rem;
-  max-width: 800px;
+  max-width: 900px;
   margin: 0 auto;
 }
 
@@ -14,12 +14,12 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 1rem;
-  padding: 1.5rem;
+  gap: 2rem;
+  padding: 2rem;
   background: linear-gradient(135deg, #0052a3 0%, #0099cc 100%);
-  border-radius: 12px;
+  border-radius: var(--radius-lg);
   color: white;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 4px 12px rgba(0, 52, 163, 0.15);
 }
 
 .today-date {
@@ -142,12 +142,17 @@
   display: flex;
   align-items: flex-start;
   gap: 1rem;
-  padding: 1rem;
+  padding: 1.25rem;
   background: white;
-  border: 1px solid #e5e7eb;
-  border-radius: 8px;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
-  transition: all 0.2s ease;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.task-card:hover {
+  box-shadow: var(--shadow-md);
+  border-color: var(--color-accent-light);
 }
 
 .task-card:active {
@@ -210,14 +215,15 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 2px 8px rgba(16, 185, 129, 0.3);
-  transition: all 0.2s ease;
+  box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   min-height: 56px;
 }
 
 .complete-button:hover {
   background-color: #059669;
-  box-shadow: 0 4px 12px rgba(16, 185, 129, 0.4);
+  box-shadow: 0 8px 20px rgba(16, 185, 129, 0.4);
+  transform: scale(1.05);
 }
 
 .complete-button:active {
@@ -280,12 +286,18 @@
 .event-card {
   display: flex;
   gap: 1rem;
-  padding: 1rem;
+  padding: 1.25rem;
   background: white;
-  border: 1px solid #e5e7eb;
+  border: 1px solid var(--color-border);
   border-left: 4px solid #f59e0b;
-  border-radius: 8px;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.event-card:hover {
+  box-shadow: var(--shadow-md);
+  border-color: var(--color-border);
 }
 
 .event-emoji {
@@ -356,19 +368,22 @@
 
 .refresh-button {
   padding: 0.75rem 1.5rem;
-  background-color: #6b7280;
+  background-color: var(--color-text-secondary);
   color: white;
   border: none;
-  border-radius: 8px;
+  border-radius: var(--radius-lg);
   font-size: 0.95rem;
   font-weight: 600;
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   min-height: 48px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 .refresh-button:hover {
-  background-color: #4b5563;
+  background-color: var(--color-text-tertiary);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  transform: translateY(-2px);
 }
 
 .refresh-button:active {
