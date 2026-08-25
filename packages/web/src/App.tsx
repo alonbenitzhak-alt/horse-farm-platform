@@ -3,6 +3,7 @@ import Dashboard from './pages/Dashboard';
 import TodayDashboard from './pages/TodayDashboard';
 import Calendar from './pages/Calendar';
 import TaskManager from './pages/TaskManager';
+import TaskTemplates from './pages/TaskTemplates';
 import HorseRoster from './pages/HorseRoster';
 import PeopleRoster from './pages/PeopleRoster';
 import Settings from './pages/Settings';
@@ -17,6 +18,7 @@ import './styles/dashboard.css';
 import './styles/today-dashboard.css';
 import './styles/calendar.css';
 import './styles/task-manager.css';
+import './styles/task-templates.css';
 import './styles/roster.css';
 import './styles/settings.css';
 import './styles/horse-profile.css';
@@ -75,6 +77,9 @@ function AppContent() {
         {activeTab === 'tasks' && (
           <TaskManager farmId={farmId} currentUserId={userId} />
         )}
+        {activeTab === 'templates' && (
+          <TaskTemplates farmId={farmId} />
+        )}
         {activeTab === 'horses' && (
           <HorseRoster farmId={farmId} />
         )}
@@ -114,6 +119,13 @@ function AppContent() {
           title={t('nav.tasks')}
         >
           ✅
+        </button>
+        <button
+          className={`nav-button ${activeTab === 'templates' ? 'active' : ''}`}
+          onClick={() => setActiveTab('templates')}
+          title={t('nav.templates')}
+        >
+          📋
         </button>
         <button
           className={`nav-button ${activeTab === 'horses' ? 'active' : ''}`}

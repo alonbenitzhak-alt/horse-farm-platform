@@ -373,33 +373,6 @@ export async function deleteTask(taskId: string): Promise<void> {
 }
 
 // ============================================================================
-// Task Template Operations
-// ============================================================================
-
-export async function getTaskTemplates(farmId: string): Promise<TaskTemplate[]> {
-  const { data, error } = await getSupabaseClient()
-    .from('task_templates')
-    .select('*')
-    .eq('farm_id', farmId)
-    .eq('is_active', true)
-    .order('title');
-
-  if (error) throw error;
-  return data || [];
-}
-
-export async function createTaskTemplate(template: Partial<TaskTemplate>): Promise<TaskTemplate> {
-  const { data, error } = await getSupabaseClient()
-    .from('task_templates')
-    .insert([template])
-    .select()
-    .single();
-
-  if (error) throw error;
-  return data;
-}
-
-// ============================================================================
 // Event Operations
 // ============================================================================
 
@@ -721,3 +694,95 @@ export async function getFarmUsers(farmId: string): Promise<UserProfile[]> {
 export type HorseWithDetails = Horse & {
   owner?: Person;
 };
+
+// Task Template Functions
+export async function getTaskTemplates(farmId: string): Promise<TaskTemplate[]> {
+  const { data, error } = await getSupabaseClient()
+    .from('task_templates')
+    .select('*')
+    .eq('farm_id', farmId)
+    .eq('is_active', true)
+    .order('title');
+
+  if (error) throw error;
+  return data || [];
+}
+
+export async function getTaskTemplate(templateId: string): Promise<TaskTemplate> {
+  const { data, error } = await getSupabaseClient()
+    .from('task_templates')
+    .select('*')
+    .eq('id', templateId)
+    .single();
+
+  if (error) throw error;
+  return data;
+}
+
+export async function createTaskTemplate(template: Omit<TaskTemplate, 'id' | 'created_at' | 'updated_at'>): Promise<TaskTemplate> {
+  const { data, error } = await getSupabaseClient()
+    .from('task_templates')
+    .insert([template])
+    .select()
+    .single();
+
+  if (error) throw error;
+  return data;
+}
+
+export async function updateTaskTemplate(
+  templateId: string,
+  updates: Partial<Omit<TaskTemplate, 'id' | 'created_at' | 'updated_at'>>
+): Promise<TaskTemplate> {
+  const { data, error } = await getSupabaseClient()
+    .from('task_templates')
+    .update({ ...updates, updated_at: new Date().toISOString() })
+    .eq('id', templateId)
+    .select()
+    .single();
+
+  if (error) throw error;
+  return data;
+}
+
+export async function deleteTaskTemplate(templateId: string): Promise<void> {
+  const { error } = await getSupabaseClient()
+    .from('task_templates')
+    .delete()
+    .eq('id', templateId);
+
+  if (error) throw error;
+}
+
+export async function generateRecurringTasksFromTemplate(
+  templateId: string,
+  startDate: string,
+  endDate: string
+): Promise<Task[]> {
+  const template = await getTaskTemplate(templateId);
+
+  const { generateRecurringTasks } = await import('./recurring');
+
+  const tasksToCreate = generateRecurringTasks(
+    templateId,
+    template.frequency,
+    new Date(startDate),
+    new Date(endDate),
+    template.title,
+    template.farm_id,
+    template.assigned_to,
+    template.description
+  );
+
+  if (tasksToCreate.length === 0) {
+    return [];
+  }
+
+  const { data, error } = await getSupabaseClient()
+    .from('tasks')
+    .insert(tasksToCreate)
+    .select();
+
+  if (error) throw error;
+  return data || [];
+}

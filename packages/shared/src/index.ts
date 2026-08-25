@@ -11,3 +11,4 @@ export * from './api';
 
 // Utilities
 export * from './utils';
+export * from './recurring';

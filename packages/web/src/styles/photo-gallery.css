@@ -1,0 +1,143 @@
+.photo-gallery {
+  width: 100%;
+  max-width: 300px;
+  margin: 0 auto 1.5rem;
+}
+
+.photo-display {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 1;
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.horse-photo {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.photo-actions {
+  position: absolute;
+  top: 0.5rem;
+  right: 0.5rem;
+  display: flex;
+  gap: 0.5rem;
+  background: rgba(0, 0, 0, 0.5);
+  padding: 0.5rem;
+  border-radius: var(--radius-sm);
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+
+.photo-display:hover .photo-actions {
+  opacity: 1;
+}
+
+.change-button,
+.remove-button {
+  width: 36px;
+  height: 36px;
+  border-radius: var(--radius-sm);
+  border: none;
+  cursor: pointer;
+  font-size: 1.1rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+}
+
+.change-button {
+  background: rgba(255, 255, 255, 0.2);
+  color: white;
+}
+
+.change-button:hover:not(:disabled) {
+  background: rgba(255, 255, 255, 0.3);
+}
+
+.remove-button {
+  background: rgba(200, 50, 50, 0.5);
+  color: white;
+}
+
+.remove-button:hover:not(:disabled) {
+  background: rgba(200, 50, 50, 0.7);
+}
+
+.change-button:disabled,
+.remove-button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.photo-placeholder {
+  width: 100%;
+  aspect-ratio: 1;
+  border: 2px dashed var(--color-border);
+  border-radius: var(--radius-md);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  background: var(--color-section-bg);
+  transition: all 0.3s;
+}
+
+.photo-placeholder:hover {
+  border-color: var(--color-accent);
+  background: rgba(102, 126, 234, 0.05);
+}
+
+.placeholder-icon {
+  font-size: 2.5rem;
+  opacity: 0.6;
+}
+
+.upload-button {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  border: none;
+  padding: 0.75rem 1.5rem;
+  border-radius: var(--radius-sm);
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  white-space: nowrap;
+}
+
+.upload-button:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+}
+
+.upload-button:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+/* RTL Support */
+[dir="rtl"] .photo-actions {
+  right: auto;
+  left: 0.5rem;
+}
+
+@media (max-width: 768px) {
+  .photo-gallery {
+    max-width: 100%;
+  }
+
+  .photo-display {
+    max-width: 300px;
+    margin: 0 auto;
+  }
+
+  .photo-placeholder {
+    min-height: 250px;
+  }
+}
