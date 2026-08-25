@@ -1,6 +1,6 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import type { Person, PersonRole } from '@stableos/shared';
-import { getPeople, createPerson, updatePerson, deletePerson } from '@stableos/shared';
+import { getPeople, createPerson, updatePerson, deletePerson, subscribeToPeople } from '@stableos/shared';
 import { formatPersonRole } from '@stableos/shared';
 
 interface PeopleRosterProps {
@@ -26,6 +26,7 @@ export default function PeopleRoster({ farmId }: PeopleRosterProps) {
   const [editingPerson, setEditingPerson] = useState<Person | null>(null);
   const [deletingId, setDeletingId] = useState<string | null>(null);
   const [validationErrors, setValidationErrors] = useState<Record<string, string>>({});
+  const subscriptionRef = useRef<any>(null);
   const [formData, setFormData] = useState({
     name: '',
     role: 'staff' as PersonRole,
@@ -35,6 +36,16 @@ export default function PeopleRoster({ farmId }: PeopleRosterProps) {
 
   useEffect(() => {
     loadPeople();
+
+    try {
+      subscriptionRef.current = subscribeToPeople(farmId, setPeople);
+    } catch (err) {
+      console.warn('Real-time subscriptions unavailable:', err);
+    }
+
+    return () => {
+      subscriptionRef.current?.unsubscribe?.();
+    };
   }, [farmId]);
 
   async function loadPeople() {

@@ -1,6 +1,6 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import type { Horse } from '@stableos/shared';
-import { getHorses, createHorse, updateHorse, deleteHorse } from '@stableos/shared';
+import { getHorses, createHorse, updateHorse, deleteHorse, subscribeToHorses } from '@stableos/shared';
 
 interface HorseRosterProps {
   farmId: string;
@@ -15,6 +15,7 @@ export default function HorseRoster({ farmId }: HorseRosterProps) {
   const [editingHorse, setEditingHorse] = useState<Horse | null>(null);
   const [deletingId, setDeletingId] = useState<string | null>(null);
   const [validationErrors, setValidationErrors] = useState<Record<string, string>>({});
+  const subscriptionRef = useRef<any>(null);
   const [formData, setFormData] = useState({
     name: '',
     breed: '',
@@ -24,6 +25,16 @@ export default function HorseRoster({ farmId }: HorseRosterProps) {
 
   useEffect(() => {
     loadHorses();
+
+    try {
+      subscriptionRef.current = subscribeToHorses(farmId, setHorses);
+    } catch (err) {
+      console.warn('Real-time subscriptions unavailable:', err);
+    }
+
+    return () => {
+      subscriptionRef.current?.unsubscribe?.();
+    };
   }, [farmId]);
 
   async function loadHorses() {

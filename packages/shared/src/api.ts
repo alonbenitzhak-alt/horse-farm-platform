@@ -476,6 +476,48 @@ export function subscribeToEvents(
     .subscribe();
 }
 
+export function subscribeToPeople(
+  farmId: string,
+  callback: (people: Person[]) => void
+): ReturnType<SupabaseClient['channel']> {
+  return getSupabaseClient()
+    .channel(`people:${farmId}`)
+    .on(
+      'postgres_changes',
+      {
+        event: '*',
+        schema: 'public',
+        table: 'people',
+        filter: `farm_id=eq.${farmId}`,
+      },
+      () => {
+        getPeople(farmId).then(callback).catch(console.error);
+      }
+    )
+    .subscribe();
+}
+
+export function subscribeToHorses(
+  farmId: string,
+  callback: (horses: HorseWithDetails[]) => void
+): ReturnType<SupabaseClient['channel']> {
+  return getSupabaseClient()
+    .channel(`horses:${farmId}`)
+    .on(
+      'postgres_changes',
+      {
+        event: '*',
+        schema: 'public',
+        table: 'horses',
+        filter: `farm_id=eq.${farmId}`,
+      },
+      () => {
+        getHorses(farmId).then(callback).catch(console.error);
+      }
+    )
+    .subscribe();
+}
+
 // Type alias for convenience
 export type HorseWithDetails = Horse & {
   owner?: Person;

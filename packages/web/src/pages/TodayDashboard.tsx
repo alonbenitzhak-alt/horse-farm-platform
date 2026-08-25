@@ -1,6 +1,6 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import type { TaskWithDetails, EventWithAttendees } from '@stableos/shared';
-import { getTodayDashboard, completeTask } from '@stableos/shared';
+import { getTodayDashboard, completeTask, subscribeToTasks, subscribeToEvents } from '@stableos/shared';
 import { formatTime, getEventTypeEmoji } from '@stableos/shared';
 
 interface TodayDashboardProps {
@@ -15,9 +15,29 @@ export default function TodayDashboard({ farmId, currentUserId }: TodayDashboard
   const [totalCount, setTotalCount] = useState(0);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const subscriptionsRef = useRef<any[]>([]);
 
   useEffect(() => {
     loadTodayData();
+
+    try {
+      const taskSub = subscribeToTasks(farmId, (updatedTasks) => {
+        setTasks(updatedTasks);
+        const completedCount = updatedTasks.filter((t) => t.status === 'completed').length;
+        setCompletionCount(completedCount);
+        setTotalCount(updatedTasks.length);
+      });
+
+      const eventSub = subscribeToEvents(farmId, setEvents);
+
+      subscriptionsRef.current = [taskSub, eventSub];
+    } catch (err) {
+      console.warn('Real-time subscriptions unavailable:', err);
+    }
+
+    return () => {
+      subscriptionsRef.current.forEach(sub => sub?.unsubscribe?.());
+    };
   }, [farmId]);
 
   async function loadTodayData() {
