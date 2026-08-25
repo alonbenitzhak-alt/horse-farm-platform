@@ -108,6 +108,15 @@ export async function updatePerson(personId: string, updates: Partial<Person>): 
   return data;
 }
 
+export async function deletePerson(personId: string): Promise<void> {
+  const { error } = await getSupabaseClient()
+    .from('people')
+    .delete()
+    .eq('id', personId);
+
+  if (error) throw error;
+}
+
 // ============================================================================
 // Horse Operations
 // ============================================================================
@@ -156,6 +165,15 @@ export async function updateHorse(horseId: string, updates: Partial<Horse>): Pro
 
   if (error) throw error;
   return data;
+}
+
+export async function deleteHorse(horseId: string): Promise<void> {
+  const { error } = await getSupabaseClient()
+    .from('horses')
+    .delete()
+    .eq('id', horseId);
+
+  if (error) throw error;
 }
 
 // ============================================================================
@@ -264,6 +282,15 @@ export async function completeTask(
     completed_by: completedBy,
     notes: notes,
   });
+}
+
+export async function deleteTask(taskId: string): Promise<void> {
+  const { error } = await getSupabaseClient()
+    .from('tasks')
+    .delete()
+    .eq('id', taskId);
+
+  if (error) throw error;
 }
 
 // ============================================================================
@@ -444,6 +471,48 @@ export function subscribeToEvents(
       },
       () => {
         getEvents(farmId).then(callback).catch(console.error);
+      }
+    )
+    .subscribe();
+}
+
+export function subscribeToPeople(
+  farmId: string,
+  callback: (people: Person[]) => void
+): ReturnType<SupabaseClient['channel']> {
+  return getSupabaseClient()
+    .channel(`people:${farmId}`)
+    .on(
+      'postgres_changes',
+      {
+        event: '*',
+        schema: 'public',
+        table: 'people',
+        filter: `farm_id=eq.${farmId}`,
+      },
+      () => {
+        getPeople(farmId).then(callback).catch(console.error);
+      }
+    )
+    .subscribe();
+}
+
+export function subscribeToHorses(
+  farmId: string,
+  callback: (horses: HorseWithDetails[]) => void
+): ReturnType<SupabaseClient['channel']> {
+  return getSupabaseClient()
+    .channel(`horses:${farmId}`)
+    .on(
+      'postgres_changes',
+      {
+        event: '*',
+        schema: 'public',
+        table: 'horses',
+        filter: `farm_id=eq.${farmId}`,
+      },
+      () => {
+        getHorses(farmId).then(callback).catch(console.error);
       }
     )
     .subscribe();

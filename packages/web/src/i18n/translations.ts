@@ -1,0 +1,354 @@
+export type LanguageCode = 'en' | 'he';
+
+export const translations = {
+  en: {
+    // App Header
+    appTitle: 'StableOS',
+    appSubtitle: 'Farm Operations Dashboard',
+
+    // Navigation
+    nav: {
+      today: 'Today',
+      calendar: 'Calendar',
+      tasks: 'Tasks',
+      horses: 'Horses',
+      people: 'People',
+      settings: 'Settings',
+    },
+
+    // People Roster
+    peopleRoster: {
+      title: 'Team Members',
+      addPerson: 'Add Person',
+      addFirstMember: 'Add Your First Member',
+      noMembers: 'No team members yet',
+      notFound: 'No team members found',
+      searchPlaceholder: 'Search by name, email, or phone...',
+      editPerson: 'Edit Person',
+      addTeamMember: 'Add Team Member',
+      name: 'Name',
+      role: 'Role',
+      phone: 'Phone',
+      email: 'Email',
+      required: '*',
+      nameRequired: 'Name is required',
+      invalidEmail: 'Please enter a valid email address',
+      cancel: 'Cancel',
+      update: 'Update Person',
+      add: 'Add Person',
+      saving: 'Saving...',
+      updatedSuccess: 'Person updated successfully',
+      addedSuccess: 'Person added successfully',
+      deleteConfirm: 'Are you sure you want to delete {name}? This action cannot be undone.',
+      deletedSuccess: '{name} deleted successfully',
+      failedToLoad: 'Failed to load people',
+      failedToSave: 'Failed to save person',
+      failedToDelete: 'Failed to delete person',
+      retry: 'Retry',
+      loading: 'Loading team members...',
+      refresh: 'Refresh',
+    },
+
+    // Horse Roster
+    horseRoster: {
+      title: 'Horses',
+      addHorse: 'Add Horse',
+      addFirstHorse: 'Add Your First Horse',
+      noHorses: 'No horses yet',
+      notFound: 'No horses found',
+      searchPlaceholder: 'Search by name, breed, or color...',
+      editHorse: 'Edit Horse',
+      addNewHorse: 'Add Horse',
+      horseName: 'Horse Name',
+      breed: 'Breed',
+      color: 'Color',
+      age: 'Age (years)',
+      nameRequired: 'Horse name is required',
+      invalidAge: 'Please enter a valid age',
+      cancel: 'Cancel',
+      update: 'Update Horse',
+      add: 'Add Horse',
+      saving: 'Saving...',
+      updatedSuccess: 'Horse updated successfully',
+      addedSuccess: 'Horse added successfully',
+      deleteConfirm: 'Are you sure you want to delete {name}? This action cannot be undone.',
+      deletedSuccess: '{name} deleted successfully',
+      failedToLoad: 'Failed to load horses',
+      failedToSave: 'Failed to save horse',
+      failedToDelete: 'Failed to delete horse',
+      retry: 'Retry',
+      loading: 'Loading horses...',
+      refresh: 'Refresh',
+    },
+
+    // Task Manager
+    taskManager: {
+      title: 'Tasks',
+      newTask: 'New Task',
+      all: 'All',
+      pending: 'Pending',
+      inProgress: 'In Progress',
+      completed: 'Completed',
+      noTasksPending: 'No pending tasks',
+      noTasksInProgress: 'No in progress tasks',
+      noTasksCompleted: 'No completed tasks',
+      notFound: 'No tasks found',
+      searchPlaceholder: 'Search by title or description...',
+      editTask: 'Edit Task',
+      newTaskForm: 'New Task',
+      taskTitle: 'Task Title',
+      description: 'Description',
+      descriptionOptional: 'Enter task description (optional)',
+      date: 'Date',
+      time: 'Time (optional)',
+      assignTo: 'Assign To',
+      unassigned: 'Unassigned',
+      status: 'Status',
+      horsesInvolved: 'Horses Involved',
+      noHorses: 'No horses available',
+      titleRequired: 'Task title is required',
+      dateRequired: 'Date is required',
+      cancel: 'Cancel',
+      update: 'Update Task',
+      create: 'Create Task',
+      saving: 'Saving...',
+      updatedSuccess: 'Task updated successfully',
+      createdSuccess: 'Task created successfully',
+      deleteConfirm: 'Are you sure you want to delete "{title}"? This action cannot be undone.',
+      deletedSuccess: '"{title}" deleted successfully',
+      failedToLoad: 'Failed to load data',
+      failedToSave: 'Failed to save task',
+      failedToDelete: 'Failed to delete task',
+      retry: 'Retry',
+      loading: 'Loading tasks...',
+      refresh: 'Refresh',
+    },
+
+    // Settings
+    settings: {
+      title: 'Settings',
+      language: 'Language',
+      English: 'English',
+      Hebrew: 'עברית',
+      darkMode: 'Dark Mode',
+      notifications: 'Notifications',
+    },
+
+    // Calendar
+    calendar: {
+      title: 'Calendar',
+      month: 'Month',
+      week: 'Week',
+      previous: 'Previous',
+      next: 'Next',
+      today: 'Today',
+      loading: 'Loading calendar...',
+      failedToLoad: 'Failed to load calendar',
+      retry: 'Retry',
+      noItems: 'No tasks or events',
+    },
+
+    // Today Dashboard
+    todayDashboard: {
+      title: 'Today Dashboard',
+      progress: 'Progress',
+      complete: 'Complete',
+      tasks: 'Tasks',
+      incompleteTasks: 'Incomplete Tasks',
+      completedTasks: 'Completed Tasks',
+      events: 'Events',
+      noTasks: 'No tasks for today',
+      noEvents: 'No events for today',
+      markComplete: 'Mark Complete',
+      userIdRequired: 'User ID required to complete task',
+      failedToLoad: 'Failed to load today\'s data',
+      failedToComplete: 'Failed to complete task',
+      retry: 'Retry',
+    },
+  },
+
+  he: {
+    // App Header
+    appTitle: 'StableOS',
+    appSubtitle: 'לוח בקרה לניהול החווה',
+
+    // Navigation
+    nav: {
+      today: 'היום',
+      calendar: 'לוח שנה',
+      tasks: 'משימות',
+      horses: 'סוסים',
+      people: 'צוות',
+      settings: 'הגדרות',
+    },
+
+    // People Roster
+    peopleRoster: {
+      title: '👥 חברי צוות',
+      addPerson: '➕ הוסף אדם',
+      addFirstMember: '➕ הוסף חבר ראשון',
+      noMembers: 'עדיין אין חברי צוות',
+      notFound: 'לא נמצאו חברי צוות',
+      searchPlaceholder: 'חפש לפי שם, דוא"ל או טלפון...',
+      editPerson: 'ערוך אדם',
+      addTeamMember: 'הוסף חבר צוות',
+      name: 'שם',
+      role: 'תפקיד',
+      phone: 'טלפון',
+      email: 'דוא"ל',
+      required: '*',
+      nameRequired: 'שם נדרש',
+      invalidEmail: 'אנא הזן כתובת דוא"ל תקינה',
+      cancel: 'ביטול',
+      update: 'עדכן אדם',
+      add: 'הוסף אדם',
+      saving: 'שומר...',
+      updatedSuccess: 'אדם עודכן בהצלחה',
+      addedSuccess: 'אדם נוסף בהצלחה',
+      deleteConfirm: 'האם אתה בטוח שברצונך למחוק את {name}? לא ניתן להשיב פעולה זו.',
+      deletedSuccess: '{name} נמחק בהצלחה',
+      failedToLoad: 'כשל בטעינת נתונים',
+      failedToSave: 'כשל בשמירת אדם',
+      failedToDelete: 'כשל במחיקת אדם',
+      retry: 'נסה שנית',
+      loading: 'טוען חברי צוות...',
+      refresh: 'רענן',
+    },
+
+    // Horse Roster
+    horseRoster: {
+      title: '🐎 סוסים',
+      addHorse: '➕ הוסף סוס',
+      addFirstHorse: '➕ הוסף סוס ראשון',
+      noHorses: 'אין עדיין סוסים',
+      notFound: 'לא נמצאו סוסים',
+      searchPlaceholder: 'חפש לפי שם, גזע או צבע...',
+      editHorse: 'ערוך סוס',
+      addNewHorse: 'הוסף סוס',
+      horseName: 'שם הסוס',
+      breed: 'גזע',
+      color: 'צבע',
+      age: 'גיל (שנים)',
+      nameRequired: 'שם הסוס נדרש',
+      invalidAge: 'אנא הזן גיל תקין',
+      cancel: 'ביטול',
+      update: 'עדכן סוס',
+      add: 'הוסף סוס',
+      saving: 'שומר...',
+      updatedSuccess: 'סוס עודכן בהצלחה',
+      addedSuccess: 'סוס נוסף בהצלחה',
+      deleteConfirm: 'האם אתה בטוח שברצונך למחוק את {name}? לא ניתן להשיב פעולה זו.',
+      deletedSuccess: '{name} נמחק בהצלחה',
+      failedToLoad: 'כשל בטעינת סוסים',
+      failedToSave: 'כשל בשמירת סוס',
+      failedToDelete: 'כשל במחיקת סוס',
+      retry: 'נסה שנית',
+      loading: 'טוען סוסים...',
+      refresh: 'רענן',
+    },
+
+    // Task Manager
+    taskManager: {
+      title: 'משימות',
+      newTask: '➕ משימה חדשה',
+      all: 'הכל',
+      pending: 'ממתין',
+      inProgress: 'בתהליך',
+      completed: 'הושלם',
+      noTasksPending: 'אין משימות ממתינות',
+      noTasksInProgress: 'אין משימות בתהליך',
+      noTasksCompleted: 'אין משימות הושלמו',
+      notFound: 'לא נמצאו משימות',
+      searchPlaceholder: 'חפש לפי כותרת או תיאור...',
+      editTask: 'ערוך משימה',
+      newTaskForm: 'משימה חדשה',
+      taskTitle: 'כותרת המשימה',
+      description: 'תיאור',
+      descriptionOptional: 'הזן תיאור משימה (אופציונלי)',
+      date: 'תאריך',
+      time: 'שעה (אופציונלי)',
+      assignTo: 'הקצה ל',
+      unassigned: 'לא הוקצה',
+      status: 'סטטוס',
+      horsesInvolved: 'סוסים מעורבים',
+      noHorses: 'אין סוסים זמינים',
+      titleRequired: 'כותרת משימה נדרשת',
+      dateRequired: 'תאריך נדרש',
+      cancel: 'ביטול',
+      update: 'עדכן משימה',
+      create: 'צור משימה',
+      saving: 'שומר...',
+      updatedSuccess: 'משימה עודכנה בהצלחה',
+      createdSuccess: 'משימה נוצרה בהצלחה',
+      deleteConfirm: 'האם אתה בטוח שברצונך למחוק את "{title}"? לא ניתן להשיב פעולה זו.',
+      deletedSuccess: '"{title}" נמחק בהצלחה',
+      failedToLoad: 'כשל בטעינת נתונים',
+      failedToSave: 'כשל בשמירת משימה',
+      failedToDelete: 'כשל במחיקת משימה',
+      retry: 'נסה שנית',
+      loading: 'טוען משימות...',
+      refresh: 'רענן',
+    },
+
+    // Settings
+    settings: {
+      title: 'הגדרות',
+      language: 'שפה',
+      English: 'English',
+      Hebrew: 'עברית',
+      darkMode: 'מצב אפל',
+      notifications: 'התראות',
+    },
+
+    // Calendar
+    calendar: {
+      title: 'לוח שנה',
+      month: 'חודש',
+      week: 'שבוע',
+      previous: 'הקודם',
+      next: 'הבא',
+      today: 'היום',
+      loading: 'טוען לוח שנה...',
+      failedToLoad: 'כשל בטעינת לוח השנה',
+      retry: 'נסה שנית',
+      noItems: 'אין משימות או אירועים',
+    },
+
+    // Today Dashboard
+    todayDashboard: {
+      title: 'לוח בקרה היומי',
+      progress: 'התקדמות',
+      complete: 'הושלם',
+      tasks: 'משימות',
+      incompleteTasks: 'משימות לא הושלמו',
+      completedTasks: 'משימות הושלמו',
+      events: 'אירועים',
+      noTasks: 'אין משימות לכיום',
+      noEvents: 'אין אירועים לכיום',
+      markComplete: 'סמן כהושלם',
+      userIdRequired: 'נדרש מזהה משתמש כדי להשלים משימה',
+      failedToLoad: 'כשל בטעינת נתוני היום',
+      failedToComplete: 'כשל בהשלמת משימה',
+      retry: 'נסה שנית',
+    },
+  },
+};
+
+export function t(key: string, lang: LanguageCode, params?: Record<string, string>): string {
+  const keys = key.split('.');
+  let value: any = translations[lang];
+
+  for (const k of keys) {
+    value = value?.[k];
+  }
+
+  if (typeof value !== 'string') {
+    return key;
+  }
+
+  if (params) {
+    return value.replace(/{(\w+)}/g, (_, param) => params[param] || `{${param}}`);
+  }
+
+  return value;
+}

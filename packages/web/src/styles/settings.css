@@ -11,15 +11,17 @@
 
 /* Header */
 .settings-header {
-  padding: 1rem;
-  background: linear-gradient(135deg, #2563eb 0%, #1e40af 100%);
-  border-radius: 12px;
+  padding: 1.5rem;
+  background: linear-gradient(135deg, #0052a3 0%, #0099cc 100%);
+  border-radius: var(--radius-lg);
   color: white;
+  box-shadow: 0 2px 8px rgba(0, 52, 163, 0.1);
 }
 
 .settings-header h2 {
   margin: 0;
   font-size: 1.5rem;
+  font-weight: 700;
 }
 
 /* Settings Sections */
@@ -31,10 +33,15 @@
 
 .settings-section {
   background: white;
-  border: 1px solid #e5e7eb;
-  border-radius: 12px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
   padding: 1.5rem;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+  box-shadow: var(--shadow-sm);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.settings-section:hover {
+  box-shadow: var(--shadow-md);
 }
 
 .section-title {
@@ -90,12 +97,45 @@
   color: #9ca3af;
 }
 
+/* Language Buttons */
+.language-buttons {
+  display: flex;
+  gap: 1rem;
+  padding: 1rem 0;
+}
+
+.language-button {
+  flex: 1;
+  padding: 0.75rem 1.5rem;
+  border: 2px solid var(--color-border);
+  background: white;
+  color: var(--color-text-secondary);
+  border-radius: var(--radius-lg);
+  font-weight: 600;
+  font-size: 0.95rem;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.language-button:hover {
+  border-color: var(--color-accent);
+  color: var(--color-accent);
+  background-color: rgba(0, 82, 163, 0.05);
+}
+
+.language-button.active {
+  border-color: var(--color-accent);
+  background: var(--color-accent);
+  color: white;
+  box-shadow: 0 2px 8px rgba(0, 82, 163, 0.2);
+}
+
 /* Toggle Checkbox */
 .toggle-checkbox {
   width: 50px;
   height: 28px;
   cursor: pointer;
-  accent-color: #2563eb;
+  accent-color: var(--color-accent);
 }
 
 .toggle-checkbox:disabled {
@@ -123,10 +163,15 @@
 }
 
 .features-list {
-  background-color: #f9fafb;
-  border-left: 3px solid #2563eb;
-  padding: 1rem;
-  border-radius: 4px;
+  background-color: var(--color-section-bg);
+  border-left: 4px solid var(--color-accent);
+  padding: 1.25rem;
+  border-radius: var(--radius-lg);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.features-list:hover {
+  box-shadow: var(--shadow-sm);
 }
 
 .features-list h4 {
@@ -156,10 +201,15 @@
 
 /* Development Info */
 .dev-info {
-  background-color: #fef3c7;
-  border-left: 3px solid #f59e0b;
-  padding: 1rem;
-  border-radius: 4px;
+  background-color: var(--color-warning-light);
+  border-left: 4px solid var(--color-warning);
+  padding: 1.25rem;
+  border-radius: var(--radius-lg);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.dev-info:hover {
+  box-shadow: var(--shadow-sm);
 }
 
 .dev-note {
@@ -196,10 +246,15 @@
 }
 
 .help-item {
-  background-color: #f0fdf4;
-  border-left: 3px solid #10b981;
-  padding: 1rem;
-  border-radius: 4px;
+  background-color: var(--color-success-light);
+  border-left: 4px solid var(--color-success);
+  padding: 1.25rem;
+  border-radius: var(--radius-lg);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.help-item:hover {
+  box-shadow: var(--shadow-sm);
 }
 
 .help-item h4 {
@@ -239,10 +294,10 @@
 .settings-footer {
   text-align: center;
   padding: 2rem 1rem;
-  color: #9ca3af;
+  color: var(--color-text-tertiary);
   font-size: 0.9rem;
-  border-top: 1px solid #e5e7eb;
-  margin-top: 1rem;
+  border-top: 1px solid var(--color-border);
+  margin-top: 2rem;
 }
 
 .footer-text {

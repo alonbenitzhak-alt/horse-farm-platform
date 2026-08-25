@@ -1,7 +1,9 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import type { Person, PersonRole } from '@stableos/shared';
-import { getPeople, createPerson, updatePerson } from '@stableos/shared';
+import { getPeople, createPerson, updatePerson, deletePerson, subscribeToPeople } from '@stableos/shared';
 import { formatPersonRole } from '@stableos/shared';
+import { success, error } from '../utils/toast';
+import { useTranslation } from '../hooks/useTranslation';
 
 interface PeopleRosterProps {
   farmId: string;
@@ -18,11 +20,17 @@ const ROLE_EMOJI: Record<PersonRole, string> = {
 };
 
 export default function PeopleRoster({ farmId }: PeopleRosterProps) {
+  const { t } = useTranslation();
   const [people, setPeople] = useState<Person[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [showForm, setShowForm] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
   const [editingPerson, setEditingPerson] = useState<Person | null>(null);
+  const [deletingId, setDeletingId] = useState<string | null>(null);
+  const [validationErrors, setValidationErrors] = useState<Record<string, string>>({});
+  const [searchQuery, setSearchQuery] = useState('');
+  const subscriptionRef = useRef<any>(null);
   const [formData, setFormData] = useState({
     name: '',
     role: 'staff' as PersonRole,
@@ -32,6 +40,16 @@ export default function PeopleRoster({ farmId }: PeopleRosterProps) {
 
   useEffect(() => {
     loadPeople();
+
+    try {
+      subscriptionRef.current = subscribeToPeople(farmId, setPeople);
+    } catch (err) {
+      console.warn('Real-time subscriptions unavailable:', err);
+    }
+
+    return () => {
+      subscriptionRef.current?.unsubscribe?.();
+    };
   }, [farmId]);
 
   async function loadPeople() {
@@ -41,7 +59,7 @@ export default function PeopleRoster({ farmId }: PeopleRosterProps) {
       const data = await getPeople(farmId);
       setPeople(data || []);
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to load people');
+      setError(err instanceof Error ? err.message : t('peopleRoster.failedToLoad'));
       console.error('Error loading people:', err);
     } finally {
       setLoading(false);
@@ -69,13 +87,27 @@ export default function PeopleRoster({ farmId }: PeopleRosterProps) {
     setShowForm(true);
   }
 
+  function validateForm(): boolean {
+    const errors: Record<string, string> = {};
+
+    if (!formData.name.trim()) {
+      errors.name = t('peopleRoster.nameRequired');
+    }
+    if (formData.email && !formData.email.includes('@')) {
+      errors.email = t('peopleRoster.invalidEmail');
+    }
+
+    setValidationErrors(errors);
+    return Object.keys(errors).length === 0;
+  }
+
   async function handleSubmit(e: any) {
     e.preventDefault();
+    if (!validateForm()) return;
+
     try {
-      if (!formData.name.trim()) {
-        alert('Name is required');
-        return;
-      }
+      setSubmitting(true);
+      setError(null);
 
       if (editingPerson) {
         await updatePerson(editingPerson.id, {
@@ -96,20 +128,52 @@ export default function PeopleRoster({ farmId }: PeopleRosterProps) {
       }
 
       setShowForm(false);
+      setValidationErrors({});
+      success(editingPerson ? t('peopleRoster.updatedSuccess') : t('peopleRoster.addedSuccess'));
       loadPeople();
     } catch (err) {
       console.error('Error saving person:', err);
-      alert('Failed to save person');
+      const errorMsg = err instanceof Error ? err.message : t('peopleRoster.failedToSave');
+      setError(errorMsg);
+      error(errorMsg);
+    } finally {
+      setSubmitting(false);
     }
   }
+
+  async function handleDelete(personId: string, personName: string) {
+    if (!window.confirm(t('peopleRoster.deleteConfirm', { name: personName }))) {
+      return;
+    }
+
+    try {
+      setDeletingId(personId);
+      await deletePerson(personId);
+      success(t('peopleRoster.deletedSuccess', { name: personName }));
+      loadPeople();
+    } catch (err) {
+      console.error('Error deleting person:', err);
+      const errorMsg = err instanceof Error ? err.message : t('peopleRoster.failedToDelete');
+      setError(errorMsg);
+      error(errorMsg);
+    } finally {
+      setDeletingId(null);
+    }
+  }
+
+  const filteredPeople = people.filter(person =>
+    person.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    (person.email && person.email.toLowerCase().includes(searchQuery.toLowerCase())) ||
+    (person.phone && person.phone.includes(searchQuery))
+  );
 
   return (
     <div className="roster">
       {/* Header */}
       <div className="roster-header">
-        <h2>👥 Team Members</h2>
+        <h2>{t('peopleRoster.title')}</h2>
         <button className="create-button" onClick={() => handleOpenForm()}>
-          ➕ Add Person
+          {t('peopleRoster.addPerson')}
         </button>
       </div>
 
@@ -117,12 +181,12 @@ export default function PeopleRoster({ farmId }: PeopleRosterProps) {
         <div className="error-message">
           {error}
           <button onClick={loadPeople} className="retry-button">
-            Retry
+            {t('peopleRoster.retry')}
           </button>
         </div>
       )}
 
-      {loading && <div className="loading">Loading team members...</div>}
+      {loading && <div className="loading">{t('peopleRoster.loading')}</div>}
 
       {!loading && (
         <>
@@ -131,7 +195,7 @@ export default function PeopleRoster({ farmId }: PeopleRosterProps) {
             <div className="modal-overlay" onClick={() => setShowForm(false)}>
               <div className="modal" onClick={e => e.stopPropagation()}>
                 <div className="modal-header">
-                  <h3>{editingPerson ? 'Edit Person' : 'Add Team Member'}</h3>
+                  <h3>{editingPerson ? t('peopleRoster.editPerson') : t('peopleRoster.addTeamMember')}</h3>
                   <button
                     className="close-button"
                     onClick={() => setShowForm(false)}
@@ -142,18 +206,22 @@ export default function PeopleRoster({ farmId }: PeopleRosterProps) {
 
                 <form onSubmit={handleSubmit} className="form">
                   <div className="form-group">
-                    <label>Name *</label>
+                    <label>{t('peopleRoster.name')} {t('peopleRoster.required')}</label>
                     <input
                       type="text"
                       value={formData.name}
                       onChange={e => setFormData(prev => ({ ...prev, name: e.target.value }))}
-                      placeholder="Enter name"
+                      placeholder={t('peopleRoster.name')}
                       required
+                      className={validationErrors.name ? 'error' : ''}
                     />
+                    {validationErrors.name && (
+                      <span className="error-text">{t('peopleRoster.nameRequired')}</span>
+                    )}
                   </div>
 
                   <div className="form-group">
-                    <label>Role</label>
+                    <label>{t('peopleRoster.role')}</label>
                     <select
                       value={formData.role}
                       onChange={e => setFormData(prev => ({ ...prev, role: e.target.value as PersonRole }))}
@@ -167,23 +235,27 @@ export default function PeopleRoster({ farmId }: PeopleRosterProps) {
                   </div>
 
                   <div className="form-group">
-                    <label>Phone</label>
+                    <label>{t('peopleRoster.phone')}</label>
                     <input
                       type="tel"
                       value={formData.phone}
                       onChange={e => setFormData(prev => ({ ...prev, phone: e.target.value }))}
-                      placeholder="Enter phone number"
+                      placeholder={t('peopleRoster.phone')}
                     />
                   </div>
 
                   <div className="form-group">
-                    <label>Email</label>
+                    <label>{t('peopleRoster.email')}</label>
                     <input
                       type="email"
                       value={formData.email}
                       onChange={e => setFormData(prev => ({ ...prev, email: e.target.value }))}
-                      placeholder="Enter email address"
+                      placeholder={t('peopleRoster.email')}
+                      className={validationErrors.email ? 'error' : ''}
                     />
+                    {validationErrors.email && (
+                      <span className="error-text">{t('peopleRoster.invalidEmail')}</span>
+                    )}
                   </div>
 
                   <div className="form-actions">
@@ -191,11 +263,16 @@ export default function PeopleRoster({ farmId }: PeopleRosterProps) {
                       type="button"
                       className="cancel-button"
                       onClick={() => setShowForm(false)}
+                      disabled={submitting}
                     >
-                      Cancel
+                      {t('peopleRoster.cancel')}
                     </button>
-                    <button type="submit" className="submit-button">
-                      {editingPerson ? 'Update Person' : 'Add Person'}
+                    <button
+                      type="submit"
+                      className="submit-button"
+                      disabled={submitting}
+                    >
+                      {submitting ? `⏳ ${t('peopleRoster.saving')}` : editingPerson ? t('peopleRoster.update') : t('peopleRoster.add')}
                     </button>
                   </div>
                 </form>
@@ -203,10 +280,32 @@ export default function PeopleRoster({ farmId }: PeopleRosterProps) {
             </div>
           )}
 
+          {/* Search Bar */}
+          {people.length > 0 && (
+            <div className="search-container">
+              <input
+                type="text"
+                className="search-input"
+                placeholder={`🔍 ${t('peopleRoster.searchPlaceholder')}`}
+                value={searchQuery}
+                onChange={e => setSearchQuery(e.target.value)}
+              />
+              {searchQuery && (
+                <button
+                  className="search-clear"
+                  onClick={() => setSearchQuery('')}
+                  title="Clear search"
+                >
+                  ✕
+                </button>
+              )}
+            </div>
+          )}
+
           {/* People Grid */}
-          {people.length > 0 ? (
+          {filteredPeople.length > 0 ? (
             <div className="roster-grid">
-              {people.map(person => (
+              {filteredPeople.map(person => (
                 <div key={person.id} className="roster-card">
                   <div className="card-emoji">{ROLE_EMOJI[person.role]}</div>
                   <div className="card-content">
@@ -219,22 +318,38 @@ export default function PeopleRoster({ farmId }: PeopleRosterProps) {
                       <div className="card-detail">✉️ {person.email}</div>
                     )}
                   </div>
-                  <button
-                    className="edit-button"
-                    onClick={() => handleOpenForm(person)}
-                  >
-                    ✎
-                  </button>
+                  <div className="card-actions">
+                    <button
+                      className="edit-button"
+                      onClick={() => handleOpenForm(person)}
+                      disabled={deletingId === person.id}
+                      title="Edit person"
+                    >
+                      ✎
+                    </button>
+                    <button
+                      className="delete-button"
+                      onClick={() => handleDelete(person.id, person.name)}
+                      disabled={deletingId !== null}
+                      title="Delete person"
+                    >
+                      {deletingId === person.id ? '⏳' : '🗑️'}
+                    </button>
+                  </div>
                 </div>
               ))}
             </div>
           ) : (
             <div className="empty-state">
               <div className="empty-icon">👥</div>
-              <div className="empty-text">No team members yet</div>
-              <button className="create-button" onClick={() => handleOpenForm()}>
-                ➕ Add Your First Member
-              </button>
+              <div className="empty-text">
+                {searchQuery ? t('peopleRoster.notFound') : t('peopleRoster.noMembers')}
+              </div>
+              {!searchQuery && (
+                <button className="create-button" onClick={() => handleOpenForm()}>
+                  {t('peopleRoster.addFirstMember')}
+                </button>
+              )}
             </div>
           )}
         </>
@@ -243,7 +358,7 @@ export default function PeopleRoster({ farmId }: PeopleRosterProps) {
       {/* Refresh button */}
       <div className="refresh-button-container">
         <button onClick={loadPeople} className="refresh-button">
-          🔄 Refresh
+          🔄 {t('peopleRoster.refresh')}
         </button>
       </div>
     </div>

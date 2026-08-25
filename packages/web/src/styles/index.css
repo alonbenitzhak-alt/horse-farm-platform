@@ -1,21 +1,27 @@
 /* CSS Variables - Light Theme */
 :root {
-  --color-bg: #ffffff;
+  --color-bg: #fafbfc;
   --color-text: #1a1a1a;
-  --color-text-secondary: #666666;
-  --color-border: #e0e0e0;
-  --color-accent: #2563eb;
-  --color-accent-hover: #1d4ed8;
+  --color-text-secondary: #6b7280;
+  --color-text-tertiary: #9ca3af;
+  --color-border: #e5e7eb;
+  --color-accent: #0052a3;
+  --color-accent-hover: #003d7a;
+  --color-accent-light: #0099cc;
   --color-success: #16a34a;
+  --color-success-light: #dcfce7;
   --color-warning: #ea580c;
+  --color-warning-light: #fed7aa;
   --color-error: #dc2626;
-  --color-section-bg: #f9fafb;
+  --color-error-light: #fee2e2;
+  --color-section-bg: #f0f7fb;
 
   --spacing-xs: 0.25rem;
   --spacing-sm: 0.5rem;
   --spacing-md: 1rem;
   --spacing-lg: 1.5rem;
   --spacing-xl: 2rem;
+  --spacing-2xl: 3rem;
 
   --font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
     'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
@@ -29,25 +35,32 @@
   --radius-sm: 0.375rem;
   --radius-md: 0.5rem;
   --radius-lg: 0.75rem;
+  --radius-xl: 1rem;
 
   --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
-  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.1);
+  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -4px rgba(0, 0, 0, 0.1);
+  --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
 }
 
 /* Dark Theme */
 @media (prefers-color-scheme: dark) {
   :root {
-    --color-bg: #1a1a1a;
-    --color-text: #ffffff;
-    --color-text-secondary: #a0a0a0;
-    --color-border: #404040;
-    --color-accent: #60a5fa;
-    --color-accent-hover: #3b82f6;
+    --color-bg: #0f172a;
+    --color-text: #f1f5f9;
+    --color-text-secondary: #cbd5e1;
+    --color-text-tertiary: #94a3b8;
+    --color-border: #1e293b;
+    --color-accent: #0099cc;
+    --color-accent-hover: #00b8e6;
+    --color-accent-light: #38bdf8;
     --color-success: #22c55e;
+    --color-success-light: #1e3a1f;
     --color-warning: #f97316;
+    --color-warning-light: #3f2a1f;
     --color-error: #ef4444;
-    --color-section-bg: #2a2a2a;
+    --color-error-light: #3f1f1f;
+    --color-section-bg: #1e293b;
   }
 }
 
@@ -101,9 +114,10 @@ button {
   font-size: inherit;
   background: none;
   padding: 0;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-button:focus {
+button:focus-visible {
   outline: 2px solid var(--color-accent);
   outline-offset: 2px;
 }

@@ -9,21 +9,39 @@
 
 /* Header */
 .app-header {
-  background: var(--color-accent);
+  background: linear-gradient(135deg, #0052a3 0%, #0099cc 100%);
   color: white;
-  padding: var(--spacing-lg);
-  text-align: center;
-  border-bottom: 1px solid var(--color-border);
+  padding: var(--spacing-lg) var(--spacing-xl);
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-lg);
+  border-bottom: 2px solid rgba(0, 153, 204, 0.2);
+  box-shadow: 0 2px 8px rgba(0, 52, 163, 0.1);
+}
+
+.app-header-logo {
+  width: 50px;
+  height: 50px;
+  flex-shrink: 0;
+  opacity: 0.95;
+}
+
+.app-header-content {
+  flex: 1;
 }
 
 .app-header h1 {
   font-size: var(--font-size-2xl);
-  margin-bottom: var(--spacing-sm);
+  margin: 0;
+  font-weight: 700;
+  letter-spacing: -0.5px;
 }
 
 .app-header .subtitle {
   font-size: var(--font-size-sm);
-  opacity: 0.9;
+  opacity: 0.85;
+  margin: var(--spacing-xs) 0 0 0;
+  font-weight: 500;
 }
 
 /* Main Content */

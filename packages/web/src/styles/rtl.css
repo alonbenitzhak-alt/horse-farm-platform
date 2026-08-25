@@ -1,0 +1,166 @@
+/* RTL Support for Hebrew */
+
+html[dir="rtl"] {
+  direction: rtl;
+}
+
+/* App Navigation */
+html[dir="rtl"] .app-nav {
+  flex-direction: row-reverse;
+}
+
+/* Roster Styles */
+html[dir="rtl"] .roster-header {
+  flex-direction: row-reverse;
+}
+
+html[dir="rtl"] .roster-header h2 {
+  text-align: right;
+}
+
+html[dir="rtl"] .search-clear {
+  left: 0.75rem;
+  right: auto;
+}
+
+html[dir="rtl"] .search-input {
+  padding: 0.75rem 1rem 0.75rem 2.5rem;
+}
+
+/* Modal */
+html[dir="rtl"] .modal-header {
+  flex-direction: row-reverse;
+}
+
+html[dir="rtl"] .modal-header h3 {
+  text-align: right;
+}
+
+html[dir="rtl"] .close-button {
+  margin-right: auto;
+  margin-left: 0;
+}
+
+/* Form */
+html[dir="rtl"] .form-group {
+  text-align: right;
+}
+
+html[dir="rtl"] .form-group label {
+  text-align: right;
+}
+
+html[dir="rtl"] .error-text {
+  text-align: right;
+}
+
+html[dir="rtl"] .form-actions {
+  flex-direction: row-reverse;
+}
+
+/* Roster Card */
+html[dir="rtl"] .roster-card {
+  flex-direction: row-reverse;
+  text-align: right;
+}
+
+html[dir="rtl"] .card-actions {
+  flex-direction: row-reverse;
+}
+
+html[dir="rtl"] .card-emoji {
+  margin-left: 0;
+  margin-right: 1rem;
+}
+
+/* Task Item */
+html[dir="rtl"] .task-item {
+  flex-direction: row-reverse;
+}
+
+html[dir="rtl"] .task-item-title {
+  text-align: right;
+}
+
+html[dir="rtl"] .task-item-description {
+  text-align: right;
+}
+
+html[dir="rtl"] .task-item-meta {
+  flex-direction: row-reverse;
+}
+
+html[dir="rtl"] .task-assigned {
+  text-align: right;
+}
+
+html[dir="rtl"] .task-horses {
+  text-align: right;
+}
+
+html[dir="rtl"] .task-actions {
+  flex-direction: row-reverse;
+}
+
+/* Error Message */
+html[dir="rtl"] .error-message {
+  flex-direction: row-reverse;
+  text-align: right;
+}
+
+/* Settings */
+html[dir="rtl"] .settings-header {
+  text-align: center;
+}
+
+html[dir="rtl"] .settings-header h2 {
+  text-align: center;
+}
+
+html[dir="rtl"] .setting-item {
+  flex-direction: row-reverse;
+}
+
+html[dir="rtl"] .setting-label {
+  text-align: right;
+}
+
+html[dir="rtl"] .about-content {
+  text-align: right;
+}
+
+html[dir="rtl"] .features-list {
+  border-left: none;
+  border-right: 3px solid #0052a3;
+  padding-right: 1rem;
+  padding-left: 0;
+}
+
+html[dir="rtl"] .dev-info {
+  border-left: none;
+  border-right: 3px solid #f59e0b;
+  padding-right: 1rem;
+  padding-left: 0;
+}
+
+html[dir="rtl"] .help-item {
+  border-left: none;
+  border-right: 3px solid #10b981;
+  padding-right: 1rem;
+  padding-left: 0;
+}
+
+/* Task Filters */
+html[dir="rtl"] .task-filters {
+  flex-direction: row-reverse;
+}
+
+/* Language Buttons */
+html[dir="rtl"] .language-buttons {
+  flex-direction: row-reverse;
+}
+
+/* Refresh Button Container */
+html[dir="rtl"] .refresh-button-container {
+  justify-content: center;
+}
