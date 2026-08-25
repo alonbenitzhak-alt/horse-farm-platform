@@ -3,6 +3,7 @@ import type { Horse } from '@stableos/shared';
 import { getHorses, createHorse, updateHorse, deleteHorse, subscribeToHorses } from '@stableos/shared';
 import { success, error } from '../utils/toast';
 import { useTranslation } from '../hooks/useTranslation';
+import HorseProfile from './HorseProfile';
 
 interface HorseRosterProps {
   farmId: string;
@@ -19,6 +20,7 @@ export default function HorseRoster({ farmId }: HorseRosterProps) {
   const [deletingId, setDeletingId] = useState<string | null>(null);
   const [validationErrors, setValidationErrors] = useState<Record<string, string>>({});
   const [searchQuery, setSearchQuery] = useState('');
+  const [selectedHorse, setSelectedHorse] = useState<Horse | null>(null);
   const subscriptionRef = useRef<any>(null);
   const [formData, setFormData] = useState({
     name: '',
@@ -155,6 +157,10 @@ export default function HorseRoster({ farmId }: HorseRosterProps) {
     (horse.breed && horse.breed.toLowerCase().includes(searchQuery.toLowerCase())) ||
     (horse.color && horse.color.toLowerCase().includes(searchQuery.toLowerCase()))
   );
+
+  if (selectedHorse) {
+    return <HorseProfile horse={selectedHorse} onBack={() => setSelectedHorse(null)} />;
+  }
 
   return (
     <div className="roster">
@@ -294,7 +300,12 @@ export default function HorseRoster({ farmId }: HorseRosterProps) {
           {filteredHorses.length > 0 ? (
             <div className="roster-grid">
               {filteredHorses.map(horse => (
-                <div key={horse.id} className="roster-card">
+                <div
+                  key={horse.id}
+                  className="roster-card"
+                  onClick={() => setSelectedHorse(horse)}
+                  style={{ cursor: 'pointer' }}
+                >
                   <div className="card-emoji">🐎</div>
                   <div className="card-content">
                     <div className="card-name">{horse.name}</div>
@@ -311,7 +322,10 @@ export default function HorseRoster({ farmId }: HorseRosterProps) {
                   <div className="card-actions">
                     <button
                       className="edit-button"
-                      onClick={() => handleOpenForm(horse)}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleOpenForm(horse);
+                      }}
                       disabled={deletingId === horse.id}
                       title="Edit horse"
                     >
@@ -319,7 +333,10 @@ export default function HorseRoster({ farmId }: HorseRosterProps) {
                     </button>
                     <button
                       className="delete-button"
-                      onClick={() => handleDelete(horse.id, horse.name)}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleDelete(horse.id, horse.name);
+                      }}
                       disabled={deletingId !== null}
                       title="Delete horse"
                     >

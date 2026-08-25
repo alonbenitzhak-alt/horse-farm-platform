@@ -14,6 +14,7 @@ import './styles/calendar.css';
 import './styles/task-manager.css';
 import './styles/roster.css';
 import './styles/settings.css';
+import './styles/horse-profile.css';
 import './styles/toast.css';
 import './styles/rtl.css';
 

@@ -429,3 +429,54 @@ html[dir="rtl"] .checkbox-label input[type='checkbox'] {
   margin-left: 0;
   margin-right: 0.5rem;
 }
+
+/* Horse Profile */
+html[dir="rtl"] .profile-header {
+  text-align: right;
+}
+
+html[dir="rtl"] .profile-title {
+  flex-direction: row-reverse;
+}
+
+html[dir="rtl"] .profile-info {
+  text-align: right;
+}
+
+html[dir="rtl"] .back-button {
+  text-align: center;
+}
+
+html[dir="rtl"] .section-header {
+  flex-direction: row-reverse;
+  text-align: right;
+}
+
+html[dir="rtl"] .section-header h3 {
+  text-align: right;
+}
+
+html[dir="rtl"] .record-item {
+  flex-direction: row-reverse;
+  text-align: right;
+}
+
+html[dir="rtl"] .record-content {
+  text-align: right;
+}
+
+html[dir="rtl"] .record-meta {
+  flex-direction: row-reverse;
+}
+
+html[dir="rtl"] .record-notes {
+  border-left: none;
+  border-right: 3px solid #0052a3;
+  padding-left: 0;
+  padding-right: 0.75rem;
+  text-align: right;
+}
+
+html[dir="rtl"] .record-actions {
+  flex-direction: row-reverse;
+}

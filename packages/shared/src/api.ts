@@ -16,6 +16,8 @@ import type {
   EventWithAttendees,
   ActivityWithUser,
   TodayDashboard,
+  HorseHealthRecord,
+  HorseHealthRecordWithHorse,
 } from './types';
 
 let supabaseClient: SupabaseClient | null = null;
@@ -172,6 +174,82 @@ export async function deleteHorse(horseId: string): Promise<void> {
     .from('horses')
     .delete()
     .eq('id', horseId);
+
+  if (error) throw error;
+}
+
+// ============================================================================
+// Horse Health Records Operations
+// ============================================================================
+
+export async function getHorseHealthRecords(
+  horseId: string,
+  filters?: {
+    recordType?: string;
+    dateStart?: string;
+    dateEnd?: string;
+  }
+): Promise<HorseHealthRecord[]> {
+  let query = getSupabaseClient()
+    .from('horse_health_records')
+    .select('*')
+    .eq('horse_id', horseId);
+
+  if (filters?.recordType) {
+    query = query.eq('record_type', filters.recordType);
+  }
+  if (filters?.dateStart) {
+    query = query.gte('recorded_date', filters.dateStart);
+  }
+  if (filters?.dateEnd) {
+    query = query.lte('recorded_date', filters.dateEnd);
+  }
+
+  const { data, error } = await query.order('recorded_date', { ascending: false });
+
+  if (error) throw error;
+  return data || [];
+}
+
+export async function getHorseHealthRecord(recordId: string): Promise<HorseHealthRecord | null> {
+  const { data, error } = await getSupabaseClient()
+    .from('horse_health_records')
+    .select('*')
+    .eq('id', recordId)
+    .single();
+
+  if (error) throw error;
+  return data;
+}
+
+export async function createHorseHealthRecord(record: Partial<HorseHealthRecord>): Promise<HorseHealthRecord> {
+  const { data, error } = await getSupabaseClient()
+    .from('horse_health_records')
+    .insert([record])
+    .select()
+    .single();
+
+  if (error) throw error;
+  return data;
+}
+
+export async function updateHorseHealthRecord(recordId: string, updates: Partial<HorseHealthRecord>): Promise<HorseHealthRecord> {
+  const { data, error } = await getSupabaseClient()
+    .from('horse_health_records')
+    .update({ ...updates, updated_at: new Date().toISOString() })
+    .eq('id', recordId)
+    .select()
+    .single();
+
+  if (error) throw error;
+  return data;
+}
+
+export async function deleteHorseHealthRecord(recordId: string): Promise<void> {
+  const { error } = await getSupabaseClient()
+    .from('horse_health_records')
+    .delete()
+    .eq('id', recordId);
 
   if (error) throw error;
 }
