@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { registerUser, joinFarmWithCode } from '@stableos/shared';
+import { registerUser, joinFarmWithCode, getSupabaseClient } from '@stableos/shared';
 import { useTranslation } from '../hooks/useTranslation';
 import { success, error as showError } from '../utils/toast';
 import '../styles/auth.css';
@@ -87,6 +87,27 @@ export default function Register({ onSuccess, onSwitchToLogin }: RegisterProps) 
     }
   }
 
+  async function handleGoogleSignUp() {
+    try {
+      setLoading(true);
+      setErrorMsg(null);
+      const client = getSupabaseClient();
+      const { error } = await client.auth.signInWithOAuth({
+        provider: 'google',
+        options: {
+          redirectTo: `${window.location.origin}`,
+        },
+      });
+      if (error) throw error;
+    } catch (err) {
+      const msg = err instanceof Error ? err.message : 'Google sign-up failed';
+      setErrorMsg(msg);
+      showError(msg);
+    } finally {
+      setLoading(false);
+    }
+  }
+
   if (step === 'role') {
     return (
       <div className="auth-container">
@@ -142,6 +163,18 @@ export default function Register({ onSuccess, onSwitchToLogin }: RegisterProps) 
             disabled={loading}
           >
             המשך
+          </button>
+
+          <div className="divider">או</div>
+
+          <button
+            type="button"
+            className="oauth-button google"
+            onClick={handleGoogleSignUp}
+            disabled={loading}
+          >
+            <span className="oauth-icon">🔍</span>
+            הרשם עם Google
           </button>
 
           <div className="auth-footer">
