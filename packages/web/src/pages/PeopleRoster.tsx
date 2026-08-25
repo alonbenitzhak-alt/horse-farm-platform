@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from 'react';
 import type { Person, PersonRole } from '@stableos/shared';
 import { getPeople, createPerson, updatePerson, deletePerson, subscribeToPeople } from '@stableos/shared';
 import { formatPersonRole } from '@stableos/shared';
+import { success, error } from '../utils/toast';
 
 interface PeopleRosterProps {
   farmId: string;
@@ -125,10 +126,13 @@ export default function PeopleRoster({ farmId }: PeopleRosterProps) {
 
       setShowForm(false);
       setValidationErrors({});
+      success(editingPerson ? 'Person updated successfully' : 'Person added successfully');
       loadPeople();
     } catch (err) {
       console.error('Error saving person:', err);
-      setError(err instanceof Error ? err.message : 'Failed to save person');
+      const errorMsg = err instanceof Error ? err.message : 'Failed to save person';
+      setError(errorMsg);
+      error(errorMsg);
     } finally {
       setSubmitting(false);
     }
@@ -142,10 +146,13 @@ export default function PeopleRoster({ farmId }: PeopleRosterProps) {
     try {
       setDeletingId(personId);
       await deletePerson(personId);
+      success(`${personName} deleted successfully`);
       loadPeople();
     } catch (err) {
       console.error('Error deleting person:', err);
-      setError(err instanceof Error ? err.message : 'Failed to delete person');
+      const errorMsg = err instanceof Error ? err.message : 'Failed to delete person';
+      setError(errorMsg);
+      error(errorMsg);
     } finally {
       setDeletingId(null);
     }

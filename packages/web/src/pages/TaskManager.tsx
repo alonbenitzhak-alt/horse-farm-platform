@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import type { TaskWithDetails, Horse, Person } from '@stableos/shared';
 import { getTasks, createTask, updateTask, deleteTask, getHorses, getPeople } from '@stableos/shared';
 import { formatDate, formatTime, formatTaskStatus } from '@stableos/shared';
+import { success, error } from '../utils/toast';
 
 interface TaskManagerProps {
   farmId: string;
@@ -138,10 +139,13 @@ export default function TaskManager({ farmId, currentUserId }: TaskManagerProps)
 
       setShowForm(false);
       setValidationErrors({});
+      success(editingTask ? 'Task updated successfully' : 'Task created successfully');
       loadData();
     } catch (err) {
       console.error('Error saving task:', err);
-      setError(err instanceof Error ? err.message : 'Failed to save task');
+      const errorMsg = err instanceof Error ? err.message : 'Failed to save task';
+      setError(errorMsg);
+      error(errorMsg);
     } finally {
       setSubmitting(false);
     }
@@ -155,10 +159,13 @@ export default function TaskManager({ farmId, currentUserId }: TaskManagerProps)
     try {
       setDeletingId(taskId);
       await deleteTask(taskId);
+      success(`"${taskTitle}" deleted successfully`);
       loadData();
     } catch (err) {
       console.error('Error deleting task:', err);
-      setError(err instanceof Error ? err.message : 'Failed to delete task');
+      const errorMsg = err instanceof Error ? err.message : 'Failed to delete task';
+      setError(errorMsg);
+      error(errorMsg);
     } finally {
       setDeletingId(null);
     }

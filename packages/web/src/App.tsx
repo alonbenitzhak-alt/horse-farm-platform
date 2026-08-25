@@ -5,12 +5,14 @@ import TaskManager from './pages/TaskManager';
 import HorseRoster from './pages/HorseRoster';
 import PeopleRoster from './pages/PeopleRoster';
 import Settings from './pages/Settings';
+import Toast from './components/Toast';
 import './App.css';
 import './styles/today-dashboard.css';
 import './styles/calendar.css';
 import './styles/task-manager.css';
 import './styles/roster.css';
 import './styles/settings.css';
+import './styles/toast.css';
 
 export default function App() {
   const [activeTab, setActiveTab] = useState('today');
@@ -90,6 +92,8 @@ export default function App() {
           ⚙️
         </button>
       </nav>
+
+      <Toast />
     </div>
   );
 }

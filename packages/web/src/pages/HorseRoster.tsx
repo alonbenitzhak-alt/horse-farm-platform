@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 import type { Horse } from '@stableos/shared';
 import { getHorses, createHorse, updateHorse, deleteHorse, subscribeToHorses } from '@stableos/shared';
+import { success, error } from '../utils/toast';
 
 interface HorseRosterProps {
   farmId: string;
@@ -114,10 +115,13 @@ export default function HorseRoster({ farmId }: HorseRosterProps) {
 
       setShowForm(false);
       setValidationErrors({});
+      success(editingHorse ? 'Horse updated successfully' : 'Horse added successfully');
       loadHorses();
     } catch (err) {
       console.error('Error saving horse:', err);
-      setError(err instanceof Error ? err.message : 'Failed to save horse');
+      const errorMsg = err instanceof Error ? err.message : 'Failed to save horse';
+      setError(errorMsg);
+      error(errorMsg);
     } finally {
       setSubmitting(false);
     }
@@ -131,10 +135,13 @@ export default function HorseRoster({ farmId }: HorseRosterProps) {
     try {
       setDeletingId(horseId);
       await deleteHorse(horseId);
+      success(`${horseName} deleted successfully`);
       loadHorses();
     } catch (err) {
       console.error('Error deleting horse:', err);
-      setError(err instanceof Error ? err.message : 'Failed to delete horse');
+      const errorMsg = err instanceof Error ? err.message : 'Failed to delete horse';
+      setError(errorMsg);
+      error(errorMsg);
     } finally {
       setDeletingId(null);
     }
